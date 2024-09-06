@@ -1,0 +1,291 @@
+{
+  "id": "a7718101-9397-4997-8262-82d02a2ed34e",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.asignatura": {
+      "name": "asignatura",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "pk_asignatura": {
+          "name": "pk_asignatura",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.asignatura_tributa": {
+      "name": "asignatura_tributa",
+      "schema": "",
+      "columns": {
+        "plan_id": {
+          "name": "plan_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "previa_id": {
+          "name": "previa_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tributada_id": {
+          "name": "tributada_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "asignatura_tributa_plan_id_plan_de_estudio_id_fk": {
+          "name": "asignatura_tributa_plan_id_plan_de_estudio_id_fk",
+          "tableFrom": "asignatura_tributa",
+          "tableTo": "plan_de_estudio",
+          "columnsFrom": [
+            "plan_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "asignatura_tributa_previa_id_asignatura_id_fk": {
+          "name": "asignatura_tributa_previa_id_asignatura_id_fk",
+          "tableFrom": "asignatura_tributa",
+          "tableTo": "asignatura",
+          "columnsFrom": [
+            "previa_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "asignatura_tributa_tributada_id_asignatura_id_fk": {
+          "name": "asignatura_tributa_tributada_id_asignatura_id_fk",
+          "tableFrom": "asignatura_tributa",
+          "tableTo": "asignatura",
+          "columnsFrom": [
+            "tributada_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.plan_contempla_asignatura": {
+      "name": "plan_contempla_asignatura",
+      "schema": "",
+      "columns": {
+        "asignatura_id": {
+          "name": "asignatura_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "plan_id": {
+          "name": "plan_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "plan_contempla_asignatura_asignatura_id_asignatura_id_fk": {
+          "name": "plan_contempla_asignatura_asignatura_id_asignatura_id_fk",
+          "tableFrom": "plan_contempla_asignatura",
+          "tableTo": "asignatura",
+          "columnsFrom": [
+            "asignatura_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "plan_contempla_asignatura_plan_id_plan_de_estudio_id_fk": {
+          "name": "plan_contempla_asignatura_plan_id_plan_de_estudio_id_fk",
+          "tableFrom": "plan_contempla_asignatura",
+          "tableTo": "plan_de_estudio",
+          "columnsFrom": [
+            "plan_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.curso": {
+      "name": "curso",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "asignatura_id": {
+          "name": "asignatura_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "plan_id": {
+          "name": "plan_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "syllabus": {
+          "name": "syllabus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "curso_asignatura_id_plan_contempla_asignatura_asignatura_id_fk": {
+          "name": "curso_asignatura_id_plan_contempla_asignatura_asignatura_id_fk",
+          "tableFrom": "curso",
+          "tableTo": "plan_contempla_asignatura",
+          "columnsFrom": [
+            "asignatura_id"
+          ],
+          "columnsTo": [
+            "asignatura_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "curso_plan_id_plan_contempla_asignatura_plan_id_fk": {
+          "name": "curso_plan_id_plan_contempla_asignatura_plan_id_fk",
+          "tableFrom": "curso",
+          "tableTo": "plan_contempla_asignatura",
+          "columnsFrom": [
+            "plan_id"
+          ],
+          "columnsTo": [
+            "plan_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "pk_curso": {
+          "name": "pk_curso",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.plan_de_estudio": {
+      "name": "plan_de_estudio",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "titulo": {
+          "name": "titulo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "anio": {
+          "name": "anio",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fecha_instauracion": {
+          "name": "fecha_instauracion",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "pk_plan": {
+          "name": "pk_plan",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "plan_de_estudio_titulo_unique": {
+          "name": "plan_de_estudio_titulo_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "titulo"
+          ]
+        }
+      }
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
