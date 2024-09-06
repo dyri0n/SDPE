@@ -1,5 +1,14 @@
 # Frontend
 
+## Convensiones
+
+Para la implementacion del proyecto en frontend se establecieron las siguientes convensiones:
+
+- FUNCIONES (CAMEL CASE) -> nombreFuncion
+- VARIABLES (SNAKE CASE) -> nombre_variable
+- CONSTANTES (UPPER FLAT CASE) -> NOMBRECONSTANTE
+- CLASES (PASCAL CASE) -> NombreClase
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.3.
 
 ## Development server
