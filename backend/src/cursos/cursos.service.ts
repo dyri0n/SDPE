@@ -1,15 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DrizzleAsyncProvider } from '../drizzle/drizzle.provider';
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import * as schema from '../drizzle/schema/schema';
 import { eq } from 'drizzle-orm';
 import { curso } from '../drizzle/schema/schema';
+import { DRIZZLE } from 'src/drizzle/drizzle.module';
+import { DrizzleDB } from 'src/drizzle/types/drizzle';
 
 @Injectable()
 export class CursosService {
   constructor(
-    @Inject(DrizzleAsyncProvider)
-    private db: NodePgDatabase<typeof schema>,
+    @Inject(DRIZZLE)
+    private db: DrizzleDB,
   ) {}
 
   async getCursosDeAsignatura(idAsignatura: number) {

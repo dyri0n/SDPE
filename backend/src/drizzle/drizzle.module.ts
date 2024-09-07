@@ -1,15 +1,16 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Pool } from 'pg';
 import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from './schema/schema';
-import { DrizzleAsyncProvider, drizzleProvider } from './drizzle.provider';
 
-export const drizzleService = Symbol('drizzle-connection');
+export const DRIZZLE = Symbol('drizzle-connection');
+
+@Global()
 @Module({
   providers: [
     {
-      provide: drizzleService,
+      provide: DRIZZLE,
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         const databaseURL = configService.get<string>('DATABASE_URL');
@@ -22,8 +23,7 @@ export const drizzleService = Symbol('drizzle-connection');
         >;
       },
     },
-    ...drizzleProvider
   ],
-  exports: [drizzleService, DrizzleAsyncProvider],
+  exports: [DRIZZLE],
 })
 export class DrizzleModule {}

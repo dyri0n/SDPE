@@ -1,36 +1,108 @@
-import { planDeEstudio } from './planEstudio.schema';
+import { relations } from 'drizzle-orm';
 import {
   pgTable,
   serial,
   integer,
-  primaryKey,
   text,
+  primaryKey,
+  foreignKey,
 } from 'drizzle-orm/pg-core';
+import { planDeEstudio } from './planEstudio.schema';
 
-// se pueden dejar las tablas en archivos separados si se desea modularidad
-// se crea un archivo schema.ts que exporta cada una de las definiciones de tablas individuales dentro de una carpeta /schema
-// para las relaciones muchos a muchos se puede definir la bridge table dentro de la tabla que la utiliza
 export const asignatura = pgTable(
+  // Nombre tabla
   'asignatura',
+  // Atributos
   {
-    id: serial('id'),
+    id: serial('id').primaryKey(),
+
     nombre: text('nombre'),
     descripcion: text('descripcion'),
   },
-  (table) => ({
-    cpk: primaryKey({ name: 'pk_asignatura', columns: [table.id] }),
-  }),
 );
 
-export const planContemplaAsignatura = pgTable('plan_contempla_asignatura', {
-  idAsignatura: integer('asignatura_id').references(() => asignatura.id),
-  idPlan: integer('plan_id').references(() => planDeEstudio.id),
+export const asignaturaRelations = relations(asignatura, ({ many }) => {
+  asignaturaContemplada: many(planContemplaAsignatura);
 });
 
-export const asignaturaTributa = pgTable('asignatura_tributa', {
-  idPlan: integer('plan_id').references(() => planDeEstudio.id),
-  idAsignaturaPrevia: integer('previa_id').references(() => asignatura.id),
-  idAsignaturaTributada: integer('tributada_id').references(
-    () => asignatura.id,
-  ),
+export const planContemplaAsignatura = pgTable(
+  // Nombre tabla
+  'plan_contempla_asignatura',
+  // Atributos
+  {
+    idAsignatura: integer('asignatura_id').references(() => asignatura.id),
+    idPlan: integer('plan_id').references(() => planDeEstudio.id),
+
+    semestre: integer('semestre'),
+  },
+  // Restricciones
+  (t) => {
+    pk: primaryKey({ columns: [t.idPlan, t.idAsignatura] });
+  },
+);
+
+export const planContemplaAsignaturaRelations = relations(
+  planContemplaAsignatura,
+  ({ one, many }) => {
+    asignatura: one(asignatura, {
+      fields: [planContemplaAsignatura.idAsignatura],
+      references: [asignatura.id],
+    });
+    plan: one(planDeEstudio, {
+      fields: [planContemplaAsignatura.idPlan],
+      references: [planDeEstudio.id],
+    });
+    tributa: many(tributacion);
+    requiere: many(tributacion);
+  },
+);
+
+export const tributacion = pgTable(
+  // Nombre tabla
+  'tributacion',
+  // Atributos
+  {
+    idPlan: integer('plan_id'),
+    idAsignaturaRequerida: integer('previa_id'),
+    idAsignaturaTributada: integer('tributada_id'),
+  },
+  // Restricciones
+  (t) => {
+    pk: primaryKey({
+      columns: [t.idPlan, t.idAsignaturaTributada, t.idAsignaturaRequerida],
+    });
+    asignaturaTributada: foreignKey({
+      name: 'asignatura_tributada',
+      columns: [t.idPlan, t.idAsignaturaTributada],
+      foreignColumns: [
+        planContemplaAsignatura.idPlan,
+        planContemplaAsignatura.idAsignatura,
+      ],
+    });
+    asignaturaRequerida: foreignKey({
+      name: 'asignatura_requerida',
+      columns: [t.idPlan, t.idAsignaturaRequerida],
+      foreignColumns: [
+        planContemplaAsignatura.idPlan,
+        planContemplaAsignatura.idAsignatura,
+      ],
+    });
+  },
+);
+
+export const tributacionRelations = relations(tributacion, ({ one }) => {
+  asignaturaTributada: one(planContemplaAsignatura, {
+    fields: [tributacion.idPlan, tributacion.idAsignaturaTributada],
+    references: [
+      planContemplaAsignatura.idPlan,
+      planContemplaAsignatura.idAsignatura,
+    ],
+  });
+  asignaturaRequerida: one(planContemplaAsignatura, {
+    fields: [tributacion.idPlan, tributacion.idAsignaturaRequerida],
+    references: [
+      planContemplaAsignatura.idPlan,
+      planContemplaAsignatura.idAsignatura,
+    ],
+  });
 });

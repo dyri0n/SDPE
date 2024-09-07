@@ -4,21 +4,43 @@ import {
   text,
   integer,
   primaryKey,
+  foreignKey,
 } from 'drizzle-orm/pg-core';
 import { planContemplaAsignatura } from './asignatura.schema';
+import { relations } from 'drizzle-orm';
 
 export const curso = pgTable(
+  // Nombre Tabla
   'curso',
+  // Atributos
   {
     id: serial('id'),
-    idAsignatura: integer('asignatura_id').references(
-      () => planContemplaAsignatura.idAsignatura,
-    ),
-    idPlan: integer('plan_id').references(() => planContemplaAsignatura.idPlan),
+    idPlan: integer('plan_id'),
+    idAsignatura: integer('asignatura_id'),
+
     nombre: text('nombre').notNull(),
     linkSyllabus: text('syllabus'),
   },
-  (table) => ({
-    cpk: primaryKey({ name: 'pk_curso', columns: [table.id] }),
+  // Restricciones
+  (t) => ({
+    pk: primaryKey({ columns: [t.id, t.idPlan, t.idAsignatura] }),
+    planContemplaAsignatura: foreignKey({
+      name: 'plan_contempla_asignatura',
+      columns: [t.idPlan, t.idAsignatura],
+      foreignColumns: [
+        planContemplaAsignatura.idPlan,
+        planContemplaAsignatura.idAsignatura,
+      ],
+    }),
   }),
 );
+
+export const cursoRelations = relations(curso, ({ one }) => {
+  planContemplaAsignatura: one(planContemplaAsignatura, {
+    fields: [curso.idPlan, curso.idAsignatura],
+    references: [
+      planContemplaAsignatura.idPlan,
+      planContemplaAsignatura.idAsignatura,
+    ],
+  });
+});
