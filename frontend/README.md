@@ -9,6 +9,13 @@ Para la implementacion del proyecto en frontend se establecieron las siguientes 
 - CONSTANTES (UPPER FLAT CASE) -> NOMBRECONSTANTE
 - CLASES (PASCAL CASE) -> NombreClase
 
+Para escribir los commits
+
+1. Nombre historia SPE-x
+2. Nombre tarea (SPE-y)
+3. Actividad commit (wip,build,etc)
+   Ejemplo: SPE-01 (SPE-y) WIP
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.3.
 
 ## Development server
