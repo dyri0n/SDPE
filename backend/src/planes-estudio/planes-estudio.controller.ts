@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { PlanesEstudioService } from './planes-estudio.service';
 import { ApiTags } from '@nestjs/swagger';
+import { CreatePlanDTO, ModifyPlanDTO } from './dto';
 
 @ApiTags('plan-de-estudios')
 @Controller('planes-de-estudio')

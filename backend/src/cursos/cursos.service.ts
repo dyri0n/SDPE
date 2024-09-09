@@ -1,19 +1,15 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
-import { curso } from '../drizzle/schema/schema';
-import { DRIZZLE } from 'src/drizzle/drizzle.module';
-import { DrizzleDB } from 'src/drizzle/types/drizzle';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CursosService {
-  constructor(
-    @Inject(DRIZZLE)
-    private db: DrizzleDB,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
-  async getCursosDeAsignatura(idAsignatura: number) {
-    return this.db.query.curso.findMany({
-      where: eq(curso.idAsignatura, idAsignatura),
+  async getCursosDeAsignatura(idAsig: number) {
+    return this.prisma.curso.findMany({
+      where: {
+        idAsignatura: idAsig,
+      },
     });
   }
 }

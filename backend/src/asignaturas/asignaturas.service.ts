@@ -1,19 +1,15 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { planContemplaAsignatura } from '../drizzle/schema/schema';
-import { eq } from 'drizzle-orm';
-import { DRIZZLE } from 'src/drizzle/drizzle.module';
-import { DrizzleDB } from 'src/drizzle/types/drizzle';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AsignaturasService {
-  constructor(
-    @Inject(DRIZZLE)
-    private db: DrizzleDB,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async getAsignaturasDePLan(planId: number) {
-    return this.db.query.planContemplaAsignatura.findMany({
-      where: eq(planContemplaAsignatura.idPlan, planId),
+    return this.prisma.planContemplaAsignatura.findMany({
+      where: {
+        idPlan: planId,
+      },
     });
   }
 }

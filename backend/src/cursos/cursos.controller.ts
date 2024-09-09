@@ -1,20 +1,20 @@
-import {Controller, Get} from '@nestjs/common';
-import {CursosService} from "./cursos.service";
+import { Controller, Get } from '@nestjs/common';
+import { CursosService } from './cursos.service';
 
 @Controller('cursos')
 export class CursosController {
-  constructor(private readonly cursoService: CursosService) {
-  }
+  constructor(private cursoService: CursosService) {}
+
+  //retorna todos los cursos
+  //asociados a una asignatura
   @Get('/curso/idAsignatura')
   getCursos() {
-    //retorna todos los cursos
-    //asociados a una asignatura
     return this.cursoService;
   }
 
+  //retorna informacion del curso específico
   @Get('/curso/idAsignatura/idCurso')
-  getInfoCurso(id: number){
-    //retorna informacion del curso específico
+  getInfoCurso(id: number) {
     return this.cursoService;
   }
 }

@@ -1,19 +1,32 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { DRIZZLE } from 'src/drizzle/drizzle.module';
-import { DrizzleDB } from 'src/drizzle/types/drizzle';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreatePlanDTO, ModifyPlanDTO } from './dto';
 
 @Injectable()
 export class PlanesEstudioService {
-  constructor(@Inject(DRIZZLE) private db: DrizzleDB) {}
+  constructor(private prisma: PrismaService) {}
 
-  findAll() {}
-  findOne(id: number) {}
+  findAll() {
+    throw new Error('Method not implemented.');
+  }
 
-  createPlan(data: CreatePlanDTO) {}
+  findOne(id: number) {
+    throw new Error('Method not implemented.');
+  }
 
-  deletePlan(id: number) {}
+  createPlan(data: CreatePlanDTO) {
+    throw new Error('Method not implemented.');
+  }
 
-  modifyPlan(id: number, data: ModifyPlanDTO) {}
+  deletePlan(id: number) {
+    throw new Error('Method not implemented.');
+  }
 
-  getFluxogram(id: number) {}
+  modifyPlan(id: number, data: ModifyPlanDTO) {
+    throw new Error('Method not implemented.');
+  }
+
+  getFluxogram(id: number) {
+    throw new Error('Method not implemented.');
+  }
 }

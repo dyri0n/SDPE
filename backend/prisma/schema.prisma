@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Asignatura {
+  id                      Int                       @id @default(autoincrement())
+  nombre                  String
+  descripcion             String?
+  PlanContemplaAsignatura PlanContemplaAsignatura[]
+}
+
+model PlanContemplaAsignatura {
+  semestre Int
+
+  idPlan       Int
+  plan         Plan       @relation(fields: [idPlan], references: [id])
+  idAsignatura Int
+  asignatura   Asignatura @relation(fields: [idAsignatura], references: [id])
+
+  esRequeridaEn Tributacion[] @relation(name: "es la requerida")
+  esTributadaEn Tributacion[] @relation(name: "es la tributada")
+  cursos        Curso[]       @relation(name: "refiere asignatura contemplada")
+
+  @@id([idPlan, idAsignatura])
+}
+
+model Tributacion {
+  idPlan                Int
+  idAsignaturaRequerida Int
+  idAsignaturaTributada Int
+
+  asignaturaRequerida PlanContemplaAsignatura @relation(name: "es la requerida", fields: [idPlan, idAsignaturaRequerida], references: [idPlan, idAsignatura])
+  asignaturaTributada PlanContemplaAsignatura @relation(name: "es la tributada", fields: [idPlan, idAsignaturaTributada], references: [idPlan, idAsignatura])
+
+  @@id([idPlan, idAsignaturaTributada, idAsignaturaRequerida])
+}
+
+model Plan {
+  id                Int      @id @default(autoincrement())
+  titulo            String   @unique
+  anio              Int
+  fechaInstauracion DateTime @default(now()) @db.Date
+
+  PlanContemplaAsignatura PlanContemplaAsignatura[]
+}
+
+model Curso {
+  id           Int     @id @default(autoincrement())
+  nombre       String
+  linkSyllabus String?
+
+  idPlan                Int
+  idAsignatura          Int
+  asignaturaContemplada PlanContemplaAsignatura @relation(name: "refiere asignatura contemplada", fields: [idPlan, idAsignatura], references: [idPlan, idAsignatura])
+}
