@@ -20,8 +20,18 @@ model Asignatura {
   PlanContemplaAsignatura PlanContemplaAsignatura[]
 }
 
+enum CARACTER {
+  NORMAL
+  ELECTIVO
+  PRACTICA
+  TITULACION
+}
+
 model PlanContemplaAsignatura {
   semestre Int
+
+  posicion Int
+  caracter CARACTER
 
   idPlan       Int
   plan         Plan       @relation(fields: [idPlan], references: [id])

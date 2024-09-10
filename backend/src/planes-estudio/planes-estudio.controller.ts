@@ -36,7 +36,7 @@ export class PlanesEstudioController {
   }
 
   @Delete(':idPlan')
-  deletePlan(@Param('idPlan') idPlan) {
+  deletePlan(@Param('idPlan', ParseIntPipe) idPlan: number) {
     return this.deletePlan(idPlan);
   }
 
