@@ -12,4 +12,9 @@ export class AsignaturasService {
       },
     });
   }
+  async getSiguienteDeAsignatura(asignaturaId: number) {
+    return this.prisma.tributacion.findMany({
+      where: { idAsignaturaRequerida: asignaturaId },
+    });
+  }
 }
