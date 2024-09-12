@@ -11,11 +11,15 @@ import {
 import { PlanesEstudioService } from './planes-estudio.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreatePlanDTO, ModifyPlanDTO } from './dto';
+import { AsignaturasService } from '../asignaturas/asignaturas.service';
 
 @ApiTags('plan-de-estudios')
 @Controller('planes-de-estudio')
 export class PlanesEstudioController {
-  constructor(private planesEstudioService: PlanesEstudioService) {}
+  constructor(
+    private planesEstudioService: PlanesEstudioService,
+    private asignaturasService: AsignaturasService,
+  ) {}
 
   // retorna cada código
   // (identificador) de un plan
@@ -27,7 +31,7 @@ export class PlanesEstudioController {
 
   @Get(':idPlan')
   getOne(@Param('idPlan', ParseIntPipe) idPlan: number) {
-    return this.getOne(idPlan);
+    return this.planesEstudioService.findOne(idPlan);
   }
 
   @Post()
@@ -46,10 +50,8 @@ export class PlanesEstudioController {
   }
 
   // retorna el fluxograma de un plan de estudio
-  // lo más probable q llamando al servicio de
-  // asignaturas
   @Get(':idPlan/fluxograma')
-  getFluxogramaDe(@Param('idPlan', ParseIntPipe) idPlan: number) {
+  async getFluxogramaDe(@Param('idPlan', ParseIntPipe) idPlan: number) {
     return this.planesEstudioService.getFluxogram(idPlan);
   }
 }

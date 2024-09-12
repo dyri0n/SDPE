@@ -1,22 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePlanDTO, ModifyPlanDTO } from './dto';
-import { AsignaturasService } from '../asignaturas/asignaturas.service';
-import { Plan } from '@prisma/client';
+import { PlanContemplaAsignatura } from '@prisma/client';
 
 @Injectable()
 export class PlanesEstudioService {
-  constructor(
-    private prisma: PrismaService,
-    private readonly asignaturaService: AsignaturasService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   findAll() {
     throw new Error('Method not implemented.');
   }
 
   findOne(id: number) {
-    throw new Error('Method not implemented.');
+    return this.prisma.plan.findFirst({ where: { id: id } });
   }
 
   createPlan(data: CreatePlanDTO) {
@@ -31,7 +27,12 @@ export class PlanesEstudioService {
     throw new Error('Method not implemented.');
   }
 
-  async getFluxogram(id: number): Promise<Plan[]> {
-    return this.asignaturaService.getAsignaturasDePLan(id);
+  async getFluxogram(id: number): Promise<PlanContemplaAsignatura[]> {
+    return this.prisma.planContemplaAsignatura.findMany({
+      where: { idPlan: id },
+      include: {
+        esTributadaEn: true,
+      },
+    });
   }
 }
