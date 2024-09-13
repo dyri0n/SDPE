@@ -37,6 +37,30 @@ enum AREA {
   FB
 }
 
+model Estudiante {
+  rut            String
+  nombreCompleto String
+  Cursacion      Cursacion[]
+
+  @@id([rut])
+}
+
+model Cursacion {
+  estudianteRut String
+  estudiante    Estudiante @relation(fields: [estudianteRut], references: [rut])
+
+  nota       Int
+  numIntento Int
+  grupo      String
+  agnio      Int
+
+  idAsignatura            Int
+  idPlan                  Int
+  planContemplaAsignatura PlanContemplaAsignatura @relation(fields: [idAsignatura, idPlan], references: [idAsignatura, idPlan])
+
+  @@id([estudianteRut, idAsignatura, idPlan])
+}
+
 model Practica {
   nombre                 String
   posicion               Int
@@ -63,8 +87,8 @@ model PlanContemplaAsignatura {
 
   esRequeridaEn Tributacion[] @relation(name: "es la requerida")
   esTributadaEn Tributacion[] @relation(name: "es la tributada")
-  cursos        Curso[]       @relation(name: "refiere asignatura contemplada")
   Practica      Practica[]
+  Cursacion     Cursacion[]
 
   @@id([idPlan, idAsignatura])
 }
@@ -87,14 +111,4 @@ model Plan {
   fechaInstauracion DateTime @default(now()) @db.Date
 
   PlanContemplaAsignatura PlanContemplaAsignatura[]
-}
-
-model Curso {
-  id           Int     @id @default(autoincrement())
-  nombre       String
-  linkSyllabus String?
-
-  idPlan                Int
-  idAsignatura          Int
-  asignaturaContemplada PlanContemplaAsignatura @relation(name: "refiere asignatura contemplada", fields: [idPlan, idAsignatura], references: [idPlan, idAsignatura])
 }

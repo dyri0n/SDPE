@@ -42,6 +42,10 @@ export class AsignaturasService {
       //}
       ();
   }
+
+  async getPromedioDeAsignatura(idAsignatura: number, idPlan: number) {
+    //no se pone el prettier pq no está sincronizado con el prisma
+  }
 }
 
 enum AREA {
