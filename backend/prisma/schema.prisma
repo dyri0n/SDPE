@@ -20,11 +20,33 @@ model Asignatura {
   PlanContemplaAsignatura PlanContemplaAsignatura[]
 }
 
+// Esto viene a ser remplazado por area verdad?
 enum CARACTER {
   NORMAL
   ELECTIVO
   PRACTICA
   TITULACION
+}
+
+//
+
+enum AREA {
+  FP
+  FG
+  FE
+  FB
+}
+
+model Practica {
+  nombre                 String
+  posicion               Int
+  competenciasRequeridas String[]
+
+  idAsignatura            Int
+  idPlan                  Int
+  planContemplaAsignatura PlanContemplaAsignatura @relation(fields: [idAsignatura, idPlan], references: [idAsignatura, idPlan])
+
+  @@id([idPlan, idAsignatura])
 }
 
 model PlanContemplaAsignatura {
@@ -33,14 +55,16 @@ model PlanContemplaAsignatura {
   posicion Int
   caracter CARACTER
 
-  idPlan       Int
-  plan         Plan       @relation(fields: [idPlan], references: [id])
-  idAsignatura Int
-  asignatura   Asignatura @relation(fields: [idAsignatura], references: [id])
+  idPlan        Int
+  plan          Plan       @relation(fields: [idPlan], references: [id])
+  idAsignatura  Int
+  asignatura    Asignatura @relation(fields: [idAsignatura], references: [id])
+  areaFormacion AREA
 
   esRequeridaEn Tributacion[] @relation(name: "es la requerida")
   esTributadaEn Tributacion[] @relation(name: "es la tributada")
   cursos        Curso[]       @relation(name: "refiere asignatura contemplada")
+  Practica      Practica[]
 
   @@id([idPlan, idAsignatura])
 }
