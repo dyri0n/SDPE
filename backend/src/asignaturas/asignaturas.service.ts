@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PlanContemplaAsignatura, Tributacion } from '@prisma/client';
-import { ReadPlanContemplaDto } from '../asignatura-contemplada/dto/read-plan-contempla.dto';
+import {
+  Asignatura,
+  PlanContemplaAsignatura,
+  Tributacion,
+} from '@prisma/client';
+//NO SE COMO IMPORTAR DESDE EL PRISMA EL ENUM ASI Q LO COPIE ABAJO
+//import { AREA } from '@prisma/'
 
 @Injectable()
 export class AsignaturasService {
@@ -25,4 +30,23 @@ export class AsignaturasService {
       where: { idAsignaturaRequerida: asignaturaId },
     });
   }
+
+  //Obtiene las asignaturas por area de formación
+  //la idea es sacar las de corte práctico solamente
+  //Hay que determinar cómo...
+  async getAsignaturasPorArea(areaFormacion: AREA): Promise<Asignatura[]> {
+    return this.prisma.planContemplaAsignatura
+      .findMany
+      //{
+      //where: { areaFormacion: areaFormacion },
+      //}
+      ();
+  }
+}
+
+enum AREA {
+  FP,
+  FG,
+  FB,
+  FE,
 }

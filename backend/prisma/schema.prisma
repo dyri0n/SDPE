@@ -58,8 +58,8 @@ model PlanContemplaAsignatura {
   idPlan        Int
   plan          Plan       @relation(fields: [idPlan], references: [id])
   idAsignatura  Int
-  asignatura    Asignatura @relation(fields: [idAsignatura], references: [id])
   areaFormacion AREA
+  asignatura    Asignatura @relation(fields: [idAsignatura], references: [id])
 
   esRequeridaEn Tributacion[] @relation(name: "es la requerida")
   esTributadaEn Tributacion[] @relation(name: "es la tributada")
