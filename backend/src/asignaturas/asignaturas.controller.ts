@@ -5,7 +5,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('asignaturas')
 @Controller('asignaturas')
 export class AsignaturasController {
-  constructor(private readonly asigService: AsignaturasService) {}
+  constructor(private asigService: AsignaturasService) {}
 
   /*
    * Retorna cada asignatura registrada

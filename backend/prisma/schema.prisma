@@ -41,6 +41,7 @@ model Estudiante {
   rut            String
   nombreCompleto String
   Cursacion      Cursacion[]
+  PracticaTomada PracticaTomada[]
 
   @@id([rut])
 }
@@ -70,7 +71,22 @@ model Practica {
   idPlan                  Int
   planContemplaAsignatura PlanContemplaAsignatura @relation(fields: [idAsignatura, idPlan], references: [idAsignatura, idPlan])
 
-  @@id([idPlan, idAsignatura])
+  id             Int              @id @default(autoincrement())
+  PracticaTomada PracticaTomada[]
+}
+
+model PracticaTomada {
+  fechaInicio          DateTime
+  fechaTermino         DateTime
+  resultadoDiagnostico String[]
+  resultado            String
+
+  rutEstudiante String
+  estudiante    Estudiante @relation(fields: [rutEstudiante], references: [rut])
+  idPractica    Int
+  practica      Practica   @relation(fields: [idPractica], references: [id])
+
+  @@id([rutEstudiante, idPractica])
 }
 
 model PlanContemplaAsignatura {
