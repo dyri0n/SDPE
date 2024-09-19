@@ -14,9 +14,13 @@ datasource db {
 }
 
 model Asignatura {
-  id                      Int                       @id @default(autoincrement())
-  nombre                  String
-  descripcion             String?
+  id           Int     @id @default(autoincrement())
+  codigo       String  @unique
+  nombre       String
+  descripcion  String?
+  unidad       String?
+  linkSyllabus String?
+
   PlanContemplaAsignatura PlanContemplaAsignatura[]
 }
 
@@ -28,8 +32,6 @@ enum CARACTER {
   TITULACION
 }
 
-//
-
 enum AREA {
   FP
   FG
@@ -38,73 +40,104 @@ enum AREA {
 }
 
 model Estudiante {
-  rut            String
+  id             Int    @id @default(autoincrement())
+  rut            String @unique
   nombreCompleto String
-  Cursacion      Cursacion[]
-  PracticaTomada PracticaTomada[]
 
-  @@id([rut])
+  Cursacion      Cursacion[]      @relation(name: "curso las asignaturas")
+  PracticaTomada PracticaTomada[] @relation(name: "tomo las practicas")
 }
 
 model Cursacion {
-  estudianteRut String
-  estudiante    Estudiante @relation(fields: [estudianteRut], references: [rut])
-
-  nota       Int
-  numIntento Int
-  grupo      String
+  id         Int    @default(autoincrement())
+  nota_final Float
+  numIntento Int    @default(1)
+  grupo      String @default("A")
   agnio      Int
 
-  idAsignatura            Int
-  idPlan                  Int
-  planContemplaAsignatura PlanContemplaAsignatura @relation(fields: [idAsignatura, idPlan], references: [idAsignatura, idPlan])
+  // referencia a
+  idPlan                Int
+  idAsignatura          Int
+  asignaturaContemplada PlanContemplaAsignatura @relation(name: "asignatura contemplada", fields: [idAsignatura, idPlan], references: [idAsignatura, idPlan])
 
-  @@id([estudianteRut, idAsignatura, idPlan])
+  estudianteRut String
+  estudiante    Estudiante @relation(name: "curso las asignaturas", fields: [estudianteRut], references: [rut])
+
+  @@id([id, estudianteRut, idAsignatura, idPlan])
 }
 
 model Practica {
+  id                     Int      @default(autoincrement())
   nombre                 String
-  posicion               Int
-  competenciasRequeridas String[]
+  posicionRelativa       Int
+  competenciasRequeridas String[] // puede ser un tipo o un json
 
-  idAsignatura            Int
-  idPlan                  Int
-  planContemplaAsignatura PlanContemplaAsignatura @relation(fields: [idAsignatura, idPlan], references: [idAsignatura, idPlan])
+  idPlan                Int
+  planRelacionado       Plan                    @relation(name: "define las practicas", fields: [idPlan], references: [id])
+  idAsignatura          Int
+  asignaturaContemplada PlanContemplaAsignatura @relation(name: "practica referenciada", fields: [idPlan, idAsignatura], references: [idPlan, idAsignatura])
 
-  id             Int              @id @default(autoincrement())
-  PracticaTomada PracticaTomada[]
+  PracticaTomada PracticaTomada[] @relation(name: "practica asociada")
+
+  @@id([id, idPlan, idAsignatura])
+  @@unique([idPlan, idAsignatura])
 }
 
 model PracticaTomada {
   fechaInicio          DateTime
   fechaTermino         DateTime
-  resultadoDiagnostico String[]
+  resultadoDiagnostico String[] // despues se puede hacer un tipo con los valores necesarios, o un json
   resultado            String
 
-  rutEstudiante String
-  estudiante    Estudiante @relation(fields: [rutEstudiante], references: [rut])
-  idPractica    Int
-  practica      Practica   @relation(fields: [idPractica], references: [id])
+  rutEstudiante      String
+  EstudianteAsociado Estudiante @relation(name: "tomo las practicas", fields: [rutEstudiante], references: [rut])
 
-  @@id([rutEstudiante, idPractica])
+  idPractica       Int
+  idPlan           Int
+  idAsignatura     Int
+  PracticaAsociada Practica @relation(name: "practica asociada", fields: [idPractica, idPlan, idAsignatura], references: [id, idPlan, idAsignatura])
+
+  idConvenio       Int
+  ConvenioAsociado Convenio @relation(name: "convenio asociado", fields: [idConvenio], references: [id])
+
+  @@id([idPractica, idPlan, idAsignatura, rutEstudiante, idConvenio])
+}
+
+enum TIPO_PRACTICA {
+  COLEGIO_REGULAR_PIE
+  NO_CONVENCIONAL // preguntar por especificaciones
+  ESCUELA_ESPECIAL
+  COLEGIO_ESPECIAL // preguntar por la diferencia
+  ESCUELA_DE_LENGUAJE
+}
+
+model Convenio {
+  id             Int              @id @default(autoincrement())
+  entidad        String           @unique
+  tipoPractica   TIPO_PRACTICA
+  esVigente      Boolean
+  anioInicio     DateTime         @db.Date
+  anioFin        DateTime         @db.Date
+  PracticaTomada PracticaTomada[] @relation(name: "convenio asociado")
 }
 
 model PlanContemplaAsignatura {
-  semestre Int
-
-  posicion Int
-  caracter CARACTER
-
-  idPlan        Int
-  plan          Plan       @relation(fields: [idPlan], references: [id])
-  idAsignatura  Int
+  semestre      Int
+  posicion      Int
+  caracter      CARACTER
   areaFormacion AREA
-  asignatura    Asignatura @relation(fields: [idAsignatura], references: [id])
 
-  esRequeridaEn Tributacion[] @relation(name: "es la requerida")
-  esTributadaEn Tributacion[] @relation(name: "es la tributada")
-  Practica      Practica[]
-  Cursacion     Cursacion[]
+  // referencia a
+  idPlan       Int
+  plan         Plan       @relation(fields: [idPlan], references: [id])
+  idAsignatura Int
+  asignatura   Asignatura @relation(fields: [idAsignatura], references: [id])
+
+  // es referenciada en
+  esRequeridaEn        Tributacion[] @relation(name: "es la requerida")
+  esTributadaEn        Tributacion[] @relation(name: "es la tributada")
+  practicaReferenciada Practica?     @relation(name: "practica referenciada")
+  cursacionTomada      Cursacion[]   @relation(name: "asignatura contemplada")
 
   @@id([idPlan, idAsignatura])
 }
@@ -127,4 +160,5 @@ model Plan {
   fechaInstauracion DateTime @default(now()) @db.Date
 
   PlanContemplaAsignatura PlanContemplaAsignatura[]
+  PracticasDefinidas      Practica[]                @relation(name: "define las practicas")
 }

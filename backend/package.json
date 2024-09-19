@@ -5,11 +5,16 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
     "prisma:gen": "prisma generate",
     "prisma:dev": "prisma migrate dev",
     "prisma:pull": "prisma db pull",
     "prisma:push:dev": "npm run prisma:gen && npm run prisma:dev",
+    "prisma:seed": "ts-node prisma/seed.ts",
+    "prisma:clean": "prisma db push --force-reset",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
