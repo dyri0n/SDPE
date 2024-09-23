@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   AREA,
-  Asignatura,
   CARACTER,
   PlanContemplaAsignatura,
   PracticaTomada,
@@ -39,7 +38,9 @@ export class AsignaturasService {
   //Obtiene las asignaturas por caracter
   //la idea es sacar las de corte práctico solamente
   //Hay que determinar cómo...
-  async getAsignaturasPorCaracter(caracter: CARACTER): Promise<Asignatura[]> {
+  async getAsignaturasPorCaracter(
+    caracter: CARACTER,
+  ): Promise<PlanContemplaAsignatura[]> {
     return this.prisma.planContemplaAsignatura.findMany({
       where: { caracter: caracter },
     });
@@ -47,7 +48,9 @@ export class AsignaturasService {
 
   //Obtiene las asignaturas por area de formación
 
-  async getAsignaturasPorArea(areaFormacion: AREA): Promise<Asignatura[]> {
+  async getAsignaturasPorArea(
+    areaFormacion: AREA,
+  ): Promise<PlanContemplaAsignatura[]> {
     return this.prisma.planContemplaAsignatura.findMany({
       where: { areaFormacion: areaFormacion },
     });
@@ -63,7 +66,7 @@ export class AsignaturasService {
     );
     let sumador = 0;
     cursos.forEach((curso) => {
-      sumador += curso.nota_final;
+      sumador += curso.notaFinal;
     });
     //return promedio
     return cursos.length > 0 ? sumador / cursos.length : 1;
