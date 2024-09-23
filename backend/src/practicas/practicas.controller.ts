@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { PracticasService } from './practicas.service';
 import { ApiTags } from '@nestjs/swagger';
-import { AREA, CARACTER } from '@prisma/client';
+import { AREA } from '@prisma/client';
 
 @ApiTags('practicas')
 @Controller('practicas')
@@ -30,7 +30,7 @@ export class PracticasController {
 
   @Get('areaFormacion/:areaFormacion')
   getByAreaFormacion(
-    @Param(':areaFormacion', ParseEnumPipe) areaFormacion: AREA,
+    @Param('areaFormacion', new ParseEnumPipe(AREA)) areaFormacion: AREA,
   ) {
     return this.practicaService.getAllPracticasCursadasPorAreaFormacion(
       areaFormacion,
