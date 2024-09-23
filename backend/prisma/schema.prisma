@@ -24,7 +24,6 @@ model Asignatura {
   PlanContemplaAsignatura PlanContemplaAsignatura[]
 }
 
-// Esto viene a ser remplazado por area verdad?
 enum CARACTER {
   NORMAL
   ELECTIVO
@@ -50,7 +49,7 @@ model Estudiante {
 
 model Cursacion {
   id         Int    @default(autoincrement())
-  nota_final Float // QUE PASÓ CON EL CAMELCASE
+  notaFinal  Float
   numIntento Int    @default(1)
   grupo      String @default("A")
   agnio      Int

@@ -167,7 +167,7 @@ async function main() {
             create: {
               id: cursacionId,
               agnio: 2024,
-              nota_final: nota,
+              notaFinal: nota,
               grupo: Math.random() > 0.5 ? 'A' : 'B',
               numIntento: intentoActual,
 
