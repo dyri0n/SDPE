@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AREA, Practica, PracticaTomada } from '@prisma/client';
+import { AREA, CARACTER, Practica, PracticaTomada } from '@prisma/client';
 
 @Injectable()
 export class PracticasService {
@@ -34,7 +34,8 @@ export class PracticasService {
   ): Promise<PracticaTomada[]> {
     return this.prisma.$queryRaw`
     SELECT pt.* FROM 
-        PRACTICATOMADA pt JOIN PRACTICA p ON (pt.idPractica = p.id)
+        PRACTICATOMADA pt 
+                JOIN PRACTICA p ON (pt.idPractica = p.id)
                 JOIN PLANCONTEMPLAASIGNATURA pc ON (pc.idPlan = p.idPlan) 
                 JOIN TRIBUTACION ON (idAsignaturaTributada = pc.idAsignatura)
     WHERE pc.areaFormacion = ${areaFormacion}

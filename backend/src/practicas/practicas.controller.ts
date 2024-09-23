@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { PracticasService } from './practicas.service';
 import { ApiTags } from '@nestjs/swagger';
-import { AREA } from '@prisma/client';
+import { AREA, CARACTER } from '@prisma/client';
 
 @ApiTags('practicas')
 @Controller('practicas')

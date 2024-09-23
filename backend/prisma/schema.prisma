@@ -50,7 +50,7 @@ model Estudiante {
 
 model Cursacion {
   id         Int    @default(autoincrement())
-  nota_final Float
+  nota_final Float // QUE PASÓ CON EL CAMELCASE
   numIntento Int    @default(1)
   grupo      String @default("A")
   agnio      Int
