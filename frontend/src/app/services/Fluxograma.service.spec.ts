@@ -1,16 +1,16 @@
-/* tslint:disable:no-unused-variable */
+import { TestBed } from '@angular/core/testing';
 
-import { TestBed, async, inject } from '@angular/core/testing';
-import { FluxogramaService } from './Fluxograma.service';
+import { FluxogramaService } from './fluxograma.service';
 
-describe('Service: Fluxograma', () => {
+describe('FluxogramaService', () => {
+  let service: FluxogramaService;
+
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [FluxogramaService]
-    });
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(FluxogramaService);
   });
 
-  it('should ...', inject([FluxogramaService], (service: FluxogramaService) => {
+  it('should be created', () => {
     expect(service).toBeTruthy();
-  }));
+  });
 });

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FluxogramaService } from '../../services/Fluxograma.service';
 import { Fluxograma } from '../../models/Fluxograma.model';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { FluxogramaService } from '../../services/fluxograma.service';
 
 @Component({
   selector: 'app-fluxogramas',
