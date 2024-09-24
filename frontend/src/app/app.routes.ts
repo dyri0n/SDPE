@@ -5,6 +5,7 @@ import { SemestresComponent } from './components/semestres/semestres.component';
 import { AprobacionCursoComponent } from './components/aprobacion-curso/aprobacion-curso.component';
 import { DetalleFluxogramaComponent } from './components/detalle-fluxograma/detalle-fluxograma.component';
 import { EstadisticaDiagnosticoComponent } from './components/estadistica-diagnostico/estadistica-diagnostico.component';
+import { PracticasComponent } from './components/practicas/practicas.component';
 
 export const routes: Routes = [
     {path: 'fluxogramas', component: FluxogramasComponent},
@@ -13,6 +14,7 @@ export const routes: Routes = [
     {path: 'aprobacion', component: AprobacionCursoComponent},
     {path: 'fluxograma', component: DetalleFluxogramaComponent},
     {path: 'estadisticas', component: EstadisticaDiagnosticoComponent},
+    {path: 'practicas', component: PracticasComponent},
     {path: '', redirectTo: '/cursos', pathMatch: 'full'},
     {path: '**', redirectTo: '/cursos'} 
 ];
