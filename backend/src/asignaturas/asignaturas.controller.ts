@@ -1,4 +1,10 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { AsignaturasService } from './asignaturas.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CARACTER } from '@prisma/client';
@@ -7,14 +13,6 @@ import { CARACTER } from '@prisma/client';
 @Controller('asignaturas')
 export class AsignaturasController {
   constructor(private asigService: AsignaturasService) {}
-
-  /*
-   * Retorna cada asignatura registrada
-   * */
-  @Get(':idPlan')
-  public getAsignaturas(@Param('idPlan', ParseIntPipe) idPlan: number) {
-    return this.asigService.getAsignaturasDePLan(idPlan);
-  }
 
   @Get('corte-practico')
   public getAsignaturasCortePractico() {
@@ -36,5 +34,32 @@ export class AsignaturasController {
           idAsignatura,
         ),
     };
+  }
+
+  @Get(':idAsignatura')
+  public getAsignatura(
+    @Param('idAsignatura', ParseIntPipe) idAsignatura: number,
+  ) {
+    const result = this.asigService.getAsignatura(idAsignatura);
+
+    if (!result) throw new NotFoundException('La asignatura no existe');
+
+    return result;
+  }
+
+  @Get(':idAsignatura/plan/:idPlan')
+  public getAsignaturaContemplada(
+    @Param('idAsignatura', ParseIntPipe) idAsignatura: number,
+    @Param('idPlan', ParseIntPipe) idPlan: number,
+  ) {
+    const result = this.asigService.getAsignaturaContemplada(
+      idPlan,
+      idAsignatura,
+    );
+
+    if (!result)
+      throw new NotFoundException('La asignatura contemplada no existe');
+
+    return result;
   }
 }

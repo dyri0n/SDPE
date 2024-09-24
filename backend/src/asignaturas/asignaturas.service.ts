@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   AREA,
@@ -16,7 +16,31 @@ export class AsignaturasService {
     private cursacionService: CursosService,
   ) {}
 
-  async getAsignaturasDePLan(
+  async getAsignatura(idAsignatura: number) {
+    const asignatura = await this.prisma.asignatura.findUnique({
+      where: {
+        id: idAsignatura,
+      },
+    });
+
+    return asignatura;
+  }
+
+  async getAsignaturaContemplada(idPlan: number, idAsignatura: number) {
+    const asignaturaContemplada =
+      await this.prisma.planContemplaAsignatura.findUnique({
+        where: {
+          idPlan_idAsignatura: {
+            idPlan: idPlan,
+            idAsignatura: idAsignatura,
+          },
+        },
+      });
+
+    return asignaturaContemplada;
+  }
+
+  async getAsignaturasDePlan(
     planId: number,
   ): Promise<PlanContemplaAsignatura[]> {
     const result = await this.prisma.planContemplaAsignatura.findMany({

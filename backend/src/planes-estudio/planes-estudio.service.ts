@@ -7,12 +7,12 @@ import { PlanContemplaAsignatura } from '@prisma/client';
 export class PlanesEstudioService {
   constructor(private prisma: PrismaService) {}
 
-  findAll() {
-    throw new Error('Method not implemented.');
+  async findAll() {
+    return await this.prisma.plan.findMany();
   }
 
-  findOne(id: number) {
-    return this.prisma.plan.findFirst({ where: { id: id } });
+  async findOne(id: number) {
+    return await this.prisma.plan.findUnique({ where: { id: id } });
   }
 
   createPlan(data: CreatePlanDTO) {
