@@ -14,7 +14,7 @@ export const routes: Routes = [
     {path: 'aprobacion', component: AprobacionCursoComponent},
     {path: 'fluxograma', component: DetalleFluxogramaComponent},
     {path: 'estadisticas', component: EstadisticaDiagnosticoComponent},
-    {path: 'practicas', component: PracticasComponent}
+    {path: 'practicas', component: PracticasComponent},
     {path: '', redirectTo: '/cursos', pathMatch: 'full'},
     {path: '**', redirectTo: '/cursos'} 
 ];
