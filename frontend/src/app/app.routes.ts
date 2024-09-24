@@ -6,10 +6,12 @@ import { AprobacionCursoComponent } from './components/aprobacion-curso/aprobaci
 import { DetalleFluxogramaComponent } from './components/detalle-fluxograma/detalle-fluxograma.component';
 import { EstadisticaDiagnosticoComponent } from './components/estadistica-diagnostico/estadistica-diagnostico.component';
 import { PracticasComponent } from './components/practicas/practicas.component';
+import { ResultadoEndComponent } from './components/resultado-end/resultado-end.component';
 
 export const routes: Routes = [
     {path: 'fluxogramas', component: FluxogramasComponent},
     {path: 'cursos', component: CursosComponent},
+    {path: 'end', component: ResultadoEndComponent},
     {path: 'semestres', component: SemestresComponent},
     {path: 'aprobacion', component: AprobacionCursoComponent},
     {path: 'fluxograma', component: DetalleFluxogramaComponent},
