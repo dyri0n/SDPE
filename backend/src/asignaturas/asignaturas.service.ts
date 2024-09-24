@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   AREA,
@@ -53,6 +53,7 @@ export class AsignaturasService {
     });
     return result;
   }
+
   async getSiguienteDeAsignatura(asignaturaId: number): Promise<Tributacion[]> {
     return this.prisma.tributacion.findMany({
       where: { idAsignaturaRequerida: asignaturaId },
