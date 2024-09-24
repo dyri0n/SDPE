@@ -7,6 +7,7 @@ import { DetalleFluxogramaComponent } from './components/detalle-fluxograma/deta
 import { EstadisticaDiagnosticoComponent } from './components/estadistica-diagnostico/estadistica-diagnostico.component';
 import { PracticasComponent } from './components/practicas/practicas.component';
 import { ResultadoEndComponent } from './components/resultado-end/resultado-end.component';
+import { AsignaturaCortePracticoComponent } from './components/asignatura-corte-practico/asignatura-corte-practico.component';
 
 export const routes: Routes = [
     {path: 'fluxogramas', component: FluxogramasComponent},
@@ -17,6 +18,7 @@ export const routes: Routes = [
     {path: 'fluxograma', component: DetalleFluxogramaComponent},
     {path: 'estadisticas', component: EstadisticaDiagnosticoComponent},
     {path: 'practicas', component: PracticasComponent},
+    {path: 'asignatura-corte-practico', component: AsignaturaCortePracticoComponent},
     {path: '', redirectTo: '/cursos', pathMatch: 'full'},
     {path: '**', redirectTo: '/cursos'} 
 ];
