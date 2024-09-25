@@ -31,7 +31,17 @@ export class PlanesEstudioService {
     return this.prisma.planContemplaAsignatura.findMany({
       where: { idPlan: id },
       include: {
-        esTributadaEn: true,
+        asignatura: true,
+        esRequeridaEn: {
+          select: {
+            idAsignaturaTributada: true,
+          },
+        },
+        esTributadaEn: {
+          select: {
+            idAsignaturaRequerida: true,
+          },
+        },
       },
     });
   }

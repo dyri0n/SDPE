@@ -48,7 +48,11 @@ export class PlanesEstudioController {
    * */
   @Get(':idPlan/asignaturas')
   public getAsignaturas(@Param('idPlan', ParseIntPipe) idPlan: number) {
-    return this.asignaturasService.getAsignaturasDePlan(idPlan);
+    const result = this.asignaturasService.getAsignaturasDePlan(idPlan);
+
+    if (!result) throw new NotFoundException('No existe fluxograma asociado');
+
+    return result;
   }
 
   @Post()
