@@ -1,13 +1,19 @@
 import { Injectable } from '@angular/core';
 import { PromedioDiagnostico } from '../models/diagnosticos.dto';
 import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Asignatura } from '../models/asignaturas.dto';
+import { AsignaturaSola } from '../models/asignaturaSola.dto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DiagnosticosService {
 
-constructor() { }
+constructor(private http: HttpClient) { }
+
+  public apiUrl= 'http://localhost:3000/asignaturas'
+  public asignaturasUrl= 'http://localhost:3000/planes-de-estudio'
 
   public asignatura: string = 'Liderazgo y Colaboración Pedagógica' //de prueba noma
   public promedios: PromedioDiagnostico[] = [
@@ -24,8 +30,12 @@ constructor() { }
   public obtenerPromedios(): Observable<PromedioDiagnostico[]>{
     return of(this.promedios);
   } 
+
+  public obtenerAsignaturas(idPlan: number): Observable<Asignatura[]>{
+    return this.http.get<Asignatura[]>(this.asignaturasUrl + "/" + idPlan + '/asignaturas')
+  }
   
-  public obtenerNombreAsignatura(){
-    return this.asignatura;
+  public obtenerNombreAsignatura(idAsignatura: number): Observable<AsignaturaSola>{
+    return this.http.get<AsignaturaSola>(this.apiUrl + "/" + idAsignatura)
   }
 }

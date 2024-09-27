@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FluxogramaService } from '../../services/fluxograma.service';
-import { DetalleFluxograma } from '../../models/detalleFluxograma.dto';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AsignaturaFluxograma } from '../../models/asignatura.dto';
+import { Fluxograma } from '../../models/Fluxograma.model';
 
 @Component({
   selector: 'app-detalle-fluxograma',
@@ -13,22 +15,28 @@ import { CommonModule } from '@angular/common';
 export class DetalleFluxogramaComponent implements OnInit{
 
   constructor(
-    private servicioFluxograma: FluxogramaService
+    private servicioFluxograma: FluxogramaService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
+    this.idFluxograma= +this.route.snapshot.paramMap.get('idFluxograma')!
     this.obtenerFluxograma()
   }
 
-  detalleFluxograma?: DetalleFluxograma
+  detalleFluxograma?: AsignaturaFluxograma[]
+  public idFluxograma: number=0
+  fluxograma?: Fluxograma
+
   semestres: string[] = []
 
   asignaturasPrevias: number[] = [];
   asignaturasTributadas: number[] = [];
 
-  public resaltarAsignaturas(previas: number[], tributa: number[]): void {
-    this.asignaturasPrevias = previas; 
-    this.asignaturasTributadas = tributa;
+  public resaltarAsignaturas(previas: {idAsignaturaTributada: number}[], tributa: {idAsignaturaRequerida: number}[]): void {
+    this.asignaturasPrevias = previas.map(asignatura => asignatura.idAsignaturaTributada);
+    this.asignaturasTributadas = tributa.map(asignatura => asignatura.idAsignaturaRequerida);
   }
 
   public quitarResaltado(): void {
@@ -44,8 +52,16 @@ export class DetalleFluxogramaComponent implements OnInit{
     return this.asignaturasTributadas.includes(id);
   }
 
-  public detalleAsignatura(idAsignatura: number, nombreAsignatura:string, previas:number[], tributa:number[]){
-    alert(`ID de asignatura: ${idAsignatura}, nombre:  ${nombreAsignatura}, asignaturas previas: ${previas}, tributa: ${tributa}`);
+  public detalleAsignatura(idAsignatura: number, nombreAsignatura: string, previas: {idAsignaturaTributada: number}[], tributa: {idAsignaturaRequerida: number}[]) {
+    this.detalleFluxograma!.forEach(asignatura => {
+      if (asignatura.idAsignatura === idAsignatura) {
+        if (asignatura.caracter === "PRACTICA") {
+          this.router.navigate(['/estadisticas/', idAsignatura]);
+        } else {
+          this.router.navigate(['/cursos/', idAsignatura]);
+        }
+      }
+    });
   }
 
   public obtenerSemestres(n: number): string[] {
@@ -54,10 +70,18 @@ export class DetalleFluxogramaComponent implements OnInit{
   }
 
   public obtenerFluxograma(){
-    this.servicioFluxograma.obtenerDetalleFluxograma().subscribe((fluxograma) => {
-      this.detalleFluxograma = fluxograma
-      this.semestres = this.obtenerSemestres(fluxograma.semestres)
+    this.servicioFluxograma.obtenerDetalleFluxograma(this.idFluxograma).subscribe((detalleFluxograma) => {
+      let semestres = 0
+      this.detalleFluxograma = detalleFluxograma
+      detalleFluxograma.forEach(asignatura => {
+        if(asignatura.semestre > semestres){
+          semestres = asignatura.semestre
+        }
+      });
+      this.semestres = this.obtenerSemestres(semestres)
+    })
+    this.servicioFluxograma.obtenerFluxogramaPorID(this.idFluxograma).subscribe((fluxograma) => {
+      this.fluxograma = fluxograma
     })
   }
-
 }

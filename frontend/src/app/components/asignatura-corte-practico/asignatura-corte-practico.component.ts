@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { DiagnosticosService } from '../../services/diagnosticos.service';
 import { Router } from '@angular/router';
+import { Asignatura } from '../../models/asignaturas.dto';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-asignatura-corte-practico',
   templateUrl: './asignatura-corte-practico.component.html',
+  standalone: true,
+  imports: [FormsModule],
   styleUrls: ['./asignatura-corte-practico.component.css']
 })
 export class AsignaturaCortePracticoComponent implements OnInit {
@@ -18,15 +22,19 @@ export class AsignaturaCortePracticoComponent implements OnInit {
     this.cargarDatos()
   }
 
-  public asignaturas: string[]=[]
+  public asignaturas: Asignatura[]=[]
+  public idPlan: number=1
+  public asignaturaIdSeleccionada: number= 0
 
   public cargarDatos(){
-    this.asignaturas.push(this.diagnosticosService.obtenerNombreAsignatura())
+    this.diagnosticosService.obtenerAsignaturas(this.idPlan).subscribe(asignaturas=>{
+      this.asignaturas=asignaturas
+      console.log(this.asignaturas)
+    })
   }
 
   public seleccionarAsignatura(){
-    var asignatura= document.getElementById('asignatura')
-    this.router.navigateByUrl('estadisticas')
+    this.router.navigate(['/estadisticas', this.asignaturaIdSeleccionada])
   }
 
 }

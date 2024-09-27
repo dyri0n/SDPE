@@ -31,6 +31,6 @@ export class FluxogramasComponent implements OnInit {
   }
 
   public escogerPlan(id: number): void {
-    this.router.navigate(['/detalleFluxograma', id])
+    this.router.navigate(['/fluxograma/', id])
   }
 }

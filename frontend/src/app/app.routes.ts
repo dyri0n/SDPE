@@ -11,14 +11,14 @@ import { AsignaturaCortePracticoComponent } from './components/asignatura-corte-
 
 export const routes: Routes = [
     {path: 'fluxogramas', component: FluxogramasComponent},
-    {path: 'cursos', component: CursosComponent},
+    {path: 'cursos/:idAsignatura', component: CursosComponent},
     {path: 'end', component: ResultadoEndComponent},
     {path: 'semestres', component: SemestresComponent},
-    {path: 'aprobacion', component: AprobacionCursoComponent},
-    {path: 'fluxograma', component: DetalleFluxogramaComponent},
-    {path: 'estadisticas', component: EstadisticaDiagnosticoComponent},
+    {path: 'aprobacion/:idAsignatura', component: AprobacionCursoComponent},
+    {path: 'fluxograma/:idFluxograma', component: DetalleFluxogramaComponent},
+    {path: 'estadisticas/:idAsignatura', component: EstadisticaDiagnosticoComponent},
     {path: 'practicas', component: PracticasComponent},
     {path: 'asignatura-corte-practico', component: AsignaturaCortePracticoComponent},
-    {path: '', redirectTo: '/cursos', pathMatch: 'full'},
-    {path: '**', redirectTo: '/cursos'} 
+    {path: '', redirectTo: '/fluxogramas', pathMatch: 'full'},
+    {path: '**', redirectTo: '/fluxogramas'} 
 ];

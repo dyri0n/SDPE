@@ -16,7 +16,10 @@
         </thead>
         <tbody>
           <tr *ngFor="let curso of cursos" class="text-center odd:bg-gray-100 even:bg-gray-50">
-            <td class="px-4 py-2 border-b border-gray-300">{{ curso.nombre }}</td>
+            <td class="px-4 py-2 border-b border-gray-300">
+              <a [routerLink]="['/aprobacion', idAsignatura]">{{ curso.nombre }}</a>
+            </td>
+              
             <td class="px-4 py-2 border-b border-gray-300">{{ curso.anio }}</td>
             <td class="px-4 py-2 border-b border-gray-300">{{ curso.semestre }}</td>
             <td class="px-4 py-2 border-b border-gray-300">

@@ -6,6 +6,7 @@ import {
   Plan,
   PlanContemplaAsignatura,
   PrismaClient,
+  Tributacion,
 } from '@prisma/client';
 import * as constants from './seed-constants';
 import * as util from 'util';
@@ -85,6 +86,8 @@ async function main() {
   // await prisma.planContemplaAsignatura.deleteMany()
   // se puede borrar pero no es necesario a menos de que cambien el numero de planes y asignaturas
 
+  console.info('Comienzo seeding asignaturas contempladas');
+  console.time('ASIGNATURAS CONTEMPLADAS SEEDING');
   const asignaturasContempladasInsertadas = [];
   for (const plan of planesDeEstudio) {
     let cuentaPosicion = 0;
@@ -112,15 +115,18 @@ async function main() {
     }
   }
   moreLog({ asignaturasContempladas: asignaturasContempladasInsertadas });
+  console.timeEnd('ASIGNATURAS CONTEMPLADAS SEEDING');
 
   const cursaciones = [];
 
   const estudiantes: Estudiante[] = await prisma.estudiante.findMany();
 
+  console.info('Comienzo seeding cursaciones');
   console.time('CURSACIONES SEEDING');
 
   // borrar datos de prueba
   await prisma.cursacion.deleteMany();
+  console.log('Cursaciones previas borradas');
 
   for (const plan of planesDeEstudio) {
     const asignaturasContempladas: PlanContemplaAsignatura[] =
@@ -184,8 +190,79 @@ async function main() {
       }
     }
   }
-
   console.timeEnd('CURSACIONES SEEDING');
+
+  console.log('Se estan seedeando las tributaciones');
+  console.time('TRIBUTACIONES SEEDING');
+  const tributaciones: Tributacion[] = [];
+  for (const plan of planesDeEstudio) {
+    const asignaturasContempladas: PlanContemplaAsignatura[] =
+      await prisma.planContemplaAsignatura.findMany({
+        where: {
+          idPlan: plan.id,
+        },
+      });
+
+    for (const asigCont of asignaturasContempladas) {
+      // max 3 prerrequisitos
+      const nroPrerrequisitos = Math.floor(Math.random() * 3);
+
+      // conseguir asignaturas previas a la actual
+      const asignaturasPrevias: PlanContemplaAsignatura[] =
+        await prisma.planContemplaAsignatura.findMany({
+          where: {
+            idPlan: plan.id,
+            semestre: {
+              lt: asigCont.semestre,
+            },
+          },
+        });
+
+      // si no tiene ninguna no puede tener prerrequisitos
+      if (asignaturasPrevias.length === 0) continue;
+
+      // asignaturas unicas seleccionadas al azar
+      const codigosSeleccionadosPrerrequisitos = new UniqueStack<number>();
+
+      for (let i = 0; i < nroPrerrequisitos; i++) {
+        codigosSeleccionadosPrerrequisitos.push(
+          asignaturasPrevias[
+            Math.floor(Math.random() * asignaturasPrevias.length)
+          ].idAsignatura,
+        );
+      }
+
+      for (const id of codigosSeleccionadosPrerrequisitos) {
+        tributaciones.push(
+          await prisma.tributacion.upsert({
+            where: {
+              idPlan_idAsignaturaTributada_idAsignaturaRequerida: {
+                idPlan: plan.id,
+                idAsignaturaRequerida: id,
+                idAsignaturaTributada: asigCont.idAsignatura,
+              },
+            },
+            update: {},
+            create: {
+              idPlan: plan.id,
+              idAsignaturaTributada: id,
+              idAsignaturaRequerida: asigCont.idAsignatura,
+            },
+          }),
+        );
+      }
+
+      moreLog({
+        asignaturaContemplada: asigCont,
+        nroPrerrequisitos,
+        idAsig: asignaturasPrevias.map((ap) => ap.idAsignatura),
+        codigosSeleccionadosPrerrequisitos,
+      });
+    }
+  }
+
+  moreLog({ tributaciones });
+  console.timeEnd('TRIBUTACIONES SEEDING');
 }
 
 const moreLog = function (obj: any): void {
@@ -196,6 +273,34 @@ const roundTo = function (num: number, places: number) {
   const factor = 10 ** places;
   return Math.round(num * factor) / factor;
 };
+
+class UniqueStack<T> implements Iterable<T> {
+  public stack: T[] = [];
+
+  public push(item: T) {
+    if (this.stack.includes(item)) return;
+    this.stack.push(item);
+  }
+
+  public pop() {
+    return this.stack.pop();
+  }
+
+  public size() {
+    return this.stack.length;
+  }
+
+  public [Symbol.iterator]() {
+    return {
+      next: function () {
+        return {
+          done: this.stack.length === 0,
+          value: this.stack.pop(),
+        };
+      }.bind(this),
+    };
+  }
+}
 
 main()
   .then(async () => {

@@ -3,6 +3,8 @@ import { ChartEvent } from 'chart.js';
 import { DiagnosticosService } from '../../services/diagnosticos.service';
 import { PromedioDiagnostico } from '../../models/diagnosticos.dto';
 import { ChartModule } from 'primeng/chart';
+import { ActivatedRoute } from '@angular/router';
+import { Asignatura } from '../../models/asignaturas.dto';
 
 
 @Component({
@@ -14,15 +16,18 @@ import { ChartModule } from 'primeng/chart';
 })
 export class EstadisticaDiagnosticoComponent implements OnInit{
   ngOnInit(): void {
+    this.idAsignatura= +this.route.snapshot.paramMap.get('idAsignatura')!
     this.obtenerNombreAsignatura();
     this.obtenerPromedios();
   }
   
   constructor(
-    private servicioDiagnosticos: DiagnosticosService
+    private servicioDiagnosticos: DiagnosticosService,
+    private route: ActivatedRoute
   ){}
   
   public asignatura: string = '';
+  public idAsignatura: number=0
   public labels: string[] = [];
   public data: any;
 
@@ -60,7 +65,9 @@ export class EstadisticaDiagnosticoComponent implements OnInit{
   }
 
   public obtenerNombreAsignatura(){
-    this.asignatura = this.servicioDiagnosticos.obtenerNombreAsignatura()
+    this.servicioDiagnosticos.obtenerNombreAsignatura(this.idAsignatura).subscribe(asignatura=>{
+      this.asignatura=asignatura.nombre
+    })
   }
   
   public obtenerLabel(datos: PromedioDiagnostico[]): string[]{

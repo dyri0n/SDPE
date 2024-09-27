@@ -4,8 +4,8 @@
     <ul>
       <!-- Mostrar fluxogramas -->
       <li *ngFor="let fluxograma of fluxogramas" class="p-4 bg-gray-100 mt-2 rounded shadow hover:shadow-lg transition-shadow duration-300">
-        <p><strong>Plan de Estudio:</strong> {{ fluxograma.planEstudio }}</p>
-        <p><strong>Código:</strong> {{ fluxograma.codigo }}</p>
+        <p><strong>Plan de Estudio:</strong> {{ fluxograma.titulo }}</p>
+        <p><strong>Código:</strong> {{ fluxograma.anio }}</p>
         <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" (click)="escogerPlan(fluxograma.id)">Escoger</button>      
       </li>
     </ul>

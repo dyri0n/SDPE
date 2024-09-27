@@ -1,6 +1,7 @@
-<h1 class="text-5xl my-10 text-center font-semibold">{{detalleFluxograma?.planEstudio}}</h1>
+<h1 class="text-5xl my-10 text-center font-semibold">Plan de estudios: {{fluxograma?.titulo}}</h1>
 
-<h3 class="text-xl mb-20 text-center font-medium">{{detalleFluxograma?.codigo}}</h3>
+<h3 class="text-xl mb-20 text-center font-medium">Año: {{fluxograma?.anio}}</h3>
+
 
 <div class="container mx-auto my-10">
     <div class="overflow-x-auto py-5">
@@ -9,24 +10,24 @@
                 <div class="p-5 border rounded-lg bg-gray-200 shadow-md flex flex-col space-y-4 w-[400px]">
                     <div class="p-3 bg-white mb-5 font-bold text-3xl border rounded-lg border-gray-300">{{semestre}} Semestre</div>
                     <div class="space-y-6">
-                        @for (asignatura of detalleFluxograma?.asignaturas; track asignatura; let j = $index){
+                        @for (asignatura of detalleFluxograma; track asignatura; let j = $index){
                             <!-- aqui estaria iterando todas las asignaturas de detalleFluxograma por cada semestre,
                                 entonces no es muy eficiente que digamos por ahora -->
                             @if (asignatura.semestre == i+1){
                                 <div class="p-4 border border-gray-300 rounded-lg  flex flex-col space-y-2 w-[300px] mx-auto" 
                                     [ngClass]="{
-                                        'bg-red-400': esPrevia(asignatura.id),
-                                        'bg-green-400': esTributada(asignatura.id),
-                                        'bg-white': !esPrevia(asignatura.id) && !esTributada(asignatura.id)
+                                        'bg-red-400': esPrevia(asignatura.idAsignatura),
+                                        'bg-green-400': esTributada(asignatura.idAsignatura),
+                                        'bg-white': !esPrevia(asignatura.idAsignatura) && !esTributada(asignatura.idAsignatura)
                                         }"
-                                    (click)="detalleAsignatura(asignatura.id,asignatura.nombre, asignatura.previas, asignatura.tributa)" 
-                                    (mouseenter)="resaltarAsignaturas(asignatura.previas, asignatura.tributa)"
+                                    (click)="detalleAsignatura(asignatura.idAsignatura,asignatura.asignatura.nombre, asignatura.esRequeridaEn, asignatura.esTributadaEn)" 
+                                    (mouseenter)="resaltarAsignaturas(asignatura.esRequeridaEn, asignatura.esTributadaEn)"
                                     (mouseleave)="quitarResaltado()">
                                     <div class="flex justify-between items-center mb-2">
-                                        <div class="text-sm text-gray-600 font-medium">{{asignatura.codigo}}</div>
+                                        <div class="text-sm text-gray-600 font-medium">{{asignatura.asignatura.codigo}}</div>
                                     </div>
                                     <div class="text-lg font-semibold">
-                                        {{asignatura.nombre}}
+                                        {{asignatura.asignatura.nombre}}
                                     </div>
                                 </div>
                             }
