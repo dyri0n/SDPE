@@ -1,5 +1,5 @@
 // This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// learn more about it in the docs:
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
@@ -38,13 +38,20 @@ enum AREA {
   FB
 }
 
+enum Programa {
+  PR
+  PPE
+}
+
 model Estudiante {
-  id             Int    @id @default(autoincrement())
-  rut            String @unique
+  id             Int      @id @default(autoincrement())
+  rut            String   @unique
   nombreCompleto String
+  programa       Programa
 
   Cursacion      Cursacion[]      @relation(name: "curso las asignaturas")
   PracticaTomada PracticaTomada[] @relation(name: "tomo las practicas")
+  ResultadoEND   ResultadoEND[]
 }
 
 model Cursacion {
@@ -161,3 +168,42 @@ model Plan {
   PlanContemplaAsignatura PlanContemplaAsignatura[]
   PracticasDefinidas      Practica[]                @relation(name: "define las practicas")
 }
+
+// BLOQUE DE END
+
+model ResultadoEND {
+  fechaRendicion    DateTime
+  puntajeEstandares Float[]
+  puntajeTematicas  Float[]
+  end               DatosEND @relation(fields: [datosENDId], references: [id])
+
+  rutEstudiante String
+  estudiante    Estudiante @relation(fields: [estudianteId], references: [id])
+  estudianteId  Int
+  datosENDId    Int
+
+  @@id([estudianteId, fechaRendicion])
+}
+
+model DatosEND {
+  id           Int            @id @default(autoincrement())
+  tematicaENDs TematicaEND[]
+  ResultadoEND ResultadoEND[]
+}
+
+model TematicaEND {
+  id         Int           @id @default(autoincrement())
+  titulo     String
+  estandares EstandarEND[]
+  DatosEND   DatosEND?     @relation(fields: [datosENDId], references: [id])
+  datosENDId Int?
+}
+
+model EstandarEND {
+  idEstandar    Int         @id @default(autoincrement())
+  tematica      TematicaEND @relation(fields: [tematicaENDId], references: [id])
+  tematicaENDId Int
+  numero        Int
+}
+
+// FIN BLOQUE END
