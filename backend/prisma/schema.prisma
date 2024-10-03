@@ -117,13 +117,23 @@ enum TIPO_PRACTICA {
   ESCUELA_DE_LENGUAJE
 }
 
+enum MODALIDAD {
+  COLEGIO_REGULAR_PIE
+  ESCUELA_ESPECIAL
+  NO_CONVENCIONAL
+}
+
 model Convenio {
-  id             Int              @id @default(autoincrement())
-  entidad        String           @unique
-  tipoPractica   TIPO_PRACTICA
-  esVigente      Boolean
-  anioInicio     DateTime         @db.Date
-  anioFin        DateTime         @db.Date
+  id                  Int       @id @default(autoincrement())
+  titulo              String    @unique
+  centroPractica      String
+  fechaInicioConvenio DateTime  @db.Date
+  fechaFinConvenio    DateTime  @db.Date
+  validez             Boolean
+  modalidad           MODALIDAD
+  documentoConvenio   String
+  urlFoto             String
+
   PracticaTomada PracticaTomada[] @relation(name: "convenio asociado")
 }
 

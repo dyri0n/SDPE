@@ -7,6 +7,8 @@ import { PlanesEstudioModule } from './planes-estudio/planes-estudio.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { PracticasModule } from './practicas/practicas.module';
+import { EndsModule } from './ends/ends.module';
+import { ConveniosModule } from './convenios/convenios.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { PracticasModule } from './practicas/practicas.module';
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
     PracticasModule,
+    EndsModule,
+    ConveniosModule,
   ],
   controllers: [AppController],
   providers: [AppService],
