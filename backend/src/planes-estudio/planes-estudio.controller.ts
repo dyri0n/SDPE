@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -26,12 +27,32 @@ export class PlanesEstudioController {
   // EJ: 2018 (v1)
   @Get()
   getAll() {
-    return this.planesEstudioService.findAll();
+    const result = this.planesEstudioService.findAll();
+
+    if (!result) throw new NotFoundException('No existen planes registrados');
+
+    return result;
   }
 
   @Get(':idPlan')
   getOne(@Param('idPlan', ParseIntPipe) idPlan: number) {
-    return this.planesEstudioService.findOne(idPlan);
+    const result = this.planesEstudioService.findOne(idPlan);
+
+    if (!result) throw new NotFoundException('No existe el plan especificado');
+
+    return result;
+  }
+
+  /*
+   * Retorna cada asignatura registrada
+   * */
+  @Get(':idPlan/asignaturas')
+  public getAsignaturas(@Param('idPlan', ParseIntPipe) idPlan: number) {
+    const result = this.asignaturasService.getAsignaturasDePlan(idPlan);
+
+    if (!result) throw new NotFoundException('No existe fluxograma asociado');
+
+    return result;
   }
 
   @Post()
