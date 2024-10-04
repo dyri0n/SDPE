@@ -1,0 +1,64 @@
+model Practica {
+  id                     Int      @default(autoincrement())
+  nombre                 String
+  posicionRelativa       Int
+  competenciasRequeridas String[] // puede ser un tipo o un json
+
+  idPlan                Int
+  planRelacionado       Plan                    @relation(name: "define las practicas", fields: [idPlan], references: [id])
+  idAsignatura          Int
+  asignaturaContemplada PlanContemplaAsignatura @relation(name: "practica referenciada", fields: [idPlan, idAsignatura], references: [idPlan, idAsignatura])
+
+  PracticaTomada PracticaTomada[] @relation(name: "practica asociada")
+
+  @@id([id, idPlan, idAsignatura])
+  @@unique([idPlan, idAsignatura])
+}
+
+model PracticaTomada {
+  fechaInicio          DateTime
+  fechaTermino         DateTime
+  resultadoDiagnostico String[] // despues se puede hacer un tipo con los valores necesarios, o un json
+  resultado            String
+
+  rutEstudiante      String
+  EstudianteAsociado Estudiante @relation(name: "tomo las practicas", fields: [rutEstudiante], references: [rut])
+
+  idPractica       Int
+  idPlan           Int
+  idAsignatura     Int
+  PracticaAsociada Practica @relation(name: "practica asociada", fields: [idPractica, idPlan, idAsignatura], references: [id, idPlan, idAsignatura])
+
+  idConvenio       Int
+  ConvenioAsociado Convenio @relation(name: "convenio asociado", fields: [idConvenio], references: [id])
+
+  @@id([idPractica, idPlan, idAsignatura, rutEstudiante, idConvenio])
+}
+
+enum TIPO_PRACTICA {
+  COLEGIO_REGULAR_PIE
+  NO_CONVENCIONAL // preguntar por especificaciones
+  ESCUELA_ESPECIAL
+  COLEGIO_ESPECIAL // preguntar por la diferencia
+  ESCUELA_DE_LENGUAJE
+}
+
+enum MODALIDAD {
+  COLEGIO_REGULAR_PIE
+  ESCUELA_ESPECIAL
+  NO_CONVENCIONAL
+}
+
+model Convenio {
+  id                  Int       @id @default(autoincrement())
+  titulo              String    @unique
+  centroPractica      String
+  fechaInicioConvenio DateTime  @db.Date
+  fechaFinConvenio    DateTime  @db.Date
+  validez             Boolean
+  modalidad           MODALIDAD
+  documentoConvenio   String
+  urlFoto             String
+
+  PracticaTomada PracticaTomada[] @relation(name: "convenio asociado")
+}

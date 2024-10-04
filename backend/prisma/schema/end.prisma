@@ -1,0 +1,34 @@
+model ResultadoEND {
+  fechaRendicion    DateTime
+  puntajeEstandares Float[]
+  puntajeTematicas  Float[]
+  end               DatosEND @relation(fields: [datosENDId], references: [id])
+
+  rutEstudiante String
+  estudiante    Estudiante @relation(fields: [estudianteId], references: [id])
+  estudianteId  Int
+  datosENDId    Int
+
+  @@id([estudianteId, fechaRendicion])
+}
+
+model DatosEND {
+  id           Int            @id @default(autoincrement())
+  tematicaENDs TematicaEND[]
+  ResultadoEND ResultadoEND[]
+}
+
+model TematicaEND {
+  id         Int           @id @default(autoincrement())
+  titulo     String
+  estandares EstandarEND[]
+  DatosEND   DatosEND?     @relation(fields: [datosENDId], references: [id])
+  datosENDId Int?
+}
+
+model EstandarEND {
+  idEstandar    Int         @id @default(autoincrement())
+  tematica      TematicaEND @relation(fields: [tematicaENDId], references: [id])
+  tematicaENDId Int
+  numero        Int
+}
