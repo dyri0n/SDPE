@@ -1,12 +1,17 @@
 model Asignatura {
   id           Int     @id @default(autoincrement())
   codigo       String  @unique
+
   nombre       String
+
   descripcion  String?
   unidad       String?
+
   linkSyllabus String?
 
-  PlanContemplaAsignatura PlanContemplaAsignatura[]
+  // es referenciado por
+
+  PlanContemplaAsignatura PlanContemplaAsignatura[] @relation(name: "contempla la asignatura")
 }
 
 enum CARACTER {
@@ -30,12 +35,15 @@ model PlanContemplaAsignatura {
   areaFormacion AREA
 
   // referencia a
-  idPlan       Int
-  plan         Plan       @relation(fields: [idPlan], references: [id])
-  idAsignatura Int
-  asignatura   Asignatura @relation(fields: [idAsignatura], references: [id])
 
-  // es referenciada en
+  idPlan       Int
+  plan         Plan       @relation(name: "es contemplada por", fields: [idPlan], references: [id])
+
+  idAsignatura Int
+  asignatura   Asignatura @relation(name: "contempla la asignatura", fields: [idAsignatura], references: [id])
+
+  // es referenciado por
+
   esRequeridaEn        Tributacion[] @relation(name: "es la requerida")
   esTributadaEn        Tributacion[] @relation(name: "es la tributada")
   practicaReferenciada Practica?     @relation(name: "practica referenciada")

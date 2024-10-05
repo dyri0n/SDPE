@@ -5,9 +5,12 @@ enum Programa {
 
 model Estudiante {
   id             Int      @id @default(autoincrement())
+
   rut            String   @unique
   nombreCompleto String
   programa       Programa
+
+  // es referenciado por
 
   Cursacion      Cursacion[]      @relation(name: "curso las asignaturas")
   PracticaTomada PracticaTomada[] @relation(name: "tomo las practicas")
@@ -22,12 +25,15 @@ model Cursacion {
   agnio      Int
 
   // referencia a
+
   idPlan                Int
   idAsignatura          Int
   asignaturaContemplada PlanContemplaAsignatura @relation(name: "asignatura contemplada", fields: [idAsignatura, idPlan], references: [idAsignatura, idPlan])
 
   estudianteRut String
   estudiante    Estudiante @relation(name: "curso las asignaturas", fields: [estudianteRut], references: [rut])
+
+  //
 
   @@id([id, estudianteRut, idAsignatura, idPlan])
 }

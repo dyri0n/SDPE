@@ -1,15 +1,23 @@
 model Practica {
   id                     Int      @default(autoincrement())
+
   nombre                 String
   posicionRelativa       Int
-  competenciasRequeridas String[] // puede ser un tipo o un json
+  competenciasRequeridas Json
+
+  // referencia a
 
   idPlan                Int
   planRelacionado       Plan                    @relation(name: "define las practicas", fields: [idPlan], references: [id])
+
   idAsignatura          Int
   asignaturaContemplada PlanContemplaAsignatura @relation(name: "practica referenciada", fields: [idPlan, idAsignatura], references: [idPlan, idAsignatura])
 
+  // es referenciado por
+
   PracticaTomada PracticaTomada[] @relation(name: "practica asociada")
+
+  //
 
   @@id([id, idPlan, idAsignatura])
   @@unique([idPlan, idAsignatura])
@@ -18,8 +26,10 @@ model Practica {
 model PracticaTomada {
   fechaInicio          DateTime
   fechaTermino         DateTime
-  resultadoDiagnostico String[] // despues se puede hacer un tipo con los valores necesarios, o un json
+  resultadoDiagnostico Json
   resultado            String
+
+  // referencia a
 
   rutEstudiante      String
   EstudianteAsociado Estudiante @relation(name: "tomo las practicas", fields: [rutEstudiante], references: [rut])
@@ -32,10 +42,12 @@ model PracticaTomada {
   idConvenio       Int
   ConvenioAsociado Convenio @relation(name: "convenio asociado", fields: [idConvenio], references: [id])
 
+  //
+
   @@id([idPractica, idPlan, idAsignatura, rutEstudiante, idConvenio])
 }
 
-enum TIPO_PRACTICA {
+enum MODALIDAD {
   COLEGIO_REGULAR_PIE
   NO_CONVENCIONAL // preguntar por especificaciones
   ESCUELA_ESPECIAL
@@ -43,22 +55,21 @@ enum TIPO_PRACTICA {
   ESCUELA_DE_LENGUAJE
 }
 
-enum MODALIDAD {
-  COLEGIO_REGULAR_PIE
-  ESCUELA_ESPECIAL
-  NO_CONVENCIONAL
-}
-
 model Convenio {
   id                  Int       @id @default(autoincrement())
+
   titulo              String    @unique
   centroPractica      String
+  modalidad           MODALIDAD
+
   fechaInicioConvenio DateTime  @db.Date
   fechaFinConvenio    DateTime  @db.Date
   validez             Boolean
-  modalidad           MODALIDAD
+
   documentoConvenio   String
   urlFoto             String
+
+  // es referenciado por
 
   PracticaTomada PracticaTomada[] @relation(name: "convenio asociado")
 }
