@@ -48,6 +48,7 @@ model Estudiante {
   rut            String   @unique
   nombreCompleto String
   programa       Programa
+  agnioIngreso   Int
 
   Cursacion      Cursacion[]      @relation(name: "curso las asignaturas")
   PracticaTomada PracticaTomada[] @relation(name: "tomo las practicas")
@@ -174,6 +175,7 @@ model Plan {
   titulo            String   @unique
   anio              Int
   fechaInstauracion DateTime @default(now()) @db.Date
+  idIngresoRegular  Int
 
   PlanContemplaAsignatura PlanContemplaAsignatura[]
   PracticasDefinidas      Practica[]                @relation(name: "define las practicas")
