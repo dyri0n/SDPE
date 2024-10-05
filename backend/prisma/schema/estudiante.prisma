@@ -1,0 +1,33 @@
+enum Programa {
+  PR
+  PPE
+}
+
+model Estudiante {
+  id             Int      @id @default(autoincrement())
+  rut            String   @unique
+  nombreCompleto String
+  programa       Programa
+
+  Cursacion      Cursacion[]      @relation(name: "curso las asignaturas")
+  PracticaTomada PracticaTomada[] @relation(name: "tomo las practicas")
+  ResultadoEND   ResultadoEND[]
+}
+
+model Cursacion {
+  id         Int    @default(autoincrement())
+  notaFinal  Float
+  numIntento Int    @default(1)
+  grupo      String @default("A")
+  agnio      Int
+
+  // referencia a
+  idPlan                Int
+  idAsignatura          Int
+  asignaturaContemplada PlanContemplaAsignatura @relation(name: "asignatura contemplada", fields: [idAsignatura, idPlan], references: [idAsignatura, idPlan])
+
+  estudianteRut String
+  estudiante    Estudiante @relation(name: "curso las asignaturas", fields: [estudianteRut], references: [rut])
+
+  @@id([id, estudianteRut, idAsignatura, idPlan])
+}
