@@ -1,34 +1,26 @@
 model ResultadoEND {
-  fechaRendicion    DateTime
-  puntajeEstandares Float[]
-  puntajeTematicas  Float[]
-  end               DatosEND @relation(fields: [datosENDId], references: [id])
+  resultados Json
 
-  rutEstudiante String
-  estudiante    Estudiante @relation(fields: [estudianteId], references: [id])
-  estudianteId  Int
-  datosENDId    Int
+  // refiere a
 
-  @@id([estudianteId, fechaRendicion])
-}
+  endId Int 
+  ENDAsociada END @relation(name: "refiere a la END", fields: [endId], references: [id])
 
-model DatosEND {
-  id           Int            @id @default(autoincrement())
-  tematicaENDs TematicaEND[]
-  ResultadoEND ResultadoEND[]
-}
+  estudianteId Int @unique
+  EstudianteAsociado Estudiante @relation(name: "obtiene los resultados", fields: [estudianteId], references: [id])
 
-model TematicaEND {
-  id         Int           @id @default(autoincrement())
-  titulo     String
-  estandares EstandarEND[]
-  DatosEND   DatosEND?     @relation(fields: [datosENDId], references: [id])
-  datosENDId Int?
-}
+  //
 
-model EstandarEND {
-  idEstandar    Int         @id @default(autoincrement())
-  tematica      TematicaEND @relation(fields: [tematicaENDId], references: [id])
-  tematicaENDId Int
-  numero        Int
+  @@id([endId, estudianteId])
+} 
+
+model END {
+  id Int @id
+
+  fechaRendicion DateTime @db.Date
+  formato Json
+
+  // es referenciado por
+
+  ResultadosEND ResultadoEND[] @relation(name: "refiere a la END")
 }

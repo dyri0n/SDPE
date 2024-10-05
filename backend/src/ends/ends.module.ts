@@ -4,6 +4,6 @@ import { EndsService } from './ends.service';
 
 @Module({
   controllers: [EndsController],
-  providers: [EndsService]
+  providers: [EndsService],
 })
 export class EndsModule {}

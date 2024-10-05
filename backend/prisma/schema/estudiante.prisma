@@ -14,7 +14,7 @@ model Estudiante {
 
   Cursacion      Cursacion[]      @relation(name: "curso las asignaturas")
   PracticaTomada PracticaTomada[] @relation(name: "tomo las practicas")
-  ResultadoEND   ResultadoEND[]
+  ResultadoEND   ResultadoEND? @relation(name: "obtiene los resultados")
 }
 
 model Cursacion {

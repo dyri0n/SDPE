@@ -5,23 +5,28 @@ import { PrismaService } from '../prisma/prisma.service';
 export class EndsService {
   constructor(private prisma: PrismaService) {}
 
-  async getResultadosEND(idEnd: number) {
-    return this.prisma.resultadoEND.findMany({
-      where: { datosENDId: idEnd },
+  async getAll() {
+    return this.prisma.eND.findMany();
+  }
+
+  async getOneEnd(endId: number) {
+    return this.prisma.eND.findMany({
+      where: { id: endId },
     });
   }
 
-  async getDatosEND(idEnd: number) {
-    return this.prisma.datosEND.findMany({
-      where: { id: idEnd },
+  async getResultadosEND(endId: number) {
+    return this.prisma.resultadoEND.findMany({
+      where: { endId: endId },
     });
   }
 
-  async getResumenPorAlumnoEND(rutEstudiante: string) {
+  async getResumenPorAlumnoEND(endId: number, estudianteId: number) {
     return this.prisma.resultadoEND.findMany({
-      where: { rutEstudiante: rutEstudiante },
+      where: { endId: endId, estudianteId: estudianteId },
       include: {
-        end: true,
+        EstudianteAsociado: true,
+        ENDAsociada: true,
       },
     });
   }
