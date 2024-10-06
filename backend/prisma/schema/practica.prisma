@@ -31,8 +31,8 @@ model PracticaTomada {
 
   // referencia a
 
-  rutEstudiante      String
-  EstudianteAsociado Estudiante @relation(name: "tomo las practicas", fields: [rutEstudiante], references: [rut])
+  idEstudiante       Int
+  EstudianteAsociado Estudiante @relation(name: "tomo las practicas", fields: [idEstudiante], references: [id])
 
   idPractica       Int
   idPlan           Int
@@ -44,21 +44,26 @@ model PracticaTomada {
 
   //
 
-  @@id([idPractica, idPlan, idAsignatura, rutEstudiante, idConvenio])
+  @@id([idPractica, idPlan, idAsignatura, idEstudiante, idConvenio])
 }
 
-enum MODALIDAD {
-  COLEGIO_REGULAR_PIE
-  NO_CONVENCIONAL // preguntar por especificaciones
-  ESCUELA_ESPECIAL
-  COLEGIO_ESPECIAL // preguntar por la diferencia
-  ESCUELA_DE_LENGUAJE
+model Modalidad {
+  id Int @id @default(autoincrement())
+
+  nombreModalidad String @unique
+
+  fechaCreacion DateTime  @default(now()) @db.Date
+  fechaDesuso   DateTime? @default(dbgenerated("now() + interval '1000 years'")) @db.Date 
+  validez       Boolean
+
+  // referenciado por
+
+  conveniosAsociados Convenio[] @relation(name: "sigue la modalidad")
 }
 
 model Convenio {
   id Int @id @default(autoincrement())
 
-  modalidad           MODALIDAD
   titulo         String @unique
   centroPractica String
 
@@ -68,6 +73,11 @@ model Convenio {
 
   documentoConvenio String
   urlFoto           String
+
+  // referencia a
+
+  idModalidad Int
+  Modalidad   Modalidad @relation(name: "sigue la modalidad", fields: [idModalidad], references: [id])
 
   // es referenciado por
 
