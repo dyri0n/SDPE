@@ -49,16 +49,23 @@ model PlanContemplaAsignatura {
   practicaReferenciada Practica?     @relation(name: "practica referenciada")
   cursacionTomada      Cursacion[]   @relation(name: "asignatura contemplada")
 
+  //
+
   @@id([idPlan, idAsignatura])
 }
 
 model Tributacion {
+
+  // referencia a 
+
   idPlan                Int
   idAsignaturaRequerida Int
   idAsignaturaTributada Int
 
   asignaturaRequerida PlanContemplaAsignatura @relation(name: "es la requerida", fields: [idPlan, idAsignaturaRequerida], references: [idPlan, idAsignatura])
   asignaturaTributada PlanContemplaAsignatura @relation(name: "es la tributada", fields: [idPlan, idAsignaturaTributada], references: [idPlan, idAsignatura])
+
+  //
 
   @@id([idPlan, idAsignaturaTributada, idAsignaturaRequerida])
 }

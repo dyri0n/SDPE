@@ -4,21 +4,22 @@ enum Programa {
 }
 
 model Estudiante {
-  id             Int      @id @default(autoincrement())
+  id  Int    @id @default(autoincrement())
+  rut String @unique
 
-  rut            String   @unique
   nombreCompleto String
   programa       Programa
+  agnioIngreso   Int
 
   // es referenciado por
 
   Cursacion      Cursacion[]      @relation(name: "curso las asignaturas")
   PracticaTomada PracticaTomada[] @relation(name: "tomo las practicas")
-  ResultadoEND   ResultadoEND? @relation(name: "obtiene los resultados")
+  ResultadoEND   ResultadoEND?    @relation(name: "obtiene los resultados")
 }
 
 model Cursacion {
-  id         Int    @default(autoincrement())
+  id Int @default(autoincrement())
   notaFinal  Float
   numIntento Int    @default(1)
   grupo      String @default("A")

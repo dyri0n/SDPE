@@ -1,5 +1,5 @@
 model Plan {
-  id                Int      @id @default(autoincrement())
+  id     Int @id @default(autoincrement())
 
   titulo            String   @unique
   anio              Int

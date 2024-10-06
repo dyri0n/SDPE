@@ -1,5 +1,5 @@
 model Practica {
-  id                     Int      @default(autoincrement())
+  id Int @default(autoincrement())
 
   nombre                 String
   posicionRelativa       Int
@@ -7,8 +7,8 @@ model Practica {
 
   // referencia a
 
-  idPlan                Int
-  planRelacionado       Plan                    @relation(name: "define las practicas", fields: [idPlan], references: [id])
+  idPlan          Int
+  planRelacionado Plan @relation(name: "define las practicas", fields: [idPlan], references: [id])
 
   idAsignatura          Int
   asignaturaContemplada PlanContemplaAsignatura @relation(name: "practica referenciada", fields: [idPlan, idAsignatura], references: [idPlan, idAsignatura])
@@ -56,18 +56,18 @@ enum MODALIDAD {
 }
 
 model Convenio {
-  id                  Int       @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  titulo              String    @unique
-  centroPractica      String
   modalidad           MODALIDAD
+  titulo         String @unique
+  centroPractica String
 
-  fechaInicioConvenio DateTime  @db.Date
-  fechaFinConvenio    DateTime  @db.Date
+  fechaInicioConvenio DateTime @db.Date
+  fechaFinConvenio    DateTime @db.Date
   validez             Boolean
 
-  documentoConvenio   String
-  urlFoto             String
+  documentoConvenio String
+  urlFoto           String
 
   // es referenciado por
 
