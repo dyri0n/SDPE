@@ -8,6 +8,7 @@ import { EstadisticaDiagnosticoComponent } from './components/estadistica-diagno
 import { PracticasComponent } from './components/practicas/practicas.component';
 import { ResultadoEndComponent } from './components/resultado-end/resultado-end.component';
 import { AsignaturaCortePracticoComponent } from './components/asignatura-corte-practico/asignatura-corte-practico.component';
+import { AsignaturasComponent } from './components/asignaturas/asignaturas.component';
 
 export const routes: Routes = [
     {path: 'fluxogramas', component: FluxogramasComponent},
@@ -19,6 +20,7 @@ export const routes: Routes = [
     {path: 'estadisticas/:idAsignatura', component: EstadisticaDiagnosticoComponent},
     {path: 'practicas', component: PracticasComponent},
     {path: 'asignatura-corte-practico', component: AsignaturaCortePracticoComponent},
+    {path: 'asignaturas', component: AsignaturasComponent},
     {path: '', redirectTo: '/fluxogramas', pathMatch: 'full'},
     {path: '**', redirectTo: '/fluxogramas'} 
 ];
