@@ -21,10 +21,12 @@ async function main() {
         },
         update: {
           nombreCompleto: estudiante.nombreCompleto,
+          agnioIngreso: estudiante.agnioIngreso,
         },
         create: {
           rut: estudiante.rut,
           nombreCompleto: estudiante.nombreCompleto,
+          agnioIngreso: estudiante.agnioIngreso,
         },
       }),
     );
@@ -66,11 +68,13 @@ async function main() {
       await prisma.plan.upsert({
         where: { titulo: plan.titulo },
         update: {
+          codigo: plan.codigo,
           titulo: plan.titulo,
           anio: plan.anio,
           fechaInstauracion: plan.fechaInstauracion,
         },
         create: {
+          codigo: plan.codigo,
           titulo: plan.titulo,
           anio: plan.anio,
           fechaInstauracion: plan.fechaInstauracion,

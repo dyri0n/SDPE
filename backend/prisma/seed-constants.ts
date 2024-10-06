@@ -5,21 +5,25 @@ export const ESTUDIANTES: Estudiante[] = [
     id: 1,
     rut: '21.111.111-1',
     nombreCompleto: 'Estudiante Numero Uno',
+    agnioIngreso: 2019,
   },
   {
     id: 2,
     rut: '22.222.222-2',
     nombreCompleto: 'Estudiante Numero Dos',
+    agnioIngreso: 2020,
   },
   {
     id: 3,
     rut: '23.333.333-3',
     nombreCompleto: 'Estudiante Numero Tres',
+    agnioIngreso: 2019,
   },
   {
     id: 4,
     rut: '24.444.444-4',
     nombreCompleto: 'Estudiante Numero Cuatro',
+    agnioIngreso: 2020,
   },
 ];
 
@@ -271,12 +275,14 @@ export const ASIGNATURAS: Asignatura[] = [
 export const PLANES: Plan[] = [
   {
     id: 1,
+    codigo: 309,
     titulo: '2019',
     anio: 2019,
     fechaInstauracion: new Date('2019-10-20'),
   },
   {
     id: 2,
+    codigo: 325,
     titulo: '2019v2',
     anio: 2020,
     fechaInstauracion: new Date('2020-05-15'),
