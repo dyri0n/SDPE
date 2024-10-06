@@ -18,6 +18,7 @@
                                     [ngClass]="{
                                         'bg-red-400': esPrevia(asignatura.idAsignatura),
                                         'bg-green-400': esTributada(asignatura.idAsignatura),
+                                        'bg-blue-400': esCortePractico(asignatura),
                                         'bg-white': !esPrevia(asignatura.idAsignatura) && !esTributada(asignatura.idAsignatura)
                                         }"
                                     (click)="detalleAsignatura(asignatura.idAsignatura,asignatura.asignatura.nombre, asignatura.esRequeridaEn, asignatura.esTributadaEn)" 

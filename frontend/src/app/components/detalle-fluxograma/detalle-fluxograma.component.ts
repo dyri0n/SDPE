@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsignaturaFluxograma } from '../../models/asignatura.dto';
 import { Fluxograma } from '../../models/Fluxograma.model';
+import { Asignatura } from '../../models/asignaturas.dto';
 
 @Component({
   selector: 'app-detalle-fluxograma',
@@ -50,6 +51,10 @@ export class DetalleFluxogramaComponent implements OnInit{
 
   public esTributada(id: number): boolean {
     return this.asignaturasTributadas.includes(id);
+  }
+
+  public esCortePractico(asignatura: Asignatura): boolean {
+    return asignatura.caracter==="PRACTICA"
   }
 
   public detalleAsignatura(idAsignatura: number, nombreAsignatura: string, previas: {idAsignaturaTributada: number}[], tributa: {idAsignaturaRequerida: number}[]) {
