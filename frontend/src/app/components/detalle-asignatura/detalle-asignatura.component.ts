@@ -16,7 +16,7 @@ export class DetalleAsignaturaComponent implements OnInit {
     this.chartData= {
       labels: ['cohorte 2020', 'cohorte 2021', 'cohorte 2022', 'cohorte 2023'],
       datasets: [
-        {label: 'total', backgroundColor: '#54c45e', data: [50,60,70,80]},
+        {label: 'total', backgroundColor: '#54c45e', data: [90,60,70,80]},
         {label: 'ingreso planregular', backgroundColor: '#00c2a8', data:[30,50,40,60]},
         {label: 'ingrso prosecucion', backgroundColor: '#6db1ff', data:[20,30,60,70]}
       ]
