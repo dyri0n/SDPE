@@ -9,6 +9,7 @@ import { PracticasComponent } from './components/practicas/practicas.component';
 import { ResultadoEndComponent } from './components/resultado-end/resultado-end.component';
 import { AsignaturaCortePracticoComponent } from './components/asignatura-corte-practico/asignatura-corte-practico.component';
 import { AsignaturasComponent } from './components/asignaturas/asignaturas.component';
+import { DetalleAsignaturaComponent } from './components/detalle-asignatura/detalle-asignatura.component';
 
 export const routes: Routes = [
     {path: 'fluxogramas', component: FluxogramasComponent},
@@ -21,6 +22,7 @@ export const routes: Routes = [
     {path: 'practicas', component: PracticasComponent},
     {path: 'asignatura-corte-practico', component: AsignaturaCortePracticoComponent},
     {path: 'asignaturas', component: AsignaturasComponent},
+    {path: 'detalle-asignatura/:idAsignatura', component: DetalleAsignaturaComponent},
     {path: '', redirectTo: '/fluxogramas', pathMatch: 'full'},
     {path: '**', redirectTo: '/fluxogramas'} 
 ];
