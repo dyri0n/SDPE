@@ -63,6 +63,11 @@ export class AsignaturasController {
     return result;
   }
 
+  @Get('listar')
+  public async getListaAsignaturas() {
+    return await this.asigService.listarAsignaturas();
+  }
+
   @Get(':idAsignatura/detalle')
   public async getDetalleAsignatura(
     @Param('idAsignatura', ParseIntPipe) idAsignatura: number,

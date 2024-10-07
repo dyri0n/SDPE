@@ -17,6 +17,7 @@ import {
   PromedioHistoricoPorCohorteDTO,
   PromedioHistoricoPorTipoIngresoDTO,
 } from './dto/detalles.dto';
+import { AsignaturaListadaDTO } from './dto/listar.dto';
 
 @Injectable()
 export class AsignaturasService {
@@ -114,7 +115,52 @@ export class AsignaturasService {
       where: { idPlan: idPlan, idAsignatura: idAsignatura },
     });
   }
+  // Bloque de Listar Asignaturas
+  //Método principal del bloque listar asignaturas
+  async listarAsignaturas(): Promise<AsignaturaListadaDTO[]> {
+    /*
+     * Retorna información de cada asignatura independiente de su
+     * plan de estudios.
+     *
+     * Por cada Asignatura retorna un AsignaturaListadaDTO
+     * EJ:
+     * {
+     *  2,
+     * 'FI-203',
+     * 'Taller de Comunicación Oral',
+     * {2, 3},
+     * {2018, 2025},
+     * { FP }
+     * }
+     * */
+    const resultado = await this.prisma.$queryRaw`
+     SELECT 
+          id as idAsignatura,
+          codigo,
+          nombre,
+          ARRAY_AGG(DISTINCT semestre) as semestreRealizacion,
+          ARRAY_AGG(DISTINCT p.fechaInstauracion) as planesDondeSeImparte,
+          STRING_AGG(DISTINCT pt.areaFormacion, ', ')
+     
+     FROM PLANCONTEMPLAASIGNATURA pt 
+        JOIN ASIGNATURA a ON (a.id = pt.idAsignatura)
+        JOIN PLAN p ON (p.id = pt.idPlan)
+     GROUP BY id, codigo, nombre`;
 
+    //mapea los resultados ya que STRING_AGG devuelve un string y no un array
+    return resultado.map((asignatura) => ({
+      idAsignatura: asignatura.idAsignatura,
+      codigo: asignatura.codigo,
+      nombre: asignatura.nombre,
+      semestreRealizacion: asignatura.semestreRealizacion,
+      planesDondeSeImparte: asignatura.planesDondeSeImparte,
+      areaFormacion: asignatura.areaFormacion.split(', '),
+    }));
+  }
+
+  // FIN Bloque de Listar Asignaturas
+  //
+  //
   // Bloque de Detalles de una asignatura Histórica
 
   private async getPromediosHistoricosGeneral(
