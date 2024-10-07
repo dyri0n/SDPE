@@ -63,7 +63,7 @@ export class AsignaturasController {
     return result;
   }
 
-  @Get('detalle/:idAsignatura')
+  @Get(':idAsignatura/detalle')
   public async getDetalleAsignatura(
     @Param('idAsignatura', ParseIntPipe) idAsignatura: number,
   ) {

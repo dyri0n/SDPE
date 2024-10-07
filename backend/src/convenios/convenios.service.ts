@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Convenio } from '@prisma/client';
+import { DetalleConvenioDTO } from './dto/detalles.dto';
 
 @Injectable()
 export class ConveniosService {
@@ -10,16 +11,20 @@ export class ConveniosService {
     return this.prisma.convenio.findMany();
   }
 
-  async getConvenioPorId(idConvenio: number): Promise<Convenio> {
+  //BLOQUE detalle de convenio
+
+  private async getConvenioPorId(idConvenio: number): Promise<Convenio> {
     return this.prisma.convenio.findMany({ where: { id: idConvenio } });
   }
 
-  async getTotalDePracticasEnConvenio(idConvenio: number): Promise<number> {
+  private async getTotalDePracticasEnConvenio(
+    idConvenio: number,
+  ): Promise<number> {
     return this.prisma.practicaTomada.count({
       where: { idConvenio: idConvenio },
     });
   }
-  async getPromedioDePracticas(idConvenio: number): Promise<number> {
+  private async getPromedioDePracticas(idConvenio: number): Promise<number> {
     return this.prisma.$queryRaw`
       SELECT
         AVG(NOTAFINAL)
@@ -29,9 +34,7 @@ export class ConveniosService {
       WHERE cn.id = ${idConvenio}
     `;
   }
-
-  //TODO: NO SÉ COMO TESTEAR ESTO
-  async getAprobacionDePracticas(idConvenio: number): Promise<number> {
+  private async getAprobacionDePracticas(idConvenio: number): Promise<number> {
     return this.prisma.$queryRaw`
       WITH notasFinales as (SELECT NOTAFINAL
                             FROM CURSACION c
@@ -44,4 +47,40 @@ export class ConveniosService {
      FROM notasFinales
     `;
   }
+
+  async getDetalleConvenioCompleto(
+    idConvenio: number,
+  ): Promise<DetalleConvenioDTO> {
+    /*
+    Retorna el detalle completo de un convenio pasándole su idConvenio
+    *@return-type DetalleConvenioDTO
+    EJ
+    {
+      convenio: {....},
+      nroPracticasRealizadas: 45,
+      promedioPracticas: 6.4,
+      porcentajeAprobacion: 85,
+      porcentajeReprobacion: 15
+    }
+     */
+    const [
+      infoConvenio,
+      infoPracticasRealizadas,
+      infoPromedio,
+      infoAprobacion,
+    ] = await Promise.all([
+      this.getConvenioPorId(idConvenio),
+      this.getTotalDePracticasEnConvenio(idConvenio),
+      this.getPromedioDePracticas(idConvenio),
+      this.getAprobacionDePracticas(idConvenio),
+    ]);
+    return {
+      convenio: infoConvenio,
+      nroPracticasRealizadas: infoPracticasRealizadas,
+      promedioPracticas: infoPromedio,
+      porcentajeAprobacion: infoAprobacion,
+      porcentajeReprobacion: 100 - infoAprobacion,
+    } as Promise<DetalleConvenioDTO>;
+  }
+  // FIN bloque detalles de convenio
 }
