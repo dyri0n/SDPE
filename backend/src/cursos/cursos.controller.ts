@@ -5,6 +5,7 @@ import { CursosService } from './cursos.service';
 export class CursosController {
   constructor(private cursoService: CursosService) {}
 
+  /*
   //retorna todos los cursos
   //asociados a una asignatura
   @Get('/curso/idAsignatura')
@@ -17,4 +18,7 @@ export class CursosController {
   getInfoCurso(id: number) {
     return this.cursoService;
   }
+
+  REACTIVAR CUANDO SE NECESITE, ASÍ NO SIRVE DE NADA
+  */
 }
