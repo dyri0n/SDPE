@@ -14,26 +14,14 @@ import { CARACTER } from '@prisma/client';
 export class AsignaturasController {
   constructor(private asigService: AsignaturasService) {}
 
+  @Get()
+  public async getListaAsignaturas() {
+    return await this.asigService.listarAsignaturas();
+  }
+
   @Get('corte-practico')
   public getAsignaturasCortePractico() {
     return this.asigService.getAsignaturasPorCaracter(CARACTER.PRACTICA);
-  }
-
-  @Get('rendimiento-general/:idPlan/:idAsignatura')
-  public getResumenResultado(
-    @Param('idPlan', ParseIntPipe) idPlan: number,
-    @Param('idAsignatura', ParseIntPipe) idAsignatura: number,
-  ) {
-    // DE MOMENTO SOLO MUESTRA EL PROMEDIO DE LA ASIGNATURA, EN TEORIA
-    // DEBE MOSTRAR MÁS COSAS
-    return {
-      promedio: this.asigService.getPromedioDeAsignatura(idPlan, idAsignatura),
-      resultadosIndividuales:
-        this.asigService.getResultadosDeAsignaturaPractica(
-          idPlan,
-          idAsignatura,
-        ),
-    };
   }
 
   @Get(':idAsignatura')
@@ -63,15 +51,10 @@ export class AsignaturasController {
     return result;
   }
 
-  @Get('listar')
-  public async getListaAsignaturas() {
-    return await this.asigService.listarAsignaturas();
-  }
-
   @Get(':idAsignatura/detalle')
   public async getDetalleAsignatura(
     @Param('idAsignatura', ParseIntPipe) idAsignatura: number,
   ) {
-    return await this.asigService.getDetalleHistoricoAsignatura(idAsignatura);
+    return this.asigService.getDetalleHistoricoAsignatura(idAsignatura);
   }
 }

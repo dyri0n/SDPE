@@ -2,7 +2,7 @@ export interface AsignaturaListadaDTO {
   idAsignatura: number;
   codigo: string;
   nombre: string;
-  semestreRealizacion: number;
-  planesDondeSeImparte: number[];
+  semestreRealizacion: number[];
+  planesDondeSeImparte: string[];
   formacion: string[];
 }
