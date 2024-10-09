@@ -182,6 +182,7 @@ async function main() {
               notaFinal: nota,
               grupo: Math.random() > 0.5 ? 'A' : 'B',
               numIntento: intentoActual,
+              semestreRelativo: Math.random() * 10,
 
               idPlan: asignaturasContemplada.idPlan,
               idAsignatura: asignaturasContemplada.idAsignatura,
