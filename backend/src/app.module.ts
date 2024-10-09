@@ -9,6 +9,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { PracticasModule } from './practicas/practicas.module';
 import { EndsModule } from './ends/ends.module';
 import { ConveniosModule } from './convenios/convenios.module';
+import { EstudiantesModule } from './estudiantes/estudiantes.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ConveniosModule } from './convenios/convenios.module';
     PracticasModule,
     EndsModule,
     ConveniosModule,
+    EstudiantesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

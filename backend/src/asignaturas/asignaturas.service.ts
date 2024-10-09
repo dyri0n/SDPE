@@ -282,8 +282,6 @@ export class AsignaturasService {
   //Retorna todos los detalles históricos de una asignatura por su ID
   async getDetalleHistoricoAsignatura(idAsignatura: number) {
     // Resuelve todas las promesas usando await
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     const [
       asignatura,
       promedioGeneral,
