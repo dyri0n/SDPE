@@ -1,4 +1,4 @@
-import { Asignatura, Estudiante, Plan } from '@prisma/client';
+import { Asignatura, END, Estudiante, Plan } from '@prisma/client';
 
 export const ESTUDIANTES: Estudiante[] = [
   {
@@ -23,6 +23,30 @@ export const ESTUDIANTES: Estudiante[] = [
     id: 4,
     rut: '24.444.444-4',
     nombreCompleto: 'Estudiante Numero Cuatro',
+    agnioIngreso: 2020,
+  },
+  {
+    id: 5,
+    rut: '25.555.555-5',
+    nombreCompleto: 'Estudiante Numero Cinco',
+    agnioIngreso: 2019,
+  },
+  {
+    id: 6,
+    rut: '26.666.666-6',
+    nombreCompleto: 'Estudiante Numero Seis',
+    agnioIngreso: 2019,
+  },
+  {
+    id: 7,
+    rut: '27.777.777-7',
+    nombreCompleto: 'Estudiante Numero Siete',
+    agnioIngreso: 2019,
+  },
+  {
+    id: 8,
+    rut: '28.888.888-8',
+    nombreCompleto: 'Estudiante Numero Ocho',
     agnioIngreso: 2020,
   },
 ];
@@ -286,6 +310,313 @@ export const PLANES: Plan[] = [
     titulo: '2019v2',
     anio: 2020,
     fechaInstauracion: new Date('2020-05-15'),
+  },
+];
+
+// END 2024
+
+type Estandar = {
+  titulo: string;
+};
+
+type Tematica = {
+  numero: number;
+  nombre: string;
+  estandares: {
+    [key: string]: Estandar;
+  };
+};
+
+type NivelPA = {
+  nombre_nivel: string;
+  descriptor: string;
+};
+
+type SituacionPedagogica = {
+  tipo: string;
+  nombre: string;
+  niveles: {
+    nivel_1: NivelPA;
+    nivel_2: NivelPA;
+    nivel_3: NivelPA;
+    nivel_4: NivelPA;
+  };
+};
+
+export type FORMATO_END1 = {
+  tematicas: {
+    [key: string]: Tematica;
+  };
+  preguntas_abiertas: {
+    [key: string]: SituacionPedagogica;
+  };
+};
+
+const formato1: FORMATO_END1 = {
+  tematicas: {
+    t1: {
+      numero: 1,
+      nombre: 'Aprendizaje y desarrollo de estudiantes de Educación Básica',
+      estandares: {
+        e1: {
+          titulo:
+            'Conoce a los estudiantes de educación básica y sabe cómo ellos aprenden',
+        },
+        e2: {
+          titulo:
+            'Está preparado para promover el desarrollo personal y social de los estudiantes',
+        },
+      },
+    },
+    t2: {
+      numero: 2,
+      nombre: 'Diseño e implementación de la enseñanza',
+      estandares: {
+        e3: {
+          titulo: 'Conoce el currículo de la educación básica',
+        },
+        e4: {
+          titulo:
+            'Sabe cómo diseñar e implementar estrategias enseñanza-aprendizaje adecuadas para los objetivos de acuerdo al contexto',
+        },
+        e5: {
+          titulo:
+            'Está preparado para gestionar la clase y crear un ambiente apropiado para el aprendizaje según contextos',
+        },
+        e6: {
+          titulo:
+            'Conoce y sabe aplicar métodos de evaluación para observar el progreso de los estudiantes y usar los resultados para retroalimentar el aprendizaje y la práctica pedagógica',
+        },
+        e7: {
+          titulo: 'Conoce cómo se genera y transforma cultura escolar',
+        },
+        e8: {
+          titulo:
+            'Está preparado para atender la diversidad y promover la integración en el aula',
+        },
+      },
+    },
+    t3: {
+      numero: 3,
+      nombre: 'La profesión docente y el sistema educacional chileno',
+      estandares: {
+        e10: {
+          titulo:
+            'Aprende en forma continua y reflexiona sobre su práctica y su inserción en el sistema educacional',
+        },
+      },
+    },
+  },
+  preguntas_abiertas: {
+    pa1: {
+      tipo: 'PA_SP',
+      nombre: 'Resolución de situaciones pedagógicas en Ed. Parvularia',
+      niveles: {
+        nivel_1: {
+          nombre_nivel: 'A',
+          descriptor:
+            'Proponen en detalle una estrategia pedagógica basada en la situación expuesta en el caso y en una perspectiva de ambiente de aprendizaje inclusivo.',
+        },
+        nivel_2: {
+          nombre_nivel: 'B',
+          descriptor:
+            'Proponen una estrategia pedagógica basada en la situación expuesta en el caso y en una perspectiva de aprendizaje inclusivo, sin embargo, no realizan una explicación detallada de la propuesta.',
+        },
+        nivel_3: {
+          nombre_nivel: 'C',
+          descriptor:
+            'Proponen una estrategia pedagógica similar a la señalada en el caso o en la que no se observa claramente la perspectiva de ambiente de aprendizaje inclusivo.',
+        },
+        nivel_4: {
+          nombre_nivel: 'D',
+          descriptor:
+            'Proponen una estrategia similar a la señalada en el caso o en la que no se observa la perspectiva de ambiente de aprendizaje inclusivo.',
+        },
+      },
+    },
+    pa2: {
+      tipo: 'PA_SP',
+      nombre: 'Resolución de situaciones pedagógicas en Ed. Básica',
+      niveles: {
+        nivel_1: {
+          nombre_nivel: 'A',
+          descriptor:
+            'Proponen una forma de solucionar el conflicto surgido entre los estudiantes del caso, considerando el uso de estrategias de resolución de conflictos y normas de convivencia.',
+        },
+        nivel_2: {
+          nombre_nivel: 'B',
+          descriptor:
+            'Proponen una forma de solucionar el conflicto surgido entre los estudiantes del caso, sin embargo, consideran solo el uso de estrategias de resolución de conflictos o normas de convivencia.',
+        },
+        nivel_3: {
+          nombre_nivel: 'C',
+          descriptor:
+            'Describen una actividad que no se relaciona claramente con el conflicto del caso, además, consideran solo el uso de estrategias de resolución de conflictos o normas de convivencia.',
+        },
+        nivel_4: {
+          nombre_nivel: 'D',
+          descriptor:
+            'Mencionan solo una actividad que no hace alusión al conflicto del caso, además, consideran solo el uso de estrategias de resolución de conflictos o normas de convivencia.',
+        },
+      },
+    },
+    pa3: {
+      tipo: 'PA_SP',
+      nombre: 'Resolución de situaciones pedagógicas en Ed. Diferencial',
+      niveles: {
+        nivel_1: {
+          nombre_nivel: 'A',
+          descriptor:
+            'Proponen una actividad de clase en que involucra la participación de los estudiantes en la que se comunica e implementan normas de convivencia de acuerdo con la información proporcionada en el caso.',
+        },
+        nivel_2: {
+          nombre_nivel: 'B',
+          descriptor:
+            'Proponen una actividad en la que se comunica y se implementan normas de expresión escrita y utilización adecuada de recursos de cohesión.',
+        },
+        nivel_3: {
+          nombre_nivel: 'C',
+          descriptor:
+            'Proponen una actividad en la que se comunica y se implementan normas, sin embargo, no se especifica cómo se involucrará a los estudiantes.',
+        },
+        nivel_4: {
+          nombre_nivel: 'D',
+          descriptor:
+            'Describen una situación expuesta en el caso, sin proponer una actividad que involucre la comunicación e implementación de normas de convivencia.',
+        },
+      },
+    },
+    pa4: {
+      tipo: 'PA_SP',
+      nombre: 'Resolución de situaciones pedagógicas en Ed. Media',
+      niveles: {
+        nivel_1: {
+          nombre_nivel: 'A',
+          descriptor:
+            'Proponen una actividad que permite conocer los intereses y expectativas de los estudiantes, considerando su heterogeneidad y la información entregada por el caso.',
+        },
+        nivel_2: {
+          nombre_nivel: 'B',
+          descriptor:
+            'Proponen una actividad que permite conocer los intereses y expectativas de los estudiantes así como su heterogeneidad, sin embargo, está presentada de forma poco clara o detallada.',
+        },
+        nivel_3: {
+          nombre_nivel: 'C',
+          descriptor:
+            'Proponen una actividad que es pertinente para el nivel expuesto en el caso, sin embargo, no permite recoger información sobre los intereses y expectativas de los estudiantes considerando la heterogeneidad de los estudiantes.',
+        },
+        nivel_4: {
+          nombre_nivel: 'D',
+          descriptor:
+            'Mencionan una actividad o línea de acción que no es pertinente con el nivel expuesto en el caso o que no considera los intereses y expectativas de los estudiantes.',
+        },
+      },
+    },
+    pa5: {
+      tipo: 'PA_CE',
+      nombre: 'Habilidades de comunicación escrita',
+      niveles: {
+        nivel_1: {
+          nombre_nivel: 'A',
+          descriptor:
+            'Son capaces de elaborar un texto de fácil comprensión, con una exposición de ideas focalizada en el tema.',
+        },
+        nivel_2: {
+          nombre_nivel: 'B',
+          descriptor:
+            'Son capaces de elaborar un texto que comunica y reflexiona sobre las normas de expresión escrita.',
+        },
+        nivel_3: {
+          nombre_nivel: 'C',
+          descriptor:
+            'Son capaces de elaborar un texto comprensible, aunque con cierto grado de dificultad.',
+        },
+        nivel_4: {
+          nombre_nivel: 'D',
+          descriptor:
+            'Demuestran dificultades para elaborar un texto comprensible sobre el tema requerido.',
+        },
+      },
+    },
+  },
+};
+
+export enum Nivel_PA {
+  A = 'A',
+  B = 'B',
+  C = 'C',
+  D = 'D',
+}
+
+export class Porcentaje {
+  public valor: number;
+
+  constructor(valor: number) {
+    if (valor < 0 || valor > 1) {
+      throw new Error('El valor debe estar entre 0 y 1.');
+    }
+    this.valor = valor;
+  }
+
+  public toString(decimals: number = 0) {
+    if (decimals < 0) {
+      console.error('No se admiten valores negativos, convirtiendo a 0');
+      decimals = 0;
+    }
+
+    if (!Number.isInteger(decimals)) {
+      console.error(
+        'No es un número válido de decimales, convirtiendo a entero',
+      );
+      decimals = Math.floor(decimals);
+    }
+
+    return `${(this.valor * 100).toFixed(decimals)}%`;
+  }
+}
+
+export type FORMATO_RESPUESTA = {
+  tematicas: {
+    t1: {
+      e1: number;
+      e2: number;
+    };
+    t2: {
+      e3: number;
+      e4: number;
+      e5: number;
+      e6: number;
+      e7: number;
+      e8: number;
+    };
+    t3: {
+      e10: number;
+    };
+  };
+  preguntas_abiertas: {
+    pa1: {
+      nivel_alcanzado: Nivel_PA;
+    };
+    pa2: {
+      nivel_alcanzado: Nivel_PA;
+    };
+    pa3: {
+      nivel_alcanzado: Nivel_PA;
+    };
+    pa4: {
+      nivel_alcanzado: Nivel_PA;
+    };
+    pa5: {
+      nivel_alcanzado: Nivel_PA;
+    };
+  };
+};
+
+export const ENDS: END[] = [
+  {
+    id: 1,
+    fechaRendicion: new Date('2025'),
+    formato: formato1,
   },
 ];
 

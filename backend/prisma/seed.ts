@@ -2,10 +2,12 @@ import {
   AREA,
   Asignatura,
   CARACTER,
+  END,
   Estudiante,
   Plan,
   PlanContemplaAsignatura,
   PrismaClient,
+  ResultadoEND,
   Tributacion,
 } from '@prisma/client';
 import * as constants from './seed-constants';
@@ -267,6 +269,98 @@ async function main() {
 
   moreLog({ tributaciones });
   console.timeEnd('TRIBUTACIONES SEEDING');
+
+  console.time('END SEEDING');
+
+  const end_queries = [];
+  for (const end of constants.ENDS) {
+    end_queries.push(
+      prisma.eND.upsert({
+        where: {
+          id: end.id,
+        },
+        update: {
+          fechaRendicion: end.fechaRendicion,
+          formato: end.formato,
+        },
+        create: {
+          id: end.id,
+          fechaRendicion: end.fechaRendicion,
+          formato: end.formato,
+        },
+      }),
+    );
+  }
+  const ends: (END | string)[] = ([] = (
+    await Promise.allSettled(end_queries)
+  ).map((result) => {
+    if (result.status === 'fulfilled') {
+      return result.value;
+    } else {
+      return result.reason;
+    }
+  }));
+
+  moreLog(ends);
+
+  console.log('borrando info de resultados');
+  prisma.resultadoEND.deleteMany();
+
+  const ENDS = await prisma.eND.findMany();
+  const create_resultados_queries: ResultadoEND[] = [];
+  for (const end of ENDS) {
+    for (const estudiante of estudiantes) {
+      const resultado_estudiante: constants.FORMATO_RESPUESTA = {
+        tematicas: {
+          t1: {
+            e1: new constants.Porcentaje(Math.random()).valor,
+            e2: new constants.Porcentaje(Math.random()).valor,
+          },
+          t2: {
+            e3: new constants.Porcentaje(Math.random()).valor,
+            e4: new constants.Porcentaje(Math.random()).valor,
+            e5: new constants.Porcentaje(Math.random()).valor,
+            e6: new constants.Porcentaje(Math.random()).valor,
+            e7: new constants.Porcentaje(Math.random()).valor,
+            e8: new constants.Porcentaje(Math.random()).valor,
+          },
+          t3: {
+            e10: new constants.Porcentaje(Math.random()).valor,
+          },
+        },
+        preguntas_abiertas: {
+          pa1: {
+            nivel_alcanzado: constants.getRandomEnumValue(constants.Nivel_PA),
+          },
+          pa2: {
+            nivel_alcanzado: constants.getRandomEnumValue(constants.Nivel_PA),
+          },
+          pa3: {
+            nivel_alcanzado: constants.getRandomEnumValue(constants.Nivel_PA),
+          },
+          pa4: {
+            nivel_alcanzado: constants.getRandomEnumValue(constants.Nivel_PA),
+          },
+          pa5: {
+            nivel_alcanzado: constants.getRandomEnumValue(constants.Nivel_PA),
+          },
+        },
+      };
+      create_resultados_queries.push({
+        resultados: resultado_estudiante,
+        endId: end.id,
+        estudianteId: estudiante.id,
+      });
+    }
+  }
+  const resultados: ResultadoEND[] =
+    await prisma.resultadoEND.createManyAndReturn({
+      data: create_resultados_queries,
+    });
+
+  moreLog(resultados);
+
+  console.timeEnd('END SEEDING');
 }
 
 const moreLog = function (obj: any): void {
