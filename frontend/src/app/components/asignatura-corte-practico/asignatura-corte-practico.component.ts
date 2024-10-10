@@ -29,7 +29,6 @@ export class AsignaturaCortePracticoComponent implements OnInit {
   public cargarDatos(){
     this.diagnosticosService.obtenerAsignaturas(this.idPlan).subscribe(asignaturas=>{
       this.asignaturas=asignaturas
-      console.log(this.asignaturas)
     })
   }
 
