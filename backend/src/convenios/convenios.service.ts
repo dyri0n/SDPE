@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Convenio } from '@prisma/client';
 import { DetalleConvenioDTO } from './dto/detalles.dto';
+import {
+  conveniosGetAprobacion,
+  conveniosGetPromedio,
+} from '@prisma/client/sql';
 
 @Injectable()
 export class ConveniosService {
@@ -14,7 +18,7 @@ export class ConveniosService {
   //BLOQUE detalle de convenio
 
   private async getConvenioPorId(idConvenio: number): Promise<Convenio> {
-    return this.prisma.convenio.findMany({ where: { id: idConvenio } });
+    return this.prisma.convenio.findUnique({ where: { id: idConvenio } });
   }
 
   private async getTotalDePracticasEnConvenio(
@@ -25,32 +29,19 @@ export class ConveniosService {
     });
   }
   private async getPromedioDePracticas(idConvenio: number): Promise<number> {
-    return this.prisma.$queryRaw`
-      SELECT
-        AVG(NOTAFINAL)
-      FROM CURSACION c JOIN ESTUDIANTE e ON (c.estudianteRut = e.rut)
-            JOIN PRACTICATOMADA pt ON (pt.rutEstudiante = e.rut)
-            JOIN CONVENIO cn ON (pt.idConvenio = cn.id)
-      WHERE cn.id = ${idConvenio}
-    `;
+    const response = await this.prisma.$queryRawTyped(
+      conveniosGetPromedio(idConvenio),
+    );
+    return response.at(0).promedioPracticas;
   }
   private async getAprobacionDePracticas(idConvenio: number): Promise<number> {
-    return this.prisma.$queryRaw`
-      WITH notasFinales as (SELECT NOTAFINAL
-                            FROM CURSACION c
-                                     JOIN ESTUDIANTE e ON (c.estudianteRut = e.rut)
-                                     JOIN PRACTICATOMADA pt ON (pt.rutEstudiante = e.rut)
-                                     JOIN CONVENIO cn ON (pt.idConvenio = cn.id)
-                            WHERE cn.id = ${idConvenio} )
-     --PORCENTAJE DE APROBACION 
-     SELECT (SUM(CASE WHEN NOTAFINAL > 4.0 THEN 1 END) / COUNT(1)) * 100
-     FROM notasFinales
-    `;
+    const response = await this.prisma.$queryRawTyped(
+      conveniosGetAprobacion(idConvenio),
+    );
+    return response.at(0).porcentajeaprobacion.toNumber();
   }
 
-  async getDetalleConvenioCompleto(
-    idConvenio: number,
-  ): Promise<DetalleConvenioDTO> {
+  async getDetalleConvenioCompleto(idConvenio: number) {
     /*
     Retorna el detalle completo de un convenio pasándole su idConvenio
     *@return-type DetalleConvenioDTO
@@ -77,10 +68,10 @@ export class ConveniosService {
     return {
       convenio: infoConvenio,
       nroPracticasRealizadas: infoPracticasRealizadas,
-      promedioPracticas: infoPromedio,
-      porcentajeAprobacion: infoAprobacion,
-      porcentajeReprobacion: 100 - infoAprobacion,
-    } as Promise<DetalleConvenioDTO>;
+      promedioPracticas: infoPromedio || 0,
+      porcentajeAprobacion: infoAprobacion || 0,
+      porcentajeReprobacion: 100 - (infoAprobacion || 0),
+    } as DetalleConvenioDTO;
   }
   // FIN bloque detalles de convenio
 }

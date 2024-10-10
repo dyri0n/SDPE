@@ -15,10 +15,11 @@ model Estudiante {
 model Cursacion {
   id Int @default(autoincrement())
 
-  notaFinal  Float
-  numIntento Int    @default(1)
-  grupo      String @default("A")
-  agnio      Int
+  notaFinal        Float
+  numIntento       Int    @default(1)
+  grupo            String @default("A")
+  agnio            Int
+  semestreRelativo Int    @default(1)
 
   // referencia a
 
@@ -30,6 +31,5 @@ model Cursacion {
   estudiante    Estudiante @relation(name: "curso las asignaturas", fields: [estudianteRut], references: [rut])
 
   //
-
   @@id([id, estudianteRut, idAsignatura, idPlan])
 }

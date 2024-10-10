@@ -22,7 +22,7 @@ export class PracticasService {
     rutEstudiante: string,
   ): Promise<PracticaTomada[]> {
     return this.prisma.practicaTomada.findMany({
-      where: { rutEstudiante: rutEstudiante },
+      where: { EstudianteAsociado: { rut: rutEstudiante } },
     });
   }
 

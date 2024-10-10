@@ -10,6 +10,9 @@ import {
 } from '@prisma/client';
 import { CursosService } from '../cursos/cursos.service';
 import {
+  AprobacionHistoricaGeneralDTO,
+  AprobacionHistoricaPorCohorteDTO,
+  AprobacionHistoricaPorTipoIngresoDTO,
   DetalleAsignaturaDTO,
   ID_INGRESO_PROSECUCION,
   ID_INGRESO_REGULAR,
@@ -17,6 +20,16 @@ import {
   PromedioHistoricoPorCohorteDTO,
   PromedioHistoricoPorTipoIngresoDTO,
 } from './dto/detalles.dto';
+import { AsignaturaListadaDTO } from './dto/listar.dto';
+import {
+  asignaturasListar,
+  asignaturasGetPromediosHistoricosGeneral,
+  asignaturasGetPromediosHistoricosPorPlan,
+  asignaturasGetPromediosHistoricosPorCohorte,
+  asignaturasGetAprobacionesHistoricasGeneral,
+  asignaturasGetAprobacionesHistoricasPorPlan,
+  asignaturasGetAprobacionesHistoricasPorCohorte,
+} from '@prisma/client/sql';
 
 @Injectable()
 export class AsignaturasService {
@@ -26,13 +39,11 @@ export class AsignaturasService {
   ) {}
 
   async getAsignatura(idAsignatura: number): Promise<Asignatura> {
-    const asignatura = await this.prisma.asignatura.findUnique({
+    return this.prisma.asignatura.findUnique({
       where: {
         id: idAsignatura,
       },
     });
-
-    return asignatura;
   }
 
   async getAsignaturaContemplada(idPlan: number, idAsignatura: number) {
@@ -114,7 +125,40 @@ export class AsignaturasService {
       where: { idPlan: idPlan, idAsignatura: idAsignatura },
     });
   }
+  // Bloque de Listar Asignaturas
+  //Método principal del bloque listar asignaturas
+  async listarAsignaturas(): Promise<AsignaturaListadaDTO[]> {
+    /*
+     * Retorna información de cada asignatura independiente de su
+     * plan de estudios.
+     *
+     * Por cada Asignatura retorna un AsignaturaListadaDTO
+     * EJ:
+     * {
+     *  2,
+     * 'FI-203',
+     * 'Taller de Comunicación Oral',
+     * {2, 3},
+     * {2018, 2025},
+     * { FP }
+     * }
+     * */
+    const result = await this.prisma.$queryRawTyped(asignaturasListar());
+    return result.map((value) => {
+      return {
+        idAsignatura: value.idasignatura,
+        codigo: value.codigo,
+        nombre: value.nombre,
+        semestreRealizacion: value.semestrerealizacion,
+        planesDondeSeImparte: value.planesdondeseimparte,
+        formacion: value.areaformacion,
+      };
+    }) as AsignaturaListadaDTO[];
+  }
 
+  // FIN Bloque de Listar Asignaturas
+  //
+  //
   // Bloque de Detalles de una asignatura Histórica
 
   private async getPromediosHistoricosGeneral(
@@ -122,29 +166,32 @@ export class AsignaturasService {
   ): Promise<PromedioHistoricoGeneralDTO[]> {
     //Retorna el promedio general de cada año por separado
     //EJ : [ {2024: 5.2}, {2023: 5.1}, {2022: 4.6} ]
-    return this.prisma.$queryRaw`
-    SELECT agnio, avg(notaFinal) AS promedio
-    FROM PLANCONTEMPLAASIGNATURA pt 
-        JOIN CURSACION c ON (c.idAsignatura = pt.idAsignatura AND pt.idAsignatura = ${idAsignatura})
-    GROUP BY agnio
-    `;
+    const result = await this.prisma.$queryRawTyped(
+      asignaturasGetPromediosHistoricosGeneral(idAsignatura),
+    );
+    return result.map((value) => {
+      return {
+        agnio: value.agnio,
+        promedio: value.promedio.toNumber(),
+      };
+    }) as PromedioHistoricoGeneralDTO[];
   }
-  private async getPromediosHistoricosPorTipoDeIngreso(
+  private async getPromediosHistoricosPorPlan(
     idAsignatura: number,
-    idIngreso: number,
+    codigo: number,
   ): Promise<PromedioHistoricoPorTipoIngresoDTO[]> {
-    //TODO: Decidir cómo se guarda el tipo de ingreso de estudiante, el tipo de ingreso puede estar en el plan o en el estudiante
     //
     //Retorna el promedio por tipo de ingreso de cada año por separado
     //EJ : [ {2024: 5.2}, {2023: 5.1}, {2022: 4.6} ]
-    return this.prisma.$queryRaw`
-    SELECT agnio, avg(notaFinal) AS promedio
-    FROM PLANCONTEMPLAASIGNATURA pt 
-        JOIN CURSACION c ON (c.idAsignatura = pt.idAsignatura AND pt.idAsignatura = ${idAsignatura})
-        --
-        JOIN PLAN p on (p.id = pt.idPlan AND p.idIngresoRegular = ${idIngreso})
-    GROUP BY agnio
-    `;
+    const result = await this.prisma.$queryRawTyped(
+      asignaturasGetPromediosHistoricosPorPlan(codigo, idAsignatura),
+    );
+    return result.map((value) => {
+      return {
+        agnio: value.agnio,
+        promedio: value.promedio.toNumber(),
+      };
+    }) as PromedioHistoricoPorTipoIngresoDTO[];
   }
 
   private async getPromediosHistoricosPorCohorte(
@@ -161,46 +208,53 @@ export class AsignaturasService {
           ......
         ]
     */
-    return this.prisma.$queryRaw`
-    SELECT agnio, agnioIngreso, idIngresoRegular, avg(notaFinal) AS promedio
-    FROM PLANCONTEMPLAASIGNATURA pt 
-        JOIN CURSACION c ON (c.idAsignatura = pt.idAsignatura AND pt.idAsignatura = ${idAsignatura})
-        --
-        JOIN ESTUDIANTE e on (e.rut = c.estudianteRut)
-        --
-        JOIN PLAN p on (p.id = pt.idPlan)
-    GROUP BY agnio, agnioIngreso, idIngresoRegular
-    `;
+    const result = await this.prisma.$queryRawTyped(
+      asignaturasGetPromediosHistoricosPorCohorte(idAsignatura),
+    );
+    return result.map((value) => {
+      return {
+        agnio: value.agnio,
+        agnioIngreso: value.agnioIngreso,
+        tipoIngreso: value.titulo,
+        promedio: value.promedio.toNumber(),
+      };
+    }) as PromedioHistoricoPorCohorteDTO[];
   }
 
-  private async getAprobacionHistoricaGeneral(idAsignatura: number) {
+  private async getAprobacionHistoricaGeneral(
+    idAsignatura: number,
+  ): Promise<AprobacionHistoricaGeneralDTO[]> {
     /*
     Retorna el porcentaje de aprobación de una asignatura a lo largo del tiempo
     EJ: [{2024, 60}, {2023, 50}, {2022, 80} ....]
     */
-    return this.prisma.$queryRaw`
-    SELECT agnio, 
-           (sum(CASE WHEN notaFinal >= 4.0 THEN 1 END) / count(1))*100 as aprobacion
-    FROM PLANCONTEMPLAASIGNATURA pt
-        JOIN CURSACION c ON (c.idAsignatura = pt.idAsignatura AND pt.idAsignatura = ${idAsignatura})
-    GROUP BY agnio
-    `;
+    const result = await this.prisma.$queryRawTyped(
+      asignaturasGetAprobacionesHistoricasGeneral(idAsignatura),
+    );
+    return result.map((value) => {
+      return {
+        agnio: value.agnio,
+        aprobacion: value.aprobacion.toNumber(),
+      };
+    }) as AprobacionHistoricaGeneralDTO[];
   }
-  private async getAprobacionHistoricaPorTipoIngreso(
+  private async getAprobacionHistoricaPorPlan(
     idAsignatura: number,
-    idIngreso: number,
-  ) {
-    return this.prisma.$queryRaw`
-    SELECT agnio,
-        (sum(CASE WHEN notaFinal >= 4.0 THEN 1 END) / count(1))*100 as aprobacion
-    FROM PLANCONTEMPLAASIGNATURA pt 
-        JOIN CURSACION c ON (c.idAsignatura = pt.idAsignatura AND pt.idAsignatura = ${idAsignatura})
-        --
-        JOIN PLAN p on (p.id = pt.idPlan AND p.idIngresoRegular = ${idIngreso})
-    GROUP BY agnio
-    `;
+    codigo: number,
+  ): Promise<AprobacionHistoricaPorTipoIngresoDTO[]> {
+    const result = await this.prisma.$queryRawTyped(
+      asignaturasGetAprobacionesHistoricasPorPlan(codigo, idAsignatura),
+    );
+    return result.map((value) => {
+      return {
+        agnio: value.agnio,
+        aprobacion: value.aprobacion.toNumber(),
+      };
+    }) as AprobacionHistoricaPorTipoIngresoDTO[];
   }
-  private async getAprobacionHistoricaPorCohorte(idAsignatura: number) {
+  private async getAprobacionHistoricaPorCohorte(
+    idAsignatura: number,
+  ): Promise<AprobacionHistoricaPorCohorteDTO[]> {
     /*
     Retorna el porcentaje de aprobación de cada cohorte en los años que hayan rendido asignaturas a lo largo del tiempo
     En este caso el año se repetiría 1 vez ya que hay 2 tipos de ingreso: regular y prosecución de estudios
@@ -212,54 +266,59 @@ export class AsignaturasService {
           ......
         ]
     */
-    return this.prisma.$queryRaw`
-    SELECT agnio, 
-           agnioIngreso,
-           idIngresoRegular, 
-           (sum(CASE WHEN notaFinal >= 4.0 THEN 1 END) / count(1))*100 as aprobacion
-    FROM PLANCONTEMPLAASIGNATURA pt 
-        JOIN CURSACION c ON (c.idAsignatura = pt.idAsignatura AND pt.idAsignatura = ${idAsignatura})
-        --
-        JOIN ESTUDIANTE e on (e.rut = c.estudianteRut)
-        --
-        JOIN PLAN p on (p.id = pt.idPlan)
-    GROUP BY agnio, agnioIngreso, idIngresoRegular
-    `;
+    const result = await this.prisma.$queryRawTyped(
+      asignaturasGetAprobacionesHistoricasPorCohorte(idAsignatura),
+    );
+    return result.map((value) => {
+      return {
+        agnio: value.agnio,
+        cohorte: value.agnioIngreso,
+        tipoIngreso: value.titulo,
+        aprobacion: value.aprobacion.toNumber(),
+      };
+    }) as AprobacionHistoricaPorCohorteDTO[];
   }
   //Método principal del bloque.
   //Retorna todos los detalles históricos de una asignatura por su ID
-  async getDetalleHistoricoAsignatura(
-    idAsignatura: number,
-  ): Promise<DetalleAsignaturaDTO> {
-    const idRegular = ID_INGRESO_REGULAR;
-    const idProsecucion = ID_INGRESO_PROSECUCION;
+  async getDetalleHistoricoAsignatura(idAsignatura: number) {
+    // Resuelve todas las promesas usando await
+    const [
+      asignatura,
+      promedioGeneral,
+      promedioIngresoRegular,
+      promedioIngresoProsecucion,
+      promedioPorCohortes,
+      aprobacionGeneral,
+      aprobacionIngresoRegular,
+      aprobacionIngresoProsecucion,
+      aprobacionPorCohortes,
+    ] = await Promise.all([
+      this.getAsignatura(idAsignatura),
+      this.getPromediosHistoricosGeneral(idAsignatura),
+      this.getPromediosHistoricosPorPlan(idAsignatura, ID_INGRESO_REGULAR),
+      this.getPromediosHistoricosPorPlan(idAsignatura, ID_INGRESO_PROSECUCION),
+      this.getPromediosHistoricosPorCohorte(idAsignatura),
+      this.getAprobacionHistoricaGeneral(idAsignatura),
+      this.getAprobacionHistoricaPorPlan(idAsignatura, ID_INGRESO_REGULAR),
+      this.getAprobacionHistoricaPorPlan(idAsignatura, ID_INGRESO_PROSECUCION),
+      this.getAprobacionHistoricaPorCohorte(idAsignatura),
+    ]);
+
     return {
-      asignatura: await this.getAsignatura(idAsignatura),
+      asignatura: asignatura, // Asignatura response
       promedios: {
-        general: await this.getPromediosHistoricosGeneral(idAsignatura),
-        ingresoRegular: await this.getPromediosHistoricosPorTipoDeIngreso(
-          idAsignatura,
-          idRegular,
-        ),
-        ingresoProsecucion: await this.getPromediosHistoricosPorTipoDeIngreso(
-          idAsignatura,
-          idProsecucion,
-        ),
-        cohortes: await this.getPromediosHistoricosPorCohorte(idAsignatura),
+        general: promedioGeneral, // PromedioHistoricoGeneralDTO[]
+        ingresoRegular: promedioIngresoRegular, // PromedioHistoricoPorTipoIngresoDTO[]
+        ingresoProsecucion: promedioIngresoProsecucion, // PromedioHistoricoPorTipoIngresoDTO[]
+        cohortes: promedioPorCohortes, // PromedioHistoricoPorCohorteDTO[]
       },
       aprobaciones: {
-        general: await this.getAprobacionHistoricaGeneral(idAsignatura),
-        ingresoRegular: await this.getAprobacionHistoricaPorTipoIngreso(
-          idAsignatura,
-          idRegular,
-        ),
-        ingresoProsecucion: await this.getAprobacionHistoricaPorTipoIngreso(
-          idAsignatura,
-          idProsecucion,
-        ),
-        cohortes: await this.getAprobacionHistoricaPorCohorte(idAsignatura),
+        general: aprobacionGeneral, // AprobacionHistoricaGeneralDTO[]
+        ingresoRegular: aprobacionIngresoRegular, // AprobacionHistoricaPorTipoIngresoDTO[]
+        ingresoProsecucion: aprobacionIngresoProsecucion, // AprobacionHistoricaPorTipoIngresoDTO[]
+        cohortes: aprobacionPorCohortes, // AprobacionHistoricaPorCohorteDTO[]
       },
-    } as Promise<DetalleAsignaturaDTO>;
+    } as DetalleAsignaturaDTO;
   }
   // FIN Bloque de Detalles de una asignatura Histórica
 }

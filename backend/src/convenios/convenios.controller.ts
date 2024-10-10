@@ -6,10 +6,8 @@ import { ConveniosService } from './convenios.service';
 export class ConveniosController {
   constructor(private convenioService: ConveniosService) {}
 
-  @Get(':idConvenio/detalle')
-  async getByIdConvenio(
-    @Param(':idConvenio', ParseIntPipe) idConvenio: number,
-  ) {
+  @Get(':idConvenio')
+  async getByIdConvenio(@Param('idConvenio', ParseIntPipe) idConvenio: number) {
     return this.convenioService.getDetalleConvenioCompleto(idConvenio);
   }
 }
