@@ -6,6 +6,7 @@ import {
   conveniosGetAprobacion,
   conveniosGetPromedio,
 } from '@prisma/client/sql';
+import { CreateConvenioDTO, UpdateConvenioDTO } from './dto/crud.dto';
 
 @Injectable()
 export class ConveniosService {
@@ -32,7 +33,7 @@ export class ConveniosService {
     const response = await this.prisma.$queryRawTyped(
       conveniosGetPromedio(idConvenio),
     );
-    return response.at(0).promedioPracticas;
+    return response(0).promedioPracticas;
   }
   private async getAprobacionDePracticas(idConvenio: number): Promise<number> {
     const response = await this.prisma.$queryRawTyped(
@@ -74,4 +75,30 @@ export class ConveniosService {
     } as DetalleConvenioDTO;
   }
   // FIN bloque detalles de convenio
+
+  // Bloque CRUD de Convenios
+
+  //Usado para "eliminar" un convenio haciendo false su validez
+  async invalidarConvenio(idConvenio: number) {
+    return this.prisma.convenio.update({
+      data: {
+        validez: false,
+      },
+      where: {
+        id: idConvenio,
+      },
+    });
+  }
+  //Usado para actualizar la información de un convenio
+  async updateConvenio(idConvenio: number, update: UpdateConvenioDTO) {
+    return this.prisma.convenio.update({
+      where: { id: idConvenio },
+      data: update,
+    });
+  }
+
+  //Usado para crear un nuevo convenio
+  async createConvenio(create: CreateConvenioDTO) {
+    return this.prisma.convenio.create(create);
+  }
 }
