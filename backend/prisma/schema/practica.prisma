@@ -3,7 +3,7 @@ model Practica {
 
   nombre                 String
   posicionRelativa       Int
-  competenciasRequeridas Json
+  competenciasRequeridas Json // revisar
 
   // referencia a
 
@@ -23,11 +23,18 @@ model Practica {
   @@unique([idPlan, idAsignatura])
 }
 
+enum EstadoAprobacion {
+  APROBADO
+  DESAPROBADO
+}
+
 model PracticaTomada {
-  fechaInicio          DateTime
-  fechaTermino         DateTime
+  id Int @default(autoincrement())
+
+  fechaInicio          DateTime         @db.Date
+  fechaTermino         DateTime         @default(now()) @db.Date
   resultadoDiagnostico Json
-  resultado            String
+  resultado            EstadoAprobacion @default(APROBADO) // revisar nombre, refiere aprobación de la practica
 
   // referencia a
 
@@ -44,7 +51,7 @@ model PracticaTomada {
 
   //
 
-  @@id([idPractica, idPlan, idAsignatura, idEstudiante, idConvenio])
+  @@id([id, idPractica, idPlan, idAsignatura, idEstudiante, idConvenio])
 }
 
 model Modalidad {
@@ -53,8 +60,8 @@ model Modalidad {
   nombreModalidad String @unique
 
   fechaCreacion DateTime  @default(now()) @db.Date
-  fechaDesuso   DateTime? @default(dbgenerated("now() + interval '1000 years'")) @db.Date 
-  validez       Boolean
+  fechaDesuso   DateTime? @default(dbgenerated("now() + interval '1000 years'")) @db.Date
+  validez       Boolean   @default(true)
 
   // referenciado por
 
@@ -67,12 +74,12 @@ model Convenio {
   titulo         String @unique
   centroPractica String
 
-  fechaInicioConvenio DateTime @db.Date
-  fechaFinConvenio    DateTime @db.Date
-  validez             Boolean
+  fechaInicioConvenio DateTime @default(now()) @db.Date
+  fechaFinConvenio    DateTime @default(dbgenerated("now() + interval '1000 years'")) @db.Date
+  validez             Boolean  @default(true)
 
-  documentoConvenio String
-  urlFoto           String
+  documentoConvenio String?
+  urlFoto           String?
 
   // referencia a
 
