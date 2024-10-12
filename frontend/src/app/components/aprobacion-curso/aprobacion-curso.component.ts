@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Legend, scales } from 'chart.js';
 import { ChartModule } from 'primeng/chart';
 import { DiagnosticosService } from '../../services/diagnosticos.service';
 import { AsignaturaSola } from '../../models/asignaturaSola.dto';

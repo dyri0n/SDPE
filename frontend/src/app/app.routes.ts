@@ -8,9 +8,13 @@ import { EstadisticaDiagnosticoComponent } from './components/estadistica-diagno
 import { PracticasComponent } from './components/practicas/practicas.component';
 import { ResultadoEndComponent } from './components/resultado-end/resultado-end.component';
 import { AsignaturaCortePracticoComponent } from './components/asignatura-corte-practico/asignatura-corte-practico.component';
+import { ListaConveniosComponent } from './components/lista-convenios/lista-convenios.component';
+import { ConvenioComponent } from './components/convenio/convenio.component';
 
 export const routes: Routes = [
     {path: 'fluxogramas', component: FluxogramasComponent},
+    {path: 'convenios', component: ListaConveniosComponent},
+    {path: 'convenio/:idConvenio', component:ConvenioComponent},
     {path: 'cursos/:idAsignatura', component: CursosComponent},
     {path: 'end', component: ResultadoEndComponent},
     {path: 'semestres', component: SemestresComponent},
