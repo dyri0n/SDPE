@@ -40,6 +40,7 @@ export class EstudiantesService {
         rut: value.rut,
         agnioIngreso: value.agnioIngreso,
         plan: value.plan,
+        promedio: value.promedio,
       };
     })[0] as InfoEstudianteDTO;
     //marca el [0] porque la respuesta de la bd es un arreglo con un sólo elemento
@@ -70,6 +71,7 @@ export class EstudiantesService {
     return infoCursos.map((value) => {
       return {
         idAsignatura: value.id,
+        nombreAsignatura: value.nombre,
         codigo: value.codigo,
         areaFormacion: value.areaFormacion,
         agnioRealizacion: value.agnio,
