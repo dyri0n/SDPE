@@ -52,6 +52,10 @@ export class DetalleFluxogramaComponent implements OnInit{
     return this.asignaturasTributadas.includes(id);
   }
 
+  public esCortePractico(asignatura: AsignaturaFluxograma): boolean {
+    return asignatura.caracter==="PRACTICA"
+  }
+
   public detalleAsignatura(idAsignatura: number, nombreAsignatura: string, previas: {idAsignaturaTributada: number}[], tributa: {idAsignaturaRequerida: number}[]) {
     this.detalleFluxograma!.forEach(asignatura => {
       if (asignatura.idAsignatura === idAsignatura) {

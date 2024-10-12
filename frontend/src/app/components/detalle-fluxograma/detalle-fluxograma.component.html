@@ -16,6 +16,7 @@
                             @if (asignatura.semestre == i+1){
                                 <div class="p-4 border border-gray-300 rounded-lg  flex flex-col space-y-2 w-[300px] mx-auto" 
                                     [ngClass]="{
+                                        'bg-sky-400': esCortePractico(asignatura),
                                         'bg-red-400': esPrevia(asignatura.idAsignatura),
                                         'bg-green-400': esTributada(asignatura.idAsignatura),
                                         'bg-white': !esPrevia(asignatura.idAsignatura) && !esTributada(asignatura.idAsignatura)
