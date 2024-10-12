@@ -33,13 +33,19 @@ export class ConveniosService {
     const response = await this.prisma.$queryRawTyped(
       conveniosGetPromedio(idConvenio),
     );
-    return response(0).promedioPracticas;
+    return response.map((value) => {
+      return value.promedioPracticas;
+    })[0] as number;
+    //por defecto retorna un arreglo de un solo elemento asi que retorna el primer elemento
   }
   private async getAprobacionDePracticas(idConvenio: number): Promise<number> {
     const response = await this.prisma.$queryRawTyped(
       conveniosGetAprobacion(idConvenio),
     );
-    return response.at(0).porcentajeaprobacion.toNumber();
+    return response.map((value) => {
+      return value.porcentajeaprobacion.toNumber();
+    })[0] as number;
+    //por defecto retorna un arreglo de un solo elemento asi que retorna el primer elemento
   }
 
   async getDetalleConvenioCompleto(idConvenio: number) {
@@ -93,12 +99,37 @@ export class ConveniosService {
   async updateConvenio(idConvenio: number, update: UpdateConvenioDTO) {
     return this.prisma.convenio.update({
       where: { id: idConvenio },
-      data: update,
+      data: {
+        titulo: update.titulo,
+        centroPractica: update.centroPractica,
+        fechaInicioConvenio: new Date(update.fechaInicioConvenio),
+        fechaFinConvenio: new Date(update.fechaFinConvenio),
+        documentoConvenio: update.documentoConvenio,
+        urlFoto: update.urlFoto,
+        Modalidad: {
+          connect: { id: update.idModalidad },
+        },
+      },
     });
   }
 
   //Usado para crear un nuevo convenio
   async createConvenio(create: CreateConvenioDTO) {
-    return this.prisma.convenio.create(create);
+    return this.prisma.convenio.create({
+      data: {
+        titulo: create.titulo,
+        centroPractica: create.centroPractica,
+        fechaInicioConvenio: new Date(create.fechaInicioConvenio),
+        fechaFinConvenio: new Date(create.fechaFinConvenio),
+        documentoConvenio: create.documentoConvenio,
+        urlFoto: create.urlFoto,
+        validez: true,
+        Modalidad: {
+          connect: {
+            id: create.idModalidad,
+          },
+        },
+      },
+    });
   }
 }

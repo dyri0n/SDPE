@@ -1,3 +1,5 @@
+import { Convenio } from '@prisma/client';
+
 export interface UpdateConvenioDTO {
   titulo?: string;
   centroPractica?: string;
