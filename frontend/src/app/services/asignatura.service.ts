@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Asignatura } from '../models/asignaturas.dto';
+import { ListaAsignatura } from '../models/listaAsignatura.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class AsignaturaService {
 
   constructor(private http: HttpClient) { }
 
-  public obtenerAsignaturas(): Observable<Asignatura[]>{
-    return this.http.get<Asignatura[]>(this.apiUrl)
+  public obtenerAsignaturas(): Observable<ListaAsignatura[]>{
+    return this.http.get<ListaAsignatura[]>(this.apiUrl)
   }
 }
