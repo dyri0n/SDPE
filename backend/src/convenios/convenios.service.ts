@@ -5,8 +5,10 @@ import { DetalleConvenioDTO } from './dto/detalles.dto';
 import {
   conveniosGetAprobacion,
   conveniosGetPromedio,
+  conveniosListar,
 } from '@prisma/client/sql';
 import { CreateConvenioDTO, UpdateConvenioDTO } from './dto/crud.dto';
+import { ListarConvenioDTO } from '../practicas/dto/listar.dto';
 
 @Injectable()
 export class ConveniosService {
@@ -139,4 +141,21 @@ export class ConveniosService {
       },
     });
   }
+
+  // Bloque Listar Convenios
+  async listarConvenios(): Promise<ListarConvenioDTO[]> {
+    const resultado = await this.prisma.$queryRawTyped(conveniosListar());
+    return resultado.map((value) => {
+      return {
+        idConvenio: value.idConvenio,
+        imagen: value.imagen,
+        nombreConvenio: value.nombreConvenio,
+        centroPractica: value.centroPractica,
+        inicio: value.inicio,
+        nombreModalidad: value.nombreModalidad,
+      };
+    }) as ListarConvenioDTO[];
+  }
+
+  //Fin Bloque Listar Convenios
 }

@@ -21,6 +21,11 @@ export class ConveniosController {
     return this.convenioService.getDetalleConvenioCompleto(idConvenio);
   }
 
+  @Get()
+  async getAll() {
+    return this.convenioService.listarConvenios();
+  }
+
   @Patch(':idConvenio')
   async update(
     @Param('idConvenio', ParseIntPipe) idConvenio: number,
