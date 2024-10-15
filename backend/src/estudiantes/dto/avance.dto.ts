@@ -9,9 +9,11 @@ export interface InfoEstudianteDTO {
   rut: string;
   agnioIngreso: number;
   plan: number;
+  promedio: number;
 }
 export interface CursoEstudianteDTO {
   idAsignatura: number;
+  nombreAsignatura: string;
   codigo: string;
   areaFormacion: string;
   agnioRealizacion: number;

@@ -21,11 +21,9 @@ export class PracticasController {
     );
   }
 
-  @Get('estudiante/:rutEstudiante')
-  getByEstudiante(@Param(':rutEstudiante') rutEstudiante: string) {
-    return this.practicaService.getAllPracticasCursadasPorEstudiante(
-      rutEstudiante,
-    );
+  @Get('estudiante/:idEstudiante')
+  getByEstudiante(@Param('idEstudiante', ParseIntPipe) idEstudiante: number) {
+    return this.practicaService.getDetallePracticasDeEstudiante(idEstudiante);
   }
 
   @Get('areaFormacion/:areaFormacion')
