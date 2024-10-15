@@ -19,7 +19,14 @@ export class ConveniosService {
   //BLOQUE detalle de convenio
 
   private async getConvenioPorId(idConvenio: number): Promise<Convenio> {
-    return this.prisma.convenio.findUnique({ where: { id: idConvenio } });
+    return this.prisma.convenio.findUnique({
+      where: { id: idConvenio },
+      include: {
+        Modalidad: {
+          select: { nombreModalidad: true },
+        },
+      },
+    });
   }
 
   private async getTotalDePracticasEnConvenio(
