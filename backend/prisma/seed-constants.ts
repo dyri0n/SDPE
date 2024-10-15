@@ -3,6 +3,7 @@ import {
   Convenio,
   END,
   Estudiante,
+  LineaAsignatura,
   Modalidad,
   Plan,
   Practica,
@@ -865,6 +866,19 @@ export const PRACTICAS: Practica[] = [
     competenciasRequeridas: {},
     idPlan: undefined,
     idAsignatura: undefined,
+  },
+];
+
+export const LINEA_ASIGNATURA: LineaAsignatura[] = [
+  {
+    id: 1,
+    titulo: 'Corte Práctico',
+    idPlan: undefined,
+  },
+  {
+    id: 2,
+    titulo: 'Licenciatura',
+    idPlan: undefined,
   },
 ];
 
