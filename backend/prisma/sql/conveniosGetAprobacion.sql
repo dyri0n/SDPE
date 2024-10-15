@@ -1,11 +1,16 @@
 --obtiene el porcentaje de aprobacion de un convenio
 WITH notasFinales as (
-    SELECT "notaFinal"
-    FROM "Cursacion" c
-             JOIN "Estudiante" e ON (c."estudianteRut" = e."rut")
-             JOIN "PracticaTomada" pt ON (pt."idEstudiante" = e."id")
-             JOIN "Convenio" cn ON (pt."idConvenio" = cn."id")
-    WHERE cn."id" = $1
+    SELECT c."notaFinal"
+    FROM "PracticaTomada" pt
+             JOIN "Estudiante" e ON (pt."idEstudiante" = e."id")
+             JOIN "Convenio" cn ON (
+        cn."id" = pt."idConvenio"
+        )
+             JOIN "Cursacion" c ON (
+        c."estudianteRut" = e."rut" AND
+        c."idAsignatura" = pt."idAsignatura"
+        )
+    WHERE "idConvenio" = $1
 )
 --PORCENTAJE DE APROBACION
 SELECT (SUM(CASE WHEN "notaFinal" > 4.0 THEN 1 END) / COUNT(1) * 100)::numeric as porcentajeAprobacion
