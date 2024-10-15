@@ -1,0 +1,26 @@
+model ResultadoEND {
+  resultados Json
+
+  // refiere a
+
+  endId Int 
+  ENDAsociada END @relation(name: "refiere a la END", fields: [endId], references: [id])
+
+  estudianteId Int @unique
+  EstudianteAsociado Estudiante @relation(name: "obtiene los resultados", fields: [estudianteId], references: [id])
+
+  //
+
+  @@id([endId, estudianteId])
+} 
+
+model END {
+  id Int @id
+
+  fechaRendicion DateTime @db.Date
+  formato Json
+
+  // es referenciado por
+
+  ResultadosEND ResultadoEND[] @relation(name: "refiere a la END")
+}
