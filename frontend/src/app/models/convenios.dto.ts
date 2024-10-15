@@ -16,6 +16,26 @@ export interface DetalleConvenio {
   linkPdf: File | string;
 }
 
+export interface ConvenioTest {
+  id: number;
+  titulo: string;
+  centroPractica: string;
+  fechaInicioConvenio: Date;
+  fechaFinConvenio: Date;
+  validez: boolean;
+  documentoConvenio: string;
+  urlFoto: string;
+  idModalidad: number;
+}
+
+export interface DetalleConvenioTest {
+  convenio: ConvenioTest;
+  nroPracticasRealizadas: number;
+  promedioPracticas: number;
+  porcentajeAprobacion: number;
+  porcentajeReprobacion: number;
+}
+
 export interface NuevoConvenio {
   nombre: string;
   centroPractica: string;

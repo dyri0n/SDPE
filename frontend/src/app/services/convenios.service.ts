@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Convenio, DetalleConvenio, NuevoConvenio } from '../models/convenios.dto';
+import { Convenio, DetalleConvenio, DetalleConvenioTest, NuevoConvenio } from '../models/convenios.dto';
 import { Observable, of } from 'rxjs';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { Observable, of } from 'rxjs';
 export class ConveniosService {
   constructor(private http: HttpClient) { }
 
-  private apiUrl= ''
+  private apiUrl= 'http://localhost:3000/convenios'
 
   public convenios: Convenio[] = [
     {
@@ -74,6 +74,10 @@ export class ConveniosService {
 
   public obtenerDetalleConvenio(idConvenio: number): Observable<DetalleConvenio>{
     return of(this.detallesConvenios.find(convenio => convenio.convenio.id == idConvenio)!);
+  }
+
+  public obtenerDetalleConvenioTest(idConvenio: number): Observable<DetalleConvenioTest>{
+    return this.http.get<DetalleConvenioTest>(this.apiUrl + "/" + idConvenio)
   }
 
   //deberia mandarlo al backend
