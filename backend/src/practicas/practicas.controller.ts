@@ -30,8 +30,8 @@ export class PracticasController {
   getByAreaFormacion(
     @Param('areaFormacion', new ParseEnumPipe(AREA)) areaFormacion: AREA,
   ) {
-    return this.practicaService.getAllPracticasCursadasPorAreaFormacion(
-      areaFormacion,
-    );
+    //return this.practicaService.getAllPracticasCursadasPorAreaFormacion(
+    //  areaFormacion,
+    //);
   }
 }
