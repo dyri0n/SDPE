@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AREA, Practica, PracticaTomada } from '@prisma/client';
-import { DetallePracticaDTO, InfoPracticaDTO } from './dto/detalles.dto';
+import { Practica, PracticaTomada } from '@prisma/client';
+import { DetallePracticasDTO, InfoPracticaDTO } from './dto/detalles.dto';
 import { practicasGetDetallePorEstudiante } from '@prisma/client/sql';
 import { EstudiantesService } from '../estudiantes/estudiantes.service';
 import { InfoEstudianteDTO } from '../estudiantes/dto/avance.dto';
@@ -33,9 +33,10 @@ export class PracticasService {
     });
   }
 
+  /*
   //devuelve las asignaturas tomadas por estudiantes segun el
   //area de formacion de sus prerrequisitos
-  //TODO REVISAR SI FUNCIONA
+  //DESATAR CUANDO SEA NECESARIO
   async getAllPracticasCursadasPorAreaFormacion(
     areaFormacion: AREA,
   ): Promise<PracticaTomada[]> {
@@ -48,9 +49,20 @@ export class PracticasService {
     WHERE pc.areaFormacion = ${areaFormacion}
     `;
   }
+  */
 
   // Bloque Detalle de Practica por Estudiante
-  //TODO: DOCUMENTAR Y REVISAR SI FALTAN MAS ATRIBUTOS DE CADA PRACTICA
+  /*
+   * Retorna la información de prácticas realizadas por un solo estudiante
+   * en el InfoPracticaDTO
+   *
+   * InfoPracticaDTO =
+   *   { titulo, centroPractica, nombreModalidad, notaFinal, intento}
+   *
+   * Es posible agregar más atributos modificando la consulta sql y el dto
+   * de InfoPracticaDTO
+   *
+   * */
   private async getInfoPracticasDeEstudiante(
     idEstudiante: number,
   ): Promise<InfoPracticaDTO[]> {
@@ -68,6 +80,14 @@ export class PracticasService {
     }) as InfoPracticaDTO[];
   }
 
+  // Método principal
+  /*
+   *  EJ:
+   * {
+   *   estudiante : InfoEstudianteDTO,
+   *   practicas: InfoPracitcaDTO[]
+   * }
+   * */
   async getDetallePracticasDeEstudiante(idEstudiante: number) {
     const estudiante: InfoEstudianteDTO =
       await this.estudianteService.getEstudianteById(idEstudiante);
@@ -79,6 +99,8 @@ export class PracticasService {
     return {
       estudiante: estudiante,
       practicas: infoPracticas,
-    } as DetallePracticaDTO;
+    } as DetallePracticasDTO;
   }
+
+  // FIN bloque detalle de practica por estudiante
 }

@@ -1,6 +1,6 @@
 import { InfoEstudianteDTO } from '../../estudiantes/dto/avance.dto';
 
-export interface DetallePracticaDTO {
+export interface DetallePracticasDTO {
   estudiante: InfoEstudianteDTO;
   practicas: InfoPracticaDTO[];
 }
