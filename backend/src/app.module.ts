@@ -10,6 +10,9 @@ import { PracticasModule } from './practicas/practicas.module';
 import { EndsModule } from './ends/ends.module';
 import { ConveniosModule } from './convenios/convenios.module';
 import { EstudiantesModule } from './estudiantes/estudiantes.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -22,6 +25,9 @@ import { EstudiantesModule } from './estudiantes/estudiantes.module';
     EndsModule,
     ConveniosModule,
     EstudiantesModule,
+    AuthModule,
+    UserModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
