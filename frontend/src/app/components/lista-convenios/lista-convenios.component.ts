@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConveniosService } from '../../services/convenios.service';
-import { Convenio, NuevoConvenio } from '../../models/convenios.dto';
+import { Convenio, ConvenioListaTest, NuevoConvenio } from '../../models/convenios.dto';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
@@ -12,12 +12,13 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-lista-convenios',
   standalone: true,
-  imports: [PaginatorModule, DialogModule, ButtonModule, FloatLabelModule, CalendarModule, FileUploadModule, ReactiveFormsModule, InputTextModule, ToastModule],
+  imports: [PaginatorModule, DialogModule, ButtonModule, FloatLabelModule, CalendarModule, FileUploadModule, ReactiveFormsModule, InputTextModule, ToastModule, CommonModule],
   providers: [MessageService],
   templateUrl: './lista-convenios.component.html',
   styleUrl: './lista-convenios.component.css'
@@ -32,6 +33,7 @@ export class ListaConveniosComponent implements OnInit{
 
   ngOnInit() {
     this.obtenerConvenios()
+    this.obtenerConveniosTest()
   }
 
   public visible: boolean = false;
@@ -124,6 +126,7 @@ export class ListaConveniosComponent implements OnInit{
   //
   
   public convenios: Convenio[] = []
+  public conveniosTest: ConvenioListaTest[] = []
 
   public verDetalle(id: number){
     this.router.navigate(['/convenio/', id])
@@ -148,6 +151,12 @@ export class ListaConveniosComponent implements OnInit{
   public obtenerConvenios(){
     this.servicioConvenios.obtenerConvenios().subscribe(convenio=>{
       this.convenios=convenio
+    })
+  }
+
+  public obtenerConveniosTest(){
+    this.servicioConvenios.obtenerConveniosTest().subscribe(convenio=>{
+      this.conveniosTest=convenio
     })
   }
 }

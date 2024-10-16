@@ -16,6 +16,16 @@ export interface DetalleConvenio {
   linkPdf: File | string;
 }
 
+export interface ConvenioListaTest {
+  idConvenio: number;
+  imagen: string;
+  nombreConvenio: string;
+  centroPractica: string;
+  inicio: Date;
+  nombreModalidad: string;
+}
+
+
 export interface ConvenioTest {
   id: number;
   titulo: string;
@@ -26,6 +36,7 @@ export interface ConvenioTest {
   documentoConvenio: string;
   urlFoto: string;
   idModalidad: number;
+  Modalidad: ModalidadTest;
 }
 
 export interface DetalleConvenioTest {
@@ -34,6 +45,10 @@ export interface DetalleConvenioTest {
   promedioPracticas: number;
   porcentajeAprobacion: number;
   porcentajeReprobacion: number;
+}
+
+export interface ModalidadTest {
+  nombreModalidad: string;
 }
 
 export interface NuevoConvenio {
