@@ -84,6 +84,10 @@ export class ConveniosService {
     return this.http.get<DetalleConvenioTest>(this.apiUrl + "/" + idConvenio)
   }
 
+  public eliminarConvenio(idConvenio: number): Observable<any>{
+    return this.http.delete(this.apiUrl + "/" + idConvenio)
+  }
+
   //deberia mandarlo al backend
   public nuevoConvenio(convenio:NuevoConvenio){
     console.log(convenio)

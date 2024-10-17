@@ -13,6 +13,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2'
 
 
 @Component({
@@ -32,7 +33,6 @@ export class ListaConveniosComponent implements OnInit{
   ){}
 
   ngOnInit() {
-    this.obtenerConvenios()
     this.obtenerConveniosTest()
   }
 
@@ -125,11 +125,40 @@ export class ListaConveniosComponent implements OnInit{
   }
   //
   
-  public convenios: Convenio[] = []
   public conveniosTest: ConvenioListaTest[] = []
 
   public verDetalle(id: number){
     this.router.navigate(['/convenio/', id])
+  }
+
+  public eliminarConvenio(id: number){
+    this.servicioConvenios.eliminarConvenio(id).subscribe(respuesta=>{
+      if(respuesta){
+        Swal.fire(
+          '¡Eliminado!',
+          'El convenio ha sido eliminado.',
+          'success'
+        )
+        this.obtenerConveniosTest()
+        }
+      })
+  }
+
+  public confirmarEliminacion(id: number){
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esta acción!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((resultado) => {
+      if (resultado.isConfirmed) {
+        this.eliminarConvenio(id)
+      }
+    })
   }
 
   public agregarConvenio(){
@@ -146,12 +175,6 @@ export class ListaConveniosComponent implements OnInit{
       });
     }
     
-  }
-
-  public obtenerConvenios(){
-    this.servicioConvenios.obtenerConvenios().subscribe(convenio=>{
-      this.convenios=convenio
-    })
   }
 
   public obtenerConveniosTest(){

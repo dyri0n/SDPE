@@ -25,7 +25,6 @@ export interface ConvenioListaTest {
   nombreModalidad: string;
 }
 
-
 export interface ConvenioTest {
   id: number;
   titulo: string;
@@ -58,6 +57,16 @@ export interface NuevoConvenio {
   modalidad: string;
   imagen: File | string;
   linkPdf: File | string;
+}
+
+export interface CreateConvenioDTO {
+  titulo: string;
+  centroPractica: string;
+  fechaInicioConvenio: Date;
+  fechaFinConvenio?: Date;
+  documentoConvenio: string; //titulo del documento
+  urlFoto: string;  //titulo foto
+  idModalidad: number;
 }
 
 // imange y link pdf estan como File o string porque en si se guardan files 
