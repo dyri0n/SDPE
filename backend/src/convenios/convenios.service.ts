@@ -129,7 +129,7 @@ export class ConveniosService {
         titulo: create.titulo,
         centroPractica: create.centroPractica,
         fechaInicioConvenio: new Date(create.fechaInicioConvenio),
-        fechaFinConvenio: new Date(create.fechaFinConvenio),
+        fechaFinConvenio: create.fechaFinConvenio,
         documentoConvenio: create.documentoConvenio,
         urlFoto: create.urlFoto,
         validez: true,

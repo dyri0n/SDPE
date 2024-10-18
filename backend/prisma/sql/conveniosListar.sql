@@ -7,3 +7,4 @@ SELECT
     m."nombreModalidad" as "nombreModalidad"
 FROM "Convenio" c
          JOIN "Modalidad" m ON (c."idModalidad" = m."id")
+WHERE c."validez" = true
