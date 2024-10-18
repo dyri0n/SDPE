@@ -45,4 +45,43 @@ export class PlanesEstudioService {
       },
     });
   }
+
+  async getLineasDeAsignaturas(id: number) {
+    return this.prisma.lineaAsignatura.findMany({
+      where: {
+        idPlan: id,
+      },
+      select: {
+        id: true,
+        titulo: true,
+        LineaContemplaAsignatura: {
+          select: {
+            posicion: true,
+            AsignaturaContempladaReferenciada: true,
+          },
+        },
+      },
+    });
+  }
+
+  async findOneLineaAsignatura(idPlan: number, idLinea: number) {
+    return this.prisma.lineaAsignatura.findUnique({
+      where: {
+        id_idPlan: {
+          id: idLinea,
+          idPlan: idPlan,
+        },
+      },
+      select: {
+        id: true,
+        titulo: true,
+        LineaContemplaAsignatura: {
+          select: {
+            posicion: true,
+            AsignaturaContempladaReferenciada: true,
+          },
+        },
+      },
+    });
+  }
 }
