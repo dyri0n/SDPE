@@ -4,6 +4,11 @@
             <div class="w-3/12 h-56 ">
                 <!--En caso de no haber foto agregar foto por default-->
                 <img src="{{detalleConvenioTest.convenio.urlFoto}}" class="h-full w-full object-cover rounded-lg select-none">
+                <img [src]="(detalleConvenioTest.convenio && detalleConvenioTest.convenio.urlFoto) ? detalleConvenioTest.convenio.urlFoto : '../../assets/imageDefault.jpg'"
+                    class="h-full w-full object-cover rounded-lg select-none">
+                <img src="/SDPE/frontend/src/app/assets/imageDefault.jpg" class="h-full w-full object-cover rounded-lg select-none">
+                <img src="imageDefault.jpg" class="h-full w-full object-cover rounded-lg select-none">
+                <img src="../../assets/imageDefault.jpg" class="h-full w-full object-cover rounded-lg select-none">
             </div>
             <div class="flex flex-wrap justify-center">
                 <h1 class="w-full bg-white text-5xl py-6 text-center text-black font-black select-none">{{detalleConvenioTest.convenio.titulo}}</h1>

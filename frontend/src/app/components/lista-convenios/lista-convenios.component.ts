@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConveniosService } from '../../services/convenios.service';
-import { Convenio, ConvenioListaTest, NuevoConvenio } from '../../models/convenios.dto';
+import { Convenio, ConvenioListaTest, CreateConvenioDTO, NuevoConvenio } from '../../models/convenios.dto';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
@@ -117,8 +117,8 @@ export class ListaConveniosComponent implements OnInit{
   }
 
   // todo esto es para el paginator de primeng, aun no se como funciona.
-  first: number = 0;
-  rows: number = 10;
+  public first: number = 0;
+  public rows: number = 10;
   public onPageChange(event: PaginatorState) {
     this.first = event.first ?? 0;
     this.rows = event.rows ?? 10; 
@@ -126,6 +126,7 @@ export class ListaConveniosComponent implements OnInit{
   //
   
   public conveniosTest: ConvenioListaTest[] = []
+  public conveniosFiltrados: ConvenioListaTest[]=[]
 
   public verDetalle(id: number){
     this.router.navigate(['/convenio/', id])
@@ -164,7 +165,17 @@ export class ListaConveniosComponent implements OnInit{
   public agregarConvenio(){
     if(this.formularioConvenio.valid){
       const nuevoConvenio: NuevoConvenio = this.formularioConvenio.value
+      const nuevoConvenioTest: CreateConvenioDTO = {
+        titulo: this.formularioConvenio.value.nombre,
+        centroPractica: this.formularioConvenio.value.centro,
+        fechaInicioConvenio: new Date(this.formularioConvenio.value.inicio, 0, 1),
+        fechaFinConvenio: new Date(this.formularioConvenio.value.inicio, 0, 1),
+        documentoConvenio: this.formularioConvenio.value.terminos.name,
+        urlFoto: this.formularioConvenio.value.imagen.name,
+        idModalidad: this.modalidades.indexOf(this.formularioConvenio.value.modalidad) + 1
+    }
       this.servicioConvenios.nuevoConvenio(nuevoConvenio)
+      this.servicioConvenios.nuevoConvenioTest(nuevoConvenioTest)
       this.alternarModal()
       this.messageService.add({severity: 'success', summary: 'Guardado', detail: 'El convenio se guardó correctamente'});
     } else {
@@ -174,12 +185,20 @@ export class ListaConveniosComponent implements OnInit{
         detail: 'Formulario incompleto. Por favor llene todos los campos requeridos.'
       });
     }
-    
   }
 
   public obtenerConveniosTest(){
     this.servicioConvenios.obtenerConveniosTest().subscribe(convenio=>{
       this.conveniosTest=convenio
+      this.conveniosFiltrados=this.conveniosTest
     })
+  }
+
+  public filtrarConvenios(evento: any) {
+    const query = evento.target.value.toLowerCase();
+    this.conveniosFiltrados = this.conveniosTest.filter(convenio =>
+      convenio.nombreConvenio.toLowerCase().includes(query) || convenio.centroPractica.toLowerCase().includes(query)
+    )
+    this.first=0
   }
 }

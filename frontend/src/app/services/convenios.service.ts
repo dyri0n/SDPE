@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Convenio, ConvenioListaTest, DetalleConvenio, DetalleConvenioTest, NuevoConvenio } from '../models/convenios.dto';
+import { Convenio, ConvenioListaTest, CreateConvenioDTO, DetalleConvenio, DetalleConvenioTest, NuevoConvenio } from '../models/convenios.dto';
 import { Observable, of } from 'rxjs';
 
 @Injectable({
@@ -91,5 +91,10 @@ export class ConveniosService {
   //deberia mandarlo al backend
   public nuevoConvenio(convenio:NuevoConvenio){
     console.log(convenio)
+  }
+
+  public nuevoConvenioTest(convenioTest:CreateConvenioDTO){
+    console.log(convenioTest)
+    return this.http.post<CreateConvenioDTO>(this.apiUrl, convenioTest)
   }
 }

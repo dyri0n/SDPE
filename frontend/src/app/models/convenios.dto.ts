@@ -33,7 +33,7 @@ export interface ConvenioTest {
   fechaFinConvenio: Date;
   validez: boolean;
   documentoConvenio: string;
-  urlFoto: string;
+  urlFoto?: string;
   idModalidad: number;
   Modalidad: ModalidadTest;
 }
