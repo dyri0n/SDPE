@@ -4,6 +4,8 @@ import {
   CARACTER,
   EstadoAprobacion,
   Estudiante,
+  LineaAsignatura,
+  LineaContemplaAsignatura,
   Plan,
   PlanContemplaAsignatura,
   Practica,
@@ -421,6 +423,63 @@ async function main() {
 
   console.timeEnd('PRACTICA SEEDING');
   console.info('El seeding de prácticas terminó');
+
+  console.time('LINEA_ASIGNATURA SEEDING');
+  console.info('El seeding de las lineas de asignaturas está comenzando');
+
+  const lineasQueries: LineaAsignatura[] = [];
+  for (const plan of planesDeEstudio) {
+    for (const linea of constants.LINEA_ASIGNATURA) {
+      lineasQueries.push({
+        id: linea.id,
+        titulo: linea.titulo,
+        idPlan: plan.id,
+      });
+    }
+  }
+
+  const lineasAsignaturas = await prisma.lineaAsignatura.createManyAndReturn({
+    data: lineasQueries,
+  });
+
+  moreLog(lineasAsignaturas);
+
+  const lineaContemplaAsignaturaQueries: LineaContemplaAsignatura[] = [];
+  for (const plan of planesDeEstudio) {
+    const asigcontempladas = asignaturasContempladasInsertadas.filter(
+      (asigcont) => {
+        if (asigcont.idPlan === plan.id) return asigcont;
+      },
+    );
+
+    for (const linea of constants.LINEA_ASIGNATURA) {
+      let counter = 0;
+      for (const asigcont of asigcontempladas) {
+        if (Math.random() > 0.9) {
+          const lcasig = {
+            posicion: counter,
+            idPlan: asigcont.idPlan,
+            idLinea: linea.id,
+            idAsignatura: asigcont.idAsignatura,
+          };
+
+          lineaContemplaAsignaturaQueries.push(lcasig);
+
+          counter++;
+        }
+      }
+    }
+  }
+
+  const lineaContemplaAsignatura: LineaContemplaAsignatura[] =
+    await prisma.lineaContemplaAsignatura.createManyAndReturn({
+      data: lineaContemplaAsignaturaQueries,
+    });
+
+  moreLog(lineaContemplaAsignatura);
+
+  console.timeEnd('LINEA_ASIGNATURA SEEDING');
+  console.info('El seeding de lineas de asignaturas termino');
 }
 
 const moreLog = function (obj: any): void {

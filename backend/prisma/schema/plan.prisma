@@ -10,4 +10,5 @@ model Plan {
 
   PlanContemplaAsignatura PlanContemplaAsignatura[] @relation(name: "es contemplada por")
   PracticasDefinidas      Practica[]                @relation(name: "define las practicas")
+  lineasDeAsignaturas     LineaAsignatura[]         @relation(name: "es definido por")
 }

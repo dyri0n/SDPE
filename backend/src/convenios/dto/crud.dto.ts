@@ -13,7 +13,7 @@ export interface CreateConvenioDTO {
   titulo: string;
   centroPractica: string;
   fechaInicioConvenio: Date;
-  fechaFinConvenio: Date;
+  fechaFinConvenio?: Date;
   documentoConvenio: string;
   urlFoto: string;
   idModalidad: number;
