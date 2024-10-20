@@ -33,7 +33,6 @@ export class ConvenioComponent implements OnInit{
   public obtenerDetalleConvenio(){
     this.servicioConvenios.obtenerDetalleConvenio(this.idConvenio).subscribe(convenio =>{
       this.detalleConvenio = convenio
-      console.log(this.detalleConvenio)
     })
   }
 
@@ -41,7 +40,6 @@ export class ConvenioComponent implements OnInit{
     this.servicioConvenios.obtenerDetalleConvenioTest(this.idConvenio).subscribe(convenio =>{
       this.detalleConvenioTest = convenio
       this.detalleConvenioTest.promedioPracticas = parseFloat(this.detalleConvenioTest.promedioPracticas.toFixed(2))
-      console.log(this.detalleConvenioTest)
     })
   }
 }

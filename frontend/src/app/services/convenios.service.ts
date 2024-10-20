@@ -93,7 +93,7 @@ export class ConveniosService {
     console.log(convenio)
   }
 
-  public nuevoConvenioTest(convenioTest:CreateConvenioDTO){
+  public nuevoConvenioTest(convenioTest:CreateConvenioDTO): Observable<CreateConvenioDTO>{
     console.log(convenioTest)
     return this.http.post<CreateConvenioDTO>(this.apiUrl, convenioTest)
   }
