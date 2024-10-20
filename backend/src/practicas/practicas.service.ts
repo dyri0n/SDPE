@@ -57,7 +57,9 @@ export class PracticasService {
    * en el InfoPracticaDTO
    *
    * InfoPracticaDTO =
-   *   { titulo, centroPractica, nombreModalidad, notaFinal, intento}
+   *   { titulo, centroPractica, nombreModalidad, notaFinal, intento ... }
+   *
+   * Más info del dto en ./dto/detalles.dto.ts
    *
    * Es posible agregar más atributos modificando la consulta sql y el dto
    * de InfoPracticaDTO
@@ -76,6 +78,8 @@ export class PracticasService {
         nombreModalidad: value.nombreModalidad,
         notaFinal: value.notaFinal,
         numIntento: value.numIntento,
+        tipoPractica: value.nombrePractica,
+        posicionRelativa: value.numeroPractica,
       };
     }) as InfoPracticaDTO[];
   }

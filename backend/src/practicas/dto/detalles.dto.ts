@@ -6,6 +6,8 @@ export interface DetallePracticasDTO {
 }
 export interface InfoPracticaDTO {
   titulo: string;
+  tipoPractica: string;
+  posicionRelativa: number;
   centroPractica: string;
   nombreModalidad: string;
   notaFinal: number;
