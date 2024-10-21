@@ -18,7 +18,7 @@ export class SemestresComponent {
     this.sems = this.semService.obtenerSemestres();
   }
 
-  irASemestre(sem: string) {
+  irASemestre(sem: number) {
     alert(`Vas al semestre ${sem}`);
   }
 }

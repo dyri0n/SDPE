@@ -1,0 +1,118 @@
+<h1 class="text-5xl my-10 text-center font-semibold">Resultados obtenidos en END</h1>
+
+<div class="container mx-auto my-20 shadow-lg rounded-lg bg-gray-50 p-8">
+  <div class="flex flex-col lg:flex-row">
+    <!-- Primera tabla: Temas y estandares -->
+    <div class="w-full lg:w-1/2 pr-4 mb-4">
+      <h3 class="text-lg mb-3 text-start font-medium">Temas y estándares evaluados</h3>
+
+      <table class="min-w-full table-auto border-collapse border border-black text-left text-sm">
+        <thead>
+          <tr>
+            <th class="border border-black px-2 py-1 bg-teal-400">Tema</th>
+            <th class="border border-black px-2 py-1 bg-teal-400">Estándares</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border border-black px-2 py-1 bg-teal-100" rowspan="2">Tema 1: Aprendizaje y desarrollo de estudiantes de Educación Básica</td>
+            <td class="border border-black px-2 py-1">E1. Conoce a los estudiantes de educación básica y sabe cómo ellos aprenden.</td>
+          </tr>
+          <tr>
+            <td class="border border-black px-2 py-1">E2. Está preparado para promover el desarrollo personal y social de los estudiantes.</td>
+          </tr>
+
+          <tr>
+            <td class="border border-black px-2 py-1 bg-teal-100" rowspan="6">Tema 2: Diseño e implementación de la enseñanza</td>
+            <td class="border border-black px-2 py-1">E3. Conoce el currículo de la educación básica.</td>
+          </tr>
+          <tr>
+            <td class="border border-black px-2 py-1">E4. Sabe cómo diseñar e implementar estrategias enseñanza-aprendizaje adecuadas para los objetivos de acuerdo al contexto.</td>
+          </tr>
+          <tr>
+            <td class="border border-black px-2 py-1">E5. Está preparado para gestionar la clase y crear un ambiente apropiado para el aprendizaje según contextos.</td>
+          </tr>
+          <tr>
+            <td class="border border-black px-2 py-1">E6. Conoce y sabe aplicar métodos de evaluación para observar el progreso de los estudiantes y sabe usar los resultados para retroalimentar el aprendizaje y la práctica pedagógica.</td>
+          </tr>
+          <tr>
+            <td class="border border-black px-2 py-1">E7. Conoce cómo se genera y transforma cultura escolar.</td>
+          </tr>
+          <tr>
+            <td class="border border-black px-2 py-1">E8. Está preparado para atender la diversidad y promover la integración en el aula.</td>
+          </tr>
+
+          <tr>
+            <td class="border border-black px-2 py-1 bg-teal-100" rowspan="1">Tema 3: La profesión docente y el sistema educacional chileno</td>
+            <td class="border border-black px-2 py-1">E10. Aprende en forma continua y reflexiona sobre su práctica y su inserción en el sistema educacional.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Segunda tabla: Resolución de situaciones pedagógicas -->
+    <div class="w-full lg:w-1/2 pl-4 mb-4">
+      <h3 class="text-lg mb-3 text-start font-medium">Niveles de desempeño de pregunta abierta de situaciones pedagógicas</h3>
+
+      <table class="min-w-full table-auto border-collapse border border-black text-left text-sm">
+        <thead>
+          <tr>
+            <th colspan="2" class="border border-black px-2 py-1 font-semibold bg-teal-400">Resolución de situaciones pedagógicas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border border-black px-2 py-1 font-semibold bg-teal-400">Descriptor</td>
+            <td class="border border-black px-2 py-1 font-semibold bg-teal-400">Nivel</td>
+          </tr>
+          <tr>
+            <td class="border border-black px-2 py-1 bg-teal-100">Proponen una actividad de clase en que involucra la participación de los estudiantes en la que se comunica e implementan normas de convivencia de acuerdo con la información proporcionada en el caso.</td>
+            <td class="border border-black px-2 py-1">A</td>
+          </tr>
+          <tr>
+            <td class="border border-black px-2 py-1 bg-teal-100">Proponen una actividad en la que se comunican y complementan normas de convivencia; sin embargo, no es realizable en clases o no se especifica cómo se involucrará a los estudiantes.</td>
+            <td class="border border-black px-2 py-1">B</td>
+          </tr>
+          <tr>
+            <td class="border border-black px-2 py-1 bg-teal-100">Proponen una opinión sobre una posible actividad, la que no está expresada como una actividad de clase y no es posible observar cómo se involucra a los estudiantes.</td>
+            <td class="border border-black px-2 py-1">C</td>
+          </tr>
+          <tr>
+            <td class="border border-black px-2 py-1 bg-teal-100">Describen la situación expuesta en el caso, sin proponer una actividad que involucre la comunicación e implementación de normas de convivencia.</td>
+            <td class="border border-black px-2 py-1">D</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="container mx-auto my-20 shadow-lg rounded-lg bg-gray-50 p-8">
+    <h3 class="text-lg mb-3 text-start font-medium">Porcentaje de logro de carrera PEDIF por temas</h3>
+    <p-chart type="bar" [data]="temasData" [options]="options" />
+</div>
+
+<div class="container mx-auto my-20 shadow-lg rounded-lg bg-gray-50 p-8">
+  <h3 class="text-lg mb-3 text-start font-medium">Porcentaje de logro de los estudiantes de PEDIF por estándar</h3>
+  <p-chart type="bar" [data]="estandaresData" [options]="options" />
+</div>
+
+<div class="container mx-auto my-20 shadow-lg rounded-lg bg-gray-50 p-8">
+  <h3 class="text-lg mb-10 text-start font-medium">Nivel de desempeño de los estudiantes de PEDIF en la prueba de respuesta abierta</h3>
+  <div class="flex justify-between">
+    <div class="w-[38rem] mx-10">
+      <h4 class="text-sm mb-3 text-start font-medium">Distribución de nivel de desempeño en la pregunta de respuesta abierta de Situaciones pedagógicas (PA-SP)</h4>
+      <p-chart type="doughnut" [data]="SPData" [options]="PAOptions"></p-chart>
+    </div>
+    <div class="w-[38rem] mx-10">
+      <h4 class="text-sm mb-3 text-start font-medium">Distribución de nivel de desempeño en la pregunta de respuesta abierta de Comunicación Escrita (PA-CE)</h4>
+      <p-chart type="doughnut" [data]="CEData" [options]="PAOptions"></p-chart>
+    </div>
+  </div>
+</div>
+
+<!-- no se si mostrar tambien individualmente -->
+<!-- <div class="container mx-auto my-20 shadow-lg rounded-lg bg-gray-50 p-8">
+    <h3 class="text-lg mb-3 text-start font-medium">Porcentaje de logro de los estudiantes de PEDIF por tema</h3>
+
+</div> -->

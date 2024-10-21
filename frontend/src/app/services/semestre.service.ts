@@ -5,18 +5,7 @@ import { Semestre } from '../models/semestre';
   providedIn: 'root',
 })
 export class SemestreService {
-  semestres: Semestre[] = [
-    { numero: 'I' },
-    { numero: 'II' },
-    { numero: 'III' },
-    { numero: 'IV' },
-    { numero: 'V' },
-    { numero: 'VI' },
-    { numero: 'VII' },
-    { numero: 'VIII' },
-    { numero: 'IX' },
-    { numero: 'X' },
-  ];
+  semestres: Semestre[] = [];
 
   constructor() {}
 

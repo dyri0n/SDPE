@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { PracticasService } from '../../services/practicas.service';
-import { Practica } from '../../models/practica';
+import { InfoPracticaDTO } from '../../models/practica';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -12,8 +12,9 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './practicas.component.css',
 })
 export class PracticasComponent {
+  idEstudiante: number = 1;
   buscador: String = '';
-  practicas: Practica[] = [] as Practica[];
+  practicas: InfoPracticaDTO[] = [] as InfoPracticaDTO[];
 
   constructor(private readonly practicaService: PracticasService) {}
 
@@ -21,20 +22,16 @@ export class PracticasComponent {
     this.practicas = this.practicaService.obtenerPracticas();
   }
 
+  // Funcion que filtra las practicas escritas en el buscador
   filteredPracticas() {
     if (!this.buscador) {
       return this.practicas;
     }
-
     const term = this.buscador.toLowerCase();
     return this.practicas.filter(
       (p) =>
-        p.titulo.toLowerCase().includes(term) ||
-        p.nombreEstudiante.toLowerCase().includes(term) ||
-        p.nombreProfe.toLowerCase().includes(term) ||
-        `${p.fecha.getDate()}/${
-          p.fecha.getMonth() + 1
-        }/${p.fecha.getFullYear()}`.includes(term)
+        p.nombreModalidad.toLowerCase().includes(term) ||
+        p.centroPractica.toLowerCase().includes(term)
     );
   }
 }
