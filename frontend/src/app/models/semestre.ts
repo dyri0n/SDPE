@@ -1,3 +1,7 @@
 export class Semestre {
-  numero: string = '';
+  numSemestre: number = 0;
+}
+
+export class SemestreRealizado extends Semestre {
+  promedio: number = 0;
 }
