@@ -8,17 +8,28 @@ import { EstadisticaDiagnosticoComponent } from './components/estadistica-diagno
 import { PracticasComponent } from './components/practicas/practicas.component';
 import { ResultadoEndComponent } from './components/resultado-end/resultado-end.component';
 import { AsignaturaCortePracticoComponent } from './components/asignatura-corte-practico/asignatura-corte-practico.component';
+import { AvanceEstudianteComponent } from './components/avance-estudiante/avance-estudiante.component';
+import { EstudiantePracticas } from './models/estudiante';
+import { PracticasEstudianteComponent } from './components/practicas-estudiante/practicas-estudiante.component';
 
 export const routes: Routes = [
-    {path: 'fluxogramas', component: FluxogramasComponent},
-    {path: 'cursos', component: CursosComponent},
-    {path: 'end', component: ResultadoEndComponent},
-    {path: 'semestres', component: SemestresComponent},
-    {path: 'aprobacion', component: AprobacionCursoComponent},
-    {path: 'fluxograma', component: DetalleFluxogramaComponent},
-    {path: 'estadisticas', component: EstadisticaDiagnosticoComponent},
-    {path: 'practicas', component: PracticasComponent},
-    {path: 'asignatura-corte-practico', component: AsignaturaCortePracticoComponent},
-    {path: '', redirectTo: '/cursos', pathMatch: 'full'},
-    {path: '**', redirectTo: '/cursos'} 
+  { path: 'fluxogramas', component: FluxogramasComponent },
+  { path: 'cursos', component: CursosComponent },
+  { path: 'end', component: ResultadoEndComponent },
+  { path: 'semestres', component: SemestresComponent },
+  { path: 'aprobacion', component: AprobacionCursoComponent },
+  { path: 'fluxograma', component: DetalleFluxogramaComponent },
+  { path: 'estadisticas', component: EstadisticaDiagnosticoComponent },
+  { path: 'practicas', component: PracticasComponent },
+  {
+    path: 'asignatura-corte-practico',
+    component: AsignaturaCortePracticoComponent,
+  },
+  {
+    path: 'avance-estudiante',
+    component: AvanceEstudianteComponent,
+  },
+  { path: 'practicas-estudiante', component: PracticasEstudianteComponent },
+  { path: '', redirectTo: '/cursos', pathMatch: 'full' },
+  { path: '**', redirectTo: '/cursos' },
 ];
