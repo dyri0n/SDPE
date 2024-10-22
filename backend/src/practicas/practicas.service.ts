@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Bind, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Practica, PracticaTomada } from '@prisma/client';
 import { DetallePracticasDTO, InfoPracticaDTO } from './dto/detalles.dto';
@@ -57,7 +57,9 @@ export class PracticasService {
    * en el InfoPracticaDTO
    *
    * InfoPracticaDTO =
-   *   { titulo, centroPractica, nombreModalidad, notaFinal, intento}
+   *   { titulo, centroPractica, nombreModalidad, notaFinal, intento ... }
+   *
+   * Más info del dto en ./dto/detalles.dto.ts
    *
    * Es posible agregar más atributos modificando la consulta sql y el dto
    * de InfoPracticaDTO
@@ -76,6 +78,8 @@ export class PracticasService {
         nombreModalidad: value.nombreModalidad,
         notaFinal: value.notaFinal,
         numIntento: value.numIntento,
+        tipoPractica: value.nombrePractica,
+        posicionRelativa: value.numeroPractica,
       };
     }) as InfoPracticaDTO[];
   }
@@ -103,4 +107,19 @@ export class PracticasService {
   }
 
   // FIN bloque detalle de practica por estudiante
+
+  async getAllModalidades() {
+    const modalidades = await this.prisma.modalidad.findMany();
+
+    return modalidades;
+  }
+
+  async getOneModalidad(id) {
+    const modalidad = await this.prisma.modalidad.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    return modalidad;
+  }
 }
