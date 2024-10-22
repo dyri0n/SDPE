@@ -13,6 +13,7 @@ import { ConvenioComponent } from './components/convenio/convenio.component';
 import { AsignaturasComponent } from './components/asignaturas/asignaturas.component';
 import { DetalleAsignaturaComponent } from './components/detalle-asignatura/detalle-asignatura.component';
 import { AvanceEstudianteComponent } from './components/avance-estudiante/avance-estudiante.component';
+import { PracticasEstudianteComponent } from './components/practicas-estudiante/practicas-estudiante.component';
 
 export const routes: Routes = [
   { path: 'fluxogramas', component: FluxogramasComponent },
@@ -28,17 +29,11 @@ export const routes: Routes = [
     component: EstadisticaDiagnosticoComponent,
   },
   { path: 'practicas', component: PracticasComponent },
-  {
-    path: 'asignatura-corte-practico',
-    component: AsignaturaCortePracticoComponent,
-  },
   { path: 'asignaturas', component: AsignaturasComponent },
   {
     path: 'detalle-asignatura/:idAsignatura',
     component: DetalleAsignaturaComponent,
   },
-  { path: '', redirectTo: '/fluxogramas', pathMatch: 'full' },
-  { path: '**', redirectTo: '/fluxogramas' },
   {
     path: 'asignatura-corte-practico',
     component: AsignaturaCortePracticoComponent,
@@ -47,4 +42,7 @@ export const routes: Routes = [
     path: 'avance-estudiante',
     component: AvanceEstudianteComponent,
   },
+  { path: 'practicas-estudiante', component: PracticasEstudianteComponent },
+  { path: '', redirectTo: '/cursos', pathMatch: 'full' },
+  { path: '**', redirectTo: '/cursos' },
 ];

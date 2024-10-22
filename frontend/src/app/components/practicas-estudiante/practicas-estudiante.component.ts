@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { AlumnoService } from '../../services/alumno.service';
-import { EstudiantePracticas } from '../../models/estudiante';
 import { CommonModule } from '@angular/common';
 import { DetallesPracticaDTO } from '../../models/practica';
 
