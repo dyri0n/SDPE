@@ -4,73 +4,53 @@
             <h1 class="text-6xl text-white text-center font-black">Convenios</h1>
         </div>
         <button class="rounded-full p-2 bg-sky-700" (click)="alternarModal()">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="white" class="size-10">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>            
-        </button>    
+            <span class="text-white font-bold">Agregar convenio</span>
+        </button>     
     </div>
 </div>
 
 
 <div class="bg-sky-700 shadow-lg w-full py-4 px-28 mt-10 flex justify-between">
-    <input type="text" class="px-4 py-2 w-10/12 rounded-2xl font-bold" placeholder="Buscar convenio">
-    <button class="rounded-2xl w-28 py-2 bg-amber-500 flex justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="white" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-        </svg>          
-    </button>
+    <input type="text" class="px-4 py-2 w-10/12 rounded-2xl font-bold" placeholder="Buscar convenio" (input)="filtrarConvenios($event)">
 </div>
 
-<div class="w-10/12 mx-auto bg-white border rounded shadow-lg items-center flex justify-between mt-12">
-    <div class="flex">
-        <div class="me-10 ms-5 w-32 bg-sky-700">
-            <h3 class="py-2 text-white text-center font-bold">Ordenar por:</h3>
-        </div>
-        <button class="me-3 w-32 rounded-3xl bg-amber-500">
-            <h3 class="py-2 text-white text-center font-bold">Modalidad</h3>
-        </button>
-        <button class="me-3 w-32 rounded-3xl bg-amber-500">
-            <h3 class="py-2 text-white text-center font-bold">Convenio</h3>
-        </button>
-        <button class="me-3 w-32 rounded-3xl bg-amber-500">
-            <h3 class="py-2 text-white text-center font-bold">Año inicio</h3>
-        </button>
-    </div>
-    <!-- buscar como hacer la paginacion -->
-     
+<div class="w-10/12 mx-auto bg-white border rounded shadow-lg items-center flex justify-center mt-12">   
     <div class="card flex justify-content-center">
         <p-paginator 
             (onPageChange)="onPageChange($event)" 
             [first]="first" 
             [rows]="rows" 
-            [totalRecords]="100" 
-            [rowsPerPageOptions]="undefined"
+            [totalRecords]="totalRecords" 
+            [rowsPerPageOptions]="[5, 10, 30]"
             [styleClass]="'custom-paginator'"/>
     </div>
 </div>
 
 <div class="w-10/12 border rounded-md shadow-lg bg-white p-6 mx-auto my-10">
-    @for (convenio of convenios; track convenio; let i = $index){
+    @for (convenio of conveniosPaginados; track convenio; let i = $index){
         <div class="rounded-md border-2 border-sky-700 mb-3 flex shadow-lg">
             <div class="w-2/12 border-r-2 border-sky-700 p-5">
                 <div class="h-44 w-full relative">
-                    <img src="{{convenio.imagen}}" class="h-full w-full object-cover">
+                    <img [src]="convenio.imagen ? convenio.imagen : 'assets/imageDefault.jpg'"  class="h-full w-full object-cover">
                 </div>
             </div>
             <div class="w-4/12 flex justify-center items-center border-r-2 border-sky-700 px-2">
-                <h2 class="font-semibold text-center text-3xl">{{convenio.nombre}}</h2>
+                <h2 class="font-semibold text-center text-3xl">{{convenio.nombreConvenio}}</h2>
             </div>
             <div class="w-4/12 border-r-2 border-sky-700 flex items-center px-10 ">
                 <div>
                     <h2 class="font-medium text-md my-3">Centro de practica: {{convenio.centroPractica}}</h2>
-                    <h2 class="font-medium text-md my-3">Año de inicio: {{convenio.inicio}}</h2>
-                    <h2 class="font-medium text-md my-3">Modalidad: {{convenio.modalidad}}</h2>
+                    <h2 class="font-medium text-md my-3">Año de inicio: {{convenio.inicio  | date:'yyyy'}}</h2>
+                    <h2 class="py-2 px-4 rounded-lg font-bold text-center bg-yellow-200 border-2 border-yellow-500">Modalidad: {{convenio.nombreModalidad}}</h2>
                 </div>
                 
             </div>
             <div class="w-2/12 flex items-center justify-center">
-                <button class="rounded-3xl w-40 h-14 bg-amber-500">
-                    <h3 class="text-white font-bold" (click)="verDetalle(convenio.id)">Ver detalles</h3>          
+                <button class="rounded-3xl w-40 h-14 bg-amber-500 mr-2" (click)="verDetalle(convenio.idConvenio)">
+                    <h3 class="text-white font-bold">Ver detalles</h3>          
+                </button>
+                <button class="rounded-3xl w-40 h-14 bg-red-500" (click)="confirmarEliminacion(convenio.idConvenio)">
+                    <h3 class="text-white font-bold">Eliminar convenio</h3>          
                 </button>
             </div>
         </div>
@@ -101,6 +81,7 @@
                         
                         <p-floatLabel class="w-full ms-5">
                             <input id="centro" formControlName="centro" type="text" class="bg-gray-100 focus:outline-none focus:border-sky-700 w-full px-3 py-2 border-2 shadow-lg rounded-2xl font-medium" pInputText/>
+                            <!--Verificar que el centro de practica no exista-->
                             <label for="centro">Centro de practica</label>
                         </p-floatLabel>
                     </div>
@@ -144,6 +125,7 @@
                                 />
                             <label for="inicio">Año de inicio</label>
                         </p-floatLabel>
+                        <!--dejar default encendido el checkbos-->
                         <input type="checkbox" 
                         class="h-6 w-6" 
                         (click)="alternarPeriodo()">

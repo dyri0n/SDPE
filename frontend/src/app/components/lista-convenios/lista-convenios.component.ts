@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConveniosService } from '../../services/convenios.service';
-import { Convenio, NuevoConvenio } from '../../models/convenios.dto';
+import { ConvenioListaTest, CreateConvenioDTO } from '../../models/convenios.dto';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
@@ -12,12 +12,14 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2'
 
 
 @Component({
   selector: 'app-lista-convenios',
   standalone: true,
-  imports: [PaginatorModule, DialogModule, ButtonModule, FloatLabelModule, CalendarModule, FileUploadModule, ReactiveFormsModule, InputTextModule, ToastModule],
+  imports: [PaginatorModule, DialogModule, ButtonModule, FloatLabelModule, CalendarModule, FileUploadModule, ReactiveFormsModule, InputTextModule, ToastModule, CommonModule],
   providers: [MessageService],
   templateUrl: './lista-convenios.component.html',
   styleUrl: './lista-convenios.component.css'
@@ -31,7 +33,7 @@ export class ListaConveniosComponent implements OnInit{
   ){}
 
   ngOnInit() {
-    this.obtenerConvenios()
+    this.obtenerConveniosTest()
   }
 
   public visible: boolean = false;
@@ -115,26 +117,93 @@ export class ListaConveniosComponent implements OnInit{
   }
 
   // todo esto es para el paginator de primeng, aun no se como funciona.
-  first: number = 0;
-  rows: number = 10;
+  public first: number = 0;
+  public rows: number = 5;
+  public totalRecords: number= 0
   public onPageChange(event: PaginatorState) {
     this.first = event.first ?? 0;
     this.rows = event.rows ?? 10; 
+    this.actualizarConveniosPaginados()
   }
-  //
+
+  public actualizarConveniosPaginados() {
+    const inicio = this.first
+    const final = this.first + this.rows
+    this.conveniosPaginados = this.conveniosFiltrados.slice(inicio, final)
+  }
   
-  public convenios: Convenio[] = []
+  public conveniosTest: ConvenioListaTest[] = []
+  public conveniosFiltrados: ConvenioListaTest[]=[]
+  public conveniosPaginados: ConvenioListaTest[]=[]
+
 
   public verDetalle(id: number){
     this.router.navigate(['/convenio/', id])
   }
 
+  public eliminarConvenio(id: number){
+    this.servicioConvenios.eliminarConvenio(id).subscribe(respuesta=>{
+      if(respuesta){
+        Swal.fire(
+          '¡Eliminado!',
+          'El convenio ha sido eliminado.',
+          'success'
+        )
+        this.obtenerConveniosTest()
+        }
+      })
+  }
+
+  public confirmarEliminacion(id: number){
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esta acción!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((resultado) => {
+      if (resultado.isConfirmed) {
+        this.eliminarConvenio(id)
+      }
+    })
+  }
+
   public agregarConvenio(){
     if(this.formularioConvenio.valid){
-      const nuevoConvenio: NuevoConvenio = this.formularioConvenio.value
-      this.servicioConvenios.nuevoConvenio(nuevoConvenio)
-      this.alternarModal()
-      this.messageService.add({severity: 'success', summary: 'Guardado', detail: 'El convenio se guardó correctamente'});
+      const inicioFormulario= this.formularioConvenio.value.inicio
+      let fechaInicioConvenio: Date
+      if(typeof inicioFormulario === 'string'){
+        fechaInicioConvenio = new Date()
+      }else if(inicioFormulario instanceof Date){
+        const nuevoAño = inicioFormulario.getFullYear()
+        const fechaActual = new Date()
+        fechaInicioConvenio = new Date(nuevoAño, fechaActual.getMonth(), fechaActual.getDate())
+      }else{
+        fechaInicioConvenio = new Date()
+      }
+
+      const fechaFinConvenio = new Date(fechaInicioConvenio.getFullYear(), 11, 31)
+
+      const nuevoConvenioTest: CreateConvenioDTO= {
+          titulo: this.formularioConvenio.value.nombre,
+          centroPractica: this.formularioConvenio.value.centro,
+          fechaInicioConvenio: fechaInicioConvenio,
+          fechaFinConvenio: fechaFinConvenio,
+          documentoConvenio: this.formularioConvenio.value.terminos.name,
+          urlFoto: this.formularioConvenio.value.imagen.name,
+          idModalidad: this.modalidades.indexOf(this.formularioConvenio.value.modalidad) + 1
+        }
+      
+      this.servicioConvenios.nuevoConvenioTest(nuevoConvenioTest).subscribe(respuesta=>{
+        if(respuesta){
+          this.alternarModal()
+          this.messageService.add({severity: 'success', summary: 'Guardado', detail: 'El convenio se guardó correctamente'});
+          this.obtenerConveniosTest()
+        }
+      })
     } else {
       this.messageService.add({
         severity: 'error', 
@@ -142,12 +211,24 @@ export class ListaConveniosComponent implements OnInit{
         detail: 'Formulario incompleto. Por favor llene todos los campos requeridos.'
       });
     }
-    
   }
 
-  public obtenerConvenios(){
-    this.servicioConvenios.obtenerConvenios().subscribe(convenio=>{
-      this.convenios=convenio
+  public obtenerConveniosTest(){
+    this.servicioConvenios.obtenerConveniosTest().subscribe(convenio=>{
+      this.conveniosTest=convenio
+      this.conveniosFiltrados=this.conveniosTest
+      this.totalRecords=this.conveniosFiltrados.length
+      this.actualizarConveniosPaginados()
     })
+  }
+
+  public filtrarConvenios(evento: any) {
+    const query = evento.target.value.toLowerCase();
+    this.conveniosFiltrados = this.conveniosTest.filter(convenio =>
+      convenio.nombreConvenio.toLowerCase().includes(query) || convenio.centroPractica.toLowerCase().includes(query)
+    )
+    this.totalRecords=this.conveniosFiltrados.length
+    this.first=0
+    this.actualizarConveniosPaginados()
   }
 }

@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  NotFoundException,
   Param,
   ParseEnumPipe,
   ParseIntPipe,
@@ -33,5 +34,25 @@ export class PracticasController {
     //return this.practicaService.getAllPracticasCursadasPorAreaFormacion(
     //  areaFormacion,
     //);
+  }
+
+  @Get('modalidades')
+  getAllModalidades() {
+    const result = this.practicaService.getAllModalidades();
+
+    if (!result)
+      throw new NotFoundException('No existen modalidades registradas');
+
+    return result;
+  }
+
+  @Get('modalidades/:idModalidad')
+  getOneModalidad(@Param('idModalidad') idModalidad: number) {
+    const result = this.practicaService.getOneModalidad(idModalidad);
+
+    if (!result)
+      throw new NotFoundException('No existe la modalidad especificada');
+
+    return result;
   }
 }

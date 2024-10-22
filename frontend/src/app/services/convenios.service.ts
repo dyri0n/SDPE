@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Convenio, DetalleConvenio, NuevoConvenio } from '../models/convenios.dto';
+import { Convenio, ConvenioListaTest, CreateConvenioDTO, DetalleConvenio, DetalleConvenioTest, NuevoConvenio } from '../models/convenios.dto';
 import { Observable, of } from 'rxjs';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { Observable, of } from 'rxjs';
 export class ConveniosService {
   constructor(private http: HttpClient) { }
 
-  private apiUrl= ''
+  private apiUrl= 'http://localhost:3000/convenios'
 
   public convenios: Convenio[] = [
     {
@@ -72,12 +72,29 @@ export class ConveniosService {
     return of(this.convenios);
   }
 
+  public obtenerConveniosTest(): Observable<ConvenioListaTest[]>{
+    return this.http.get<ConvenioListaTest[]>(this.apiUrl + "/")
+  }
+
   public obtenerDetalleConvenio(idConvenio: number): Observable<DetalleConvenio>{
     return of(this.detallesConvenios.find(convenio => convenio.convenio.id == idConvenio)!);
+  }
+
+  public obtenerDetalleConvenioTest(idConvenio: number): Observable<DetalleConvenioTest>{
+    return this.http.get<DetalleConvenioTest>(this.apiUrl + "/" + idConvenio)
+  }
+
+  public eliminarConvenio(idConvenio: number): Observable<any>{
+    return this.http.delete(this.apiUrl + "/" + idConvenio)
   }
 
   //deberia mandarlo al backend
   public nuevoConvenio(convenio:NuevoConvenio){
     console.log(convenio)
+  }
+
+  public nuevoConvenioTest(convenioTest:CreateConvenioDTO): Observable<CreateConvenioDTO>{
+    console.log(convenioTest)
+    return this.http.post<CreateConvenioDTO>(this.apiUrl, convenioTest)
   }
 }

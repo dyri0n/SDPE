@@ -75,4 +75,34 @@ export class PlanesEstudioController {
   async getFluxogramaDe(@Param('idPlan', ParseIntPipe) idPlan: number) {
     return this.planesEstudioService.getFluxogram(idPlan);
   }
+
+  @Get(':idPlan/lineas')
+  async getLineasDeAsignaturas(@Param('idPlan', ParseIntPipe) idPlan: number) {
+    const result = this.planesEstudioService.getLineasDeAsignaturas(idPlan);
+
+    if (!result)
+      throw new NotFoundException(
+        'No existen líneas de asignaturas definidas para el plan especificado',
+      );
+
+    return result;
+  }
+
+  @Get(':idPlan/lineas/:idLinea')
+  async getOneLineaDeAsignatura(
+    @Param('idPlan', ParseIntPipe) idPlan: number,
+    @Param('idLinea', ParseIntPipe) idLinea: number,
+  ) {
+    const result = this.planesEstudioService.findOneLineaAsignatura(
+      idPlan,
+      idLinea,
+    );
+
+    if (!result)
+      throw new NotFoundException(
+        'No existe la línea especificada para el plan especificado',
+      );
+
+    return result;
+  }
 }
