@@ -3,8 +3,19 @@
     <div class="mb-4">
         <input type="text" placeholder="Buscar asignaturas..." class="w-full p-3 border border-teal-300 rounded-md focus:outline-none focus:ring focus:ring-teal-400"(input)="filtrarAsignaturas($event)" />
       </div>
+      <div class="w-10/12 mx-auto bg-white items-center flex justify-center mt-12">   
+        <div class="card flex justify-content-center">
+            <p-paginator 
+                (onPageChange)="onPageChange($event)" 
+                [first]="first" 
+                [rows]="rows" 
+                [totalRecords]="totalRecords" 
+                [rowsPerPageOptions]="[5, 10, 30]"
+                [styleClass]="'custom-paginator'"/>
+        </div>
+    </div>  
     <div class="space-y-4">
-        @for(asignatura of asignaturasFiltradas; track asignatura){
+        @for(asignatura of asignaturasPaginadas; track asignatura){
             <div class="border border-gray-300 rounded-lg p-4 bg-white shadow-md hover:shadow-lg transition duration-300">
                 <h3 class="text-xl font-semibold text-teal-600">{{ asignatura.nombre }} ({{ asignatura.codigo }})</h3>
                 <p class="text-gray-600">Formación: {{ asignatura.formacion.join(', ') }}</p>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConveniosService } from '../../services/convenios.service';
-import { Convenio, ConvenioListaTest, CreateConvenioDTO, NuevoConvenio } from '../../models/convenios.dto';
+import { ConvenioListaTest, CreateConvenioDTO } from '../../models/convenios.dto';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
