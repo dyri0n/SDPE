@@ -174,17 +174,30 @@ export class ListaConveniosComponent implements OnInit{
 
   public agregarConvenio(){
     if(this.formularioConvenio.valid){
-      //const nuevoConvenio: NuevoConvenio = this.formularioConvenio.value
-      const nuevoConvenioTest: CreateConvenioDTO = {
-        titulo: this.formularioConvenio.value.nombre,
-        centroPractica: this.formularioConvenio.value.centro,
-        fechaInicioConvenio: new Date(this.formularioConvenio.value.inicio, 0, 1),
-        fechaFinConvenio: new Date(this.formularioConvenio.value.inicio, 0, 1),
-        documentoConvenio: this.formularioConvenio.value.terminos.name,
-        urlFoto: this.formularioConvenio.value.imagen.name,
-        idModalidad: this.modalidades.indexOf(this.formularioConvenio.value.modalidad) + 1
+      const inicioFormulario= this.formularioConvenio.value.inicio
+      let fechaInicioConvenio: Date
+      if(typeof inicioFormulario === 'string'){
+        fechaInicioConvenio = new Date()
+      }else if(inicioFormulario instanceof Date){
+        const nuevoAño = inicioFormulario.getFullYear()
+        const fechaActual = new Date()
+        fechaInicioConvenio = new Date(nuevoAño, fechaActual.getMonth(), fechaActual.getDate())
+      }else{
+        fechaInicioConvenio = new Date()
       }
-      //this.servicioConvenios.nuevoConvenio(nuevoConvenio)
+
+      const fechaFinConvenio = new Date(fechaInicioConvenio.getFullYear(), 11, 31)
+
+      const nuevoConvenioTest: CreateConvenioDTO= {
+          titulo: this.formularioConvenio.value.nombre,
+          centroPractica: this.formularioConvenio.value.centro,
+          fechaInicioConvenio: fechaInicioConvenio,
+          fechaFinConvenio: fechaFinConvenio,
+          documentoConvenio: this.formularioConvenio.value.terminos.name,
+          urlFoto: this.formularioConvenio.value.imagen.name,
+          idModalidad: this.modalidades.indexOf(this.formularioConvenio.value.modalidad) + 1
+        }
+      
       this.servicioConvenios.nuevoConvenioTest(nuevoConvenioTest).subscribe(respuesta=>{
         if(respuesta){
           this.alternarModal()
