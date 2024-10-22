@@ -5,7 +5,9 @@ export interface InfoPracticaDTO {
   centroPractica: string;
   nombreModalidad: string;
   notaFinal: number;
+  posicionRelativa: number;
   numIntento: number;
+  tipoPractica: String;
 }
 
 export class DetallesPracticaDTO {

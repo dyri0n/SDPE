@@ -7,7 +7,6 @@ import { AlumnoService } from '../../services/alumno.service';
 import { CursoRealizado } from '../../models/curso_realizado';
 import { ScrollerModule } from 'primeng/scroller';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { Subject } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-avance-estudiante',

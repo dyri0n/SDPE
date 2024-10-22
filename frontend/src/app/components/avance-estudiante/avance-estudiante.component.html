@@ -38,31 +38,39 @@
           <p class="text-cyan-50 font-semibold font-sans">Cursos realizados por el estudiante</p>
         </div>
         <input type="text" [(ngModel)]="entradaBuscador"  placeholder="Buscar cursos" class="w-full p-2 rounded-lg mb-4 border border-gray-300">
-        <div class="space-y-4 overflow-auto">
-          <div *ngFor="let curso of this.filtrarCursos()">
-            <div class="transition ease-in-out hover:-translate-x-1 hover:scale-120 bg-white p-4 rounded-lg grid grid-cols-2 gap-4 shadow-md">
-              <div>
-                <div class="justify-start">
-                  <p class="font-semibold">{{curso.nombreAsignatura}}</p>
-                  <div class="flex-row">
-                    <p class="font-semibold">{{curso.codigo}} ({{curso.areaFormacion}})</p> 
-                  </div>
-                  <div class="pt-3">
-                    <div class="tracking-tighter">Se realiza en {{curso.semestreRealizacion}} semestre</div>
-                    <div class="tracking-tighter">Intento: {{curso.numIntento || 1}}</div>
-                  </div>
+        <div class="max-h-[600px] overflow-y-auto
+        [&::-webkit-scrollbar]:w-2
+        [&::-webkit-scrollbar-track]:bg-gray-100
+        [&::-webkit-scrollbar-thumb]:bg-gray-300
+        dark:[&::-webkit-scrollbar-track]:bg-neutral-700
+        dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500" >
+        <div *ngFor="let curso of this.filtrarCursos()">
+          <div class="my-4 mx-2 transition ease-in-out hover:-translate-x-1 hover:scale-120 bg-white p-4 rounded-lg grid grid-cols-2 gap-4 shadow-md">
+            <div>
+              <div class="justify-start">
+                <p class="font-semibold">{{curso.nombreAsignatura}}</p>
+                <div class="flex-row">
+                  <p class="font-semibold">{{curso.codigo}} ({{curso.areaFormacion}})</p> 
                 </div>
-              </div>
-              <div class="justify-items-end font-bold space-x-reverse">
-                <div *ngIf="curso.notaFinal >= 4.0" class="bg-green-400 shadow-lg text-2xl w-28 h-28 flex items-center justify-center rounded-xl">
-                  <p class="text-shadow text-5xl text-green-100 font-light">{{curso.notaFinal.toFixed(1)}}</p>
-                </div>
-                <div *ngIf="curso.notaFinal < 4.0" class="bg-red-400 shadow-lg text-2xl w-28 h-28 flex items-center justify-center rounded-xl">
-                  <p class="text-shadow text-5xl text-green-100 font-light">{{curso.notaFinal.toFixed(1)}}</p>
+                <div class="pt-3">
+                  <div class="tracking-tighter">Se realiza en {{curso.semestreRealizacion}} semestre</div>
+                  <div class="tracking-tighter">Intento: {{curso.numIntento || 1}}</div>
                 </div>
               </div>
             </div>
+            <div class="justify-self-end font-bold space-x-reverse">
+              <div *ngIf="curso.notaFinal >= 4.0" class="bg-green-400 shadow-lg text-2xl w-28 h-28 flex items-center justify-center rounded-xl">
+                <p class="text-shadow text-5xl text-green-100 font-light">{{curso.notaFinal.toFixed(1)}}</p>
+              </div>
+              <div *ngIf="curso.notaFinal < 4.0" class="bg-red-400 shadow-lg text-2xl w-28 h-28 flex items-center justify-center rounded-xl">
+                <p class="text-shadow text-5xl text-green-100 font-light">{{curso.notaFinal.toFixed(1)}}</p>
+              </div>
+            </div>
           </div>
+        </div>
+
+
+          
         </div>
       </div>
       
