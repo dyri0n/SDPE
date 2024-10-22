@@ -9,28 +9,27 @@ import { FluxogramaService } from '../../services/fluxograma.service';
   templateUrl: './fluxogramas.component.html',
   styleUrls: ['./fluxogramas.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule],
 })
 export class FluxogramasComponent implements OnInit {
-
   constructor(
     private fluxogramaService: FluxogramaService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.cargarFluxogramas()
+    this.cargarFluxogramas();
   }
 
-  fluxogramas: Fluxograma[] = []
+  fluxogramas: Fluxograma[] = [];
 
   public cargarFluxogramas(): void {
     this.fluxogramaService.obtenerFluxogramas().subscribe((fluxogramas) => {
-      this.fluxogramas = fluxogramas
-    })
+      this.fluxogramas = fluxogramas;
+    });
   }
 
   public escogerPlan(id: number): void {
-    this.router.navigate(['/fluxograma/', id])
+    this.router.navigate(['/fluxograma/', id]);
   }
 }

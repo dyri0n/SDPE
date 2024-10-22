@@ -12,7 +12,6 @@ import { AsignaturaSola } from '../../models/asignaturaSola.dto';
   styleUrl: './aprobacion-curso.component.css',
 })
 export class AprobacionCursoComponent {
-
   constructor(
     private route: ActivatedRoute,
     private diagnosticosService: DiagnosticosService
@@ -25,34 +24,34 @@ export class AprobacionCursoComponent {
         {
           label: 'Porcentaje',
           data: [this.porc_apro_reg, this.porc_repro_reg],
-          backgroundColor: ['rgba(2, 132, 199, 0.8)', 'rgba(225, 29, 72, 0.8)']
+          backgroundColor: ['rgba(2, 132, 199, 0.8)', 'rgba(225, 29, 72, 0.8)'],
         },
       ],
     };
-    
+
     this.proData = {
       labels: ['Aprobación', 'Reprobación'],
       datasets: [
         {
           label: 'Porcentaje',
           data: [this.porc_apro_pro, this.porc_repro_pro],
-          backgroundColor: ['rgba(2, 132, 199, 0.8)', 'rgba(225, 29, 72, 0.8)']
+          backgroundColor: ['rgba(2, 132, 199, 0.8)', 'rgba(225, 29, 72, 0.8)'],
         },
       ],
     };
 
-    this.idAsignatura= +this.route.snapshot.paramMap.get('idAsignatura')!
-    this.obtenerNombreAsignatura()
-  } 
+    this.idAsignatura = +this.route.snapshot.paramMap.get('idAsignatura')!;
+    this.obtenerNombreAsignatura();
+  }
 
-  public idAsignatura: number=0
-  public asignatura?: AsignaturaSola
+  public idAsignatura: number = 0;
+  public asignatura?: AsignaturaSola;
   regData: any;
   proData: any;
-  aprobacion_reg = (Math. random() * (2000 - 500) + 500)
-  aprobacion_pro = (Math. random() * (2000 - 500) + 500);
-  reprobacion_reg = (Math. random() * (2000 - 500) + 500);
-  reprobacion_pro = (Math. random() * (2000 - 500) + 500);
+  aprobacion_reg = Math.random() * (2000 - 500) + 500;
+  aprobacion_pro = Math.random() * (2000 - 500) + 500;
+  reprobacion_reg = Math.random() * (2000 - 500) + 500;
+  reprobacion_pro = Math.random() * (2000 - 500) + 500;
   porc_apro_reg = (
     (this.aprobacion_reg / (this.aprobacion_reg + this.reprobacion_reg)) *
     100
@@ -61,7 +60,7 @@ export class AprobacionCursoComponent {
     (this.reprobacion_reg / (this.aprobacion_reg + this.reprobacion_reg)) *
     100
   ).toPrecision(2);
-  
+
   porc_apro_pro = (
     (this.aprobacion_pro / (this.aprobacion_pro + this.reprobacion_pro)) *
     100
@@ -80,14 +79,15 @@ export class AprobacionCursoComponent {
       },
     },
     legend: {
-      display: false
+      display: false,
     },
   };
 
-  public obtenerNombreAsignatura(){
-    this.diagnosticosService.obtenerNombreAsignatura(this.idAsignatura).subscribe(asignatura=>{
-      this.asignatura=asignatura
-    })
+  public obtenerNombreAsignatura() {
+    this.diagnosticosService
+      .obtenerNombreAsignatura(this.idAsignatura)
+      .subscribe((asignatura) => {
+        this.asignatura = asignatura;
+      });
   }
- 
 }
