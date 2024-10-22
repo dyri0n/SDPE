@@ -25,10 +25,7 @@ export const routes: Routes = [
     path: 'asignatura-corte-practico',
     component: AsignaturaCortePracticoComponent,
   },
-  {
-    path: 'avance-estudiante',
-    component: AvanceEstudianteComponent,
-  },
+  { path: 'avance-estudiante', component: AvanceEstudianteComponent },
   { path: 'practicas-estudiante', component: PracticasEstudianteComponent },
   { path: '', redirectTo: '/cursos', pathMatch: 'full' },
   { path: '**', redirectTo: '/cursos' },
