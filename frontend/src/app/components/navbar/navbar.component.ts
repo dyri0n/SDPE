@@ -56,17 +56,12 @@ export class NavbarComponent {
     {
       label: 'Asignaturas',
       data: 'Asignaturas',
-      routerLink: '/Asignaturas',
+      routerLink: '/asignaturas',
       children: [
         {
           label: 'Asignatura 1',
           data: 'Asignatura 1',
-          routerLink: '/Asignatura/1', 
-        },
-        {
-          label: 'Asignatura 1',
-          data: 'Asignatura 1',
-          routerLink: '/Asignatura/2',
+          routerLink: '/detalle-asignatura/1', 
         },
       ],
     },
@@ -85,6 +80,11 @@ export class NavbarComponent {
           data: 'Estadisticas asignatura corte practico 1',
           routerLink: '/estadisticas/1', 
         },
+        {
+          label: 'Practicas estudiante 1',
+          data: 'Practicas estudiante 1',
+          routerLink: '/practicas-estudiante', 
+        },
       ],
     },
     {
@@ -102,7 +102,7 @@ export class NavbarComponent {
     {
       label: 'Avance individual',
       data: 'Avance individual',
-      routerLink: '/avance-individual', 
+      routerLink: '/avance-estudiante', 
       children: [
         {
           label: 'Curso 1',
