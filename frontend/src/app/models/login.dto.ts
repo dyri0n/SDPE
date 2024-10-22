@@ -1,6 +1,6 @@
 export interface LoginUsuario {
-    usuario: string,
-    contrasena: string,
+    username: string,
+    password: string,
 }
 
 export interface RespuestaLogin{ 

@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenubarModule } from 'primeng/menubar';
@@ -22,7 +22,7 @@ export class NavbarComponent {
     private router: Router,
     private servicioLogin: LoginService
   ){}
-
+  
   public menuDesplegable: MenuItem[] = [
     { label: 'Perfil', icon: 'pi pi-user', command: () => { this.perfil(); } },
     { label: 'Cerrar sesión', icon: 'pi pi-sign-out', command: () => { this.logout(); } }
@@ -50,6 +50,23 @@ export class NavbarComponent {
           label: 'Fluxograma 1',
           data: 'Fluxograma 1',
           routerLink: '/fluxograma/2',
+        },
+      ],
+    },
+    {
+      label: 'Asignaturas',
+      data: 'Asignaturas',
+      routerLink: '/Asignaturas',
+      children: [
+        {
+          label: 'Asignatura 1',
+          data: 'Asignatura 1',
+          routerLink: '/Asignatura/1', 
+        },
+        {
+          label: 'Asignatura 1',
+          data: 'Asignatura 1',
+          routerLink: '/Asignatura/2',
         },
       ],
     },
@@ -141,6 +158,10 @@ export class NavbarComponent {
     if (sidebar && !sidebar.contains(target) && this.barraLateralVisible) {
       this.barraLateralVisible = false;
     }
+  }
+
+  isLoginRoute(): boolean {
+    return this.router.url === '/login';
   }
 
 }

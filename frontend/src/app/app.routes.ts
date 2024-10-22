@@ -11,20 +11,24 @@ import { AsignaturaCortePracticoComponent } from './components/asignatura-corte-
 import { ListaConveniosComponent } from './components/lista-convenios/lista-convenios.component';
 import { ConvenioComponent } from './components/convenio/convenio.component';
 import { LoginComponent } from './components/login/login.component';
+import { MenuComponent } from './components/menu/menu.component';
+import { authGuard, loginGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-    {path: 'fluxogramas', component: FluxogramasComponent},
-    {path: 'convenios', component: ListaConveniosComponent},
-    {path: 'convenio/:idConvenio', component:ConvenioComponent},
-    {path: 'cursos/:idAsignatura', component: CursosComponent},
-    {path: 'login', component:LoginComponent},
-    {path: 'end', component: ResultadoEndComponent},
-    {path: 'semestres', component: SemestresComponent},
-    {path: 'aprobacion/:idAsignatura', component: AprobacionCursoComponent},
-    {path: 'fluxograma/:idFluxograma', component: DetalleFluxogramaComponent},
-    {path: 'estadisticas/:idAsignatura', component: EstadisticaDiagnosticoComponent},
-    {path: 'practicas', component: PracticasComponent},
-    {path: 'asignatura-corte-practico', component: AsignaturaCortePracticoComponent},
     {path: '', redirectTo: '/fluxogramas', pathMatch: 'full'},
-    {path: '**', redirectTo: '/fluxogramas'} 
+    {path: 'login', component:LoginComponent, canActivate: [loginGuard]},
+    {path: 'menu', component: MenuComponent, canActivate: [authGuard]},
+    {path: 'fluxogramas', component: FluxogramasComponent, canActivate: [authGuard]},
+    {path: 'convenios', component: ListaConveniosComponent, canActivate: [authGuard]},
+    {path: 'convenio/:idConvenio', component:ConvenioComponent, canActivate: [authGuard]},
+    {path: 'cursos/:idAsignatura', component: CursosComponent, canActivate: [authGuard]},
+    {path: 'end', component: ResultadoEndComponent, canActivate: [authGuard]},
+    {path: 'semestres', component: SemestresComponent, canActivate: [authGuard]},
+    {path: 'aprobacion/:idAsignatura', component: AprobacionCursoComponent, canActivate: [authGuard]},
+    {path: 'fluxograma/:idFluxograma', component: DetalleFluxogramaComponent, canActivate: [authGuard]},
+    {path: 'estadisticas/:idAsignatura', component: EstadisticaDiagnosticoComponent, canActivate: [authGuard]},
+    {path: 'practicas', component: PracticasComponent, canActivate: [authGuard]},
+    {path: 'asignatura-corte-practico', component: AsignaturaCortePracticoComponent, canActivate: [authGuard]},
+    {path: '**', redirectTo: '/menu'} 
+    
 ];

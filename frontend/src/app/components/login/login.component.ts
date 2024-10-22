@@ -24,8 +24,8 @@ export class LoginComponent {
   ){}
 
   public formularioLogin: FormGroup = new FormGroup({
-    usuario: new FormControl('', [Validators.required]),
-    contrasena: new FormControl('', [Validators.required]),
+    username: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required]),
   })
 
   public login(){

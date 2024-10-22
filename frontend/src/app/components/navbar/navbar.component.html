@@ -15,7 +15,9 @@
     </div>
   </ng-template>
 
+ 
   <ng-template pTemplate="end">
+    @if (!isLoginRoute()){
     <div class="flex items-center space-x-4 me-6">
       <button>
         <i class="pi pi-bell text-xl"></i>
@@ -25,18 +27,26 @@
       </button>
       <p-menu #menu [popup]="true" [model]="menuDesplegable" [appendTo]="'body'"></p-menu>
     </div>
+    }
   </ng-template>
 </p-menubar>
 
 <div class="absolute" [style]="{height: 'calc(100vh - 66px)'}">
   <p-sidebar [(visible)]="barraLateralVisible" position="left" [modal]="false" [style]="{position: 'absolute'}">
-    <ng-template pTemplate="header">
-      <div class="font-semibold text-2xl border-b-4 border-sky-700 w-10/12">
-        <span>Modulos</span>
+    @if (!isLoginRoute()){
+      <ng-template pTemplate="header">
+        <div class="font-semibold text-2xl border-b-4 border-sky-700 w-10/12">
+          <span>Modulos</span>
+        </div>
+      </ng-template>
+  
+      <p-tree [value]="opciones" selectionMode="single" styleClass="border-0 p-0 mx-3 font-medium" (onNodeSelect)="seleccionarNodo($event)"></p-tree>
+    }
+    @else {
+      <div class="w-full mt-10 text-center">
+        <span class="font-normal text-md">Debes iniciar sesión para navegar</span>
       </div>
-    </ng-template>
-
-    <p-tree [value]="opciones" selectionMode="single" styleClass="border-0 p-0 mx-3 font-medium" (onNodeSelect)="seleccionarNodo($event)"></p-tree>
+    }
 
   </p-sidebar>
 </div>

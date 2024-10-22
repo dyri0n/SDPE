@@ -14,9 +14,10 @@ export class LoginService {
     private router: Router
   ) { }
 
-  private url = 'http://localhost:3000/login' //poner url pa login
+  private url = 'http://localhost:3000/auth'
 
   public iniciarSesion(usuario: LoginUsuario): Observable<RespuestaLogin> {
+    console.log(usuario)
     return this.http.post<any>(`${this.url}/login`, usuario).pipe(
       map((result) => {
         if (result && result.access_token) {
@@ -39,10 +40,26 @@ export class LoginService {
   public logout(): boolean {
     if (sessionStorage.getItem('token')) {
       sessionStorage.removeItem('token');
+      this.router.navigateByUrl('login');
       return true;
     }
-    this.router.navigateByUrl('/login') //deberian ser el guard el que rediriga a otra vista
     return false;
+  }
+
+  public isAuth(): Observable<boolean> {
+    if (sessionStorage.getItem('token')) {
+      return of(true);
+    }
+    this.router.navigateByUrl('login');
+    return of(false);
+  }
+
+  public isLoggedIn(): Observable<boolean> {
+    if (sessionStorage.getItem('token')) {
+      this.router.navigateByUrl('home-stay-list');
+      return of(false);
+    }
+    return of(true);
   }
 
 }
