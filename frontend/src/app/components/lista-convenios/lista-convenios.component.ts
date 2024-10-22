@@ -125,7 +125,6 @@ export class ListaConveniosComponent implements OnInit{
     this.rows = event.rows ?? 10; 
     this.actualizarConveniosPaginados()
   }
-  //
 
   public actualizarConveniosPaginados() {
     const inicio = this.first
