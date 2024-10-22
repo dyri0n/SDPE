@@ -3,13 +3,15 @@ import { Fluxograma } from '../../models/Fluxograma.model';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FluxogramaService } from '../../services/fluxograma.service';
+import { MenubarModule } from 'primeng/menubar';
+
 
 @Component({
   selector: 'app-fluxogramas',
   templateUrl: './fluxogramas.component.html',
   styleUrls: ['./fluxogramas.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule, MenubarModule]
 })
 export class FluxogramasComponent implements OnInit {
 
