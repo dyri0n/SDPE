@@ -15,6 +15,8 @@ import { MenuComponent } from './components/menu/menu.component';
 import { authGuard, loginGuard } from './guards/auth.guard';
 import { AvanceEstudianteComponent } from './components/avance-estudiante/avance-estudiante.component';
 import { PracticasEstudianteComponent } from './components/practicas-estudiante/practicas-estudiante.component';
+import { AsignaturasComponent } from './components/asignaturas/asignaturas.component';
+import { DetalleAsignaturaComponent } from './components/detalle-asignatura/detalle-asignatura.component';
 
 export const routes: Routes = [
     {path: '', redirectTo: '/fluxogramas', pathMatch: 'full'},
@@ -30,6 +32,8 @@ export const routes: Routes = [
     {path: 'fluxograma/:idFluxograma', component: DetalleFluxogramaComponent, canActivate: [authGuard]},
     {path: 'estadisticas/:idAsignatura', component: EstadisticaDiagnosticoComponent, canActivate: [authGuard]},
     {path: 'practicas', component: PracticasComponent, canActivate: [authGuard]},
+    {path: 'asignaturas', component: AsignaturasComponent, canActivate: [authGuard]},
+    {path: 'detalle-asignatura/:idAsignatura', component: DetalleAsignaturaComponent, canActivate: [authGuard]},
     {path: 'asignatura-corte-practico', component: AsignaturaCortePracticoComponent, canActivate: [authGuard]},
     {
       path: 'avance-estudiante', component: AvanceEstudianteComponent, canActivate: [authGuard]
