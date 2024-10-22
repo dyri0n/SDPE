@@ -16,4 +16,4 @@ FROM "Convenio" cn
     )
     JOIN "PlanContemplaAsignatura" pc ON (pc."idAsignatura" = c."idAsignatura" and pc."idPlan" = pt."idPlan")
     JOIN "Practica" pr ON (pr."idAsignatura" = pc."idAsignatura" and pc."idPlan" = pr."idPlan")
-ORDER BY "titulo", pr."nombre"
+ORDER BY "numeroPractica"
