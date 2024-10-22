@@ -10,36 +10,31 @@ import { ResultadoEndComponent } from './components/resultado-end/resultado-end.
 import { AsignaturaCortePracticoComponent } from './components/asignatura-corte-practico/asignatura-corte-practico.component';
 import { ListaConveniosComponent } from './components/lista-convenios/lista-convenios.component';
 import { ConvenioComponent } from './components/convenio/convenio.component';
-import { AsignaturasComponent } from './components/asignaturas/asignaturas.component';
-import { DetalleAsignaturaComponent } from './components/detalle-asignatura/detalle-asignatura.component';
+import { LoginComponent } from './components/login/login.component';
+import { MenuComponent } from './components/menu/menu.component';
+import { authGuard, loginGuard } from './guards/auth.guard';
 import { AvanceEstudianteComponent } from './components/avance-estudiante/avance-estudiante.component';
 import { PracticasEstudianteComponent } from './components/practicas-estudiante/practicas-estudiante.component';
 
 export const routes: Routes = [
-  { path: 'fluxogramas', component: FluxogramasComponent },
-  { path: 'convenios', component: ListaConveniosComponent },
-  { path: 'convenio/:idConvenio', component: ConvenioComponent },
-  { path: 'cursos/:idAsignatura', component: CursosComponent },
-  { path: 'end', component: ResultadoEndComponent },
-  { path: 'semestres', component: SemestresComponent },
-  { path: 'aprobacion/:idAsignatura', component: AprobacionCursoComponent },
-  { path: 'fluxograma/:idFluxograma', component: DetalleFluxogramaComponent },
-  {
-    path: 'estadisticas/:idAsignatura',
-    component: EstadisticaDiagnosticoComponent,
-  },
-  { path: 'practicas', component: PracticasComponent },
-  {
-    path: 'asignatura-corte-practico',
-    component: AsignaturaCortePracticoComponent,
-  },
-  { path: 'asignaturas', component: AsignaturasComponent },
-  { path: 'avance-estudiante', component: AvanceEstudianteComponent },
-  { path: 'practicas-estudiante', component: PracticasEstudianteComponent },
-  {
-    path: 'detalle-asignatura/:idAsignatura',
-    component: DetalleAsignaturaComponent,
-  },
-  { path: '', redirectTo: '/fluxogramas', pathMatch: 'full' },
-  { path: '**', redirectTo: '/fluxogramas' },
+    {path: '', redirectTo: '/fluxogramas', pathMatch: 'full'},
+    {path: 'login', component:LoginComponent, canActivate: [loginGuard]},
+    {path: 'menu', component: MenuComponent, canActivate: [authGuard]},
+    {path: 'fluxogramas', component: FluxogramasComponent, canActivate: [authGuard]},
+    {path: 'convenios', component: ListaConveniosComponent, canActivate: [authGuard]},
+    {path: 'convenio/:idConvenio', component:ConvenioComponent, canActivate: [authGuard]},
+    {path: 'cursos/:idAsignatura', component: CursosComponent, canActivate: [authGuard]},
+    {path: 'end', component: ResultadoEndComponent, canActivate: [authGuard]},
+    {path: 'semestres', component: SemestresComponent, canActivate: [authGuard]},
+    {path: 'aprobacion/:idAsignatura', component: AprobacionCursoComponent, canActivate: [authGuard]},
+    {path: 'fluxograma/:idFluxograma', component: DetalleFluxogramaComponent, canActivate: [authGuard]},
+    {path: 'estadisticas/:idAsignatura', component: EstadisticaDiagnosticoComponent, canActivate: [authGuard]},
+    {path: 'practicas', component: PracticasComponent, canActivate: [authGuard]},
+    {path: 'asignatura-corte-practico', component: AsignaturaCortePracticoComponent, canActivate: [authGuard]},
+    {
+      path: 'avance-estudiante', component: AvanceEstudianteComponent, canActivate: [authGuard]
+    },
+    { path: 'practicas-estudiante', component: PracticasEstudianteComponent, canActivate: [authGuard] },
+    {path: '**', redirectTo: '/menu'} 
+    
 ];
