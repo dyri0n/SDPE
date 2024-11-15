@@ -1,0 +1,80 @@
+<div class="container mx-auto p-4 space-y-8">
+  <div class="card bg-[#0369A1] shadow-lg rounded-lg p-6">
+    <h2 class="text-2xl font-bold mb-4 text-white bg-[#21A4DC] p-2 rounded text-center">Gráfico de líneas</h2>
+    <div class="bg-blue-400 p-2 rounded">
+      <label class="block">
+        <span class="text-white">Seleccionar Cohorte:</span>
+        <select class="form-select mt-1 block w-full border-gray-300 rounded-md shadow-sm text-gray-700 bg-blue-50">
+          <option value="">Seleccione Cohorte</option>
+          @for(asignatura of resumenAsignaturas; track asignatura) {
+            <option [value]="asignatura.cohorte">{{ asignatura.cohorte }}</option>
+          }
+        </select>
+      </label>
+      <button (click)="aplicarFiltro()" class="mt-4 bg-[#DC911A] text-white px-4 py-2 rounded hover:bg-orange-600">Aplicar filtro</button>
+      <div class="mt-6 bg-white p-4 rounded">
+        <p-chart type="line" [data]="lineChartData" [options]="lineChartOptions" class="w-full h-96"></p-chart>
+      </div>
+    </div>
+  </div>
+
+  <div class="card bg-[#0369A1] shadow-lg rounded-lg p-6">
+    <h2 class="text-2xl font-bold mb-4 text-white bg-[#21A4DC] p-2 rounded text-center">Gráfico de barras</h2>
+    <div class="bg-blue-400 p-2 rounded">
+      <label class="block">
+        <span class="text-white">Seleccionar Semestre:</span>
+        <select class="form-select mt-1 block w-full border-gray-300 rounded-md shadow-sm text-gray-700 bg-blue-50">
+          <option value="">Seleccione Semestre</option>
+          @for(asignatura of resumenAsignaturas; track asignatura) {
+            <option [value]="asignatura.semestre">{{ asignatura.semestre }}</option>
+          }
+        </select>
+      </label>
+      <label class="block">
+        <span class="text-white">Seleccionar Año:</span>
+        <select class="form-select mt-1 block w-full border-gray-300 rounded-md shadow-sm text-gray-700 bg-blue-50">
+          <option value="">Seleccione Año</option>
+        </select>
+      </label>
+      <label class="block">
+        <span class="text-white">Seleccionar Cohorte:</span>
+        <select class="form-select mt-1 block w-full border-gray-300 rounded-md shadow-sm text-gray-700 bg-blue-50">
+          <option value="">Seleccione Cohorte</option>
+          @for(asignatura of resumenAsignaturas; track asignatura) {
+            <option [value]="asignatura.cohorte">{{ asignatura.cohorte }}</option>
+          }
+        </select>
+      </label>
+      <button (click)="aplicarFiltro()" class="mt-4 bg-[#DC911A] text-white px-4 py-2 rounded hover:bg-orange-600">Aplicar filtro</button>
+      <div class="mt-6 bg-white p-4 rounded">
+        <p-chart type="bar" [data]="barChartData" [options]="barChartOptions" class="w-full h-96"></p-chart>
+      </div>
+    </div>
+  </div>
+
+  <div class="card bg-[#0369A1] shadow-lg rounded-lg p-6">
+    <h2 class="text-2xl font-bold mb-4 text-white bg-[#21A4DC] p-2 rounded text-center">Resumen de asignaturas</h2>
+    <table class="min-w-full bg-blue-50 border border-gray-200 text-gray-700">
+      <thead>
+        <tr>
+          <th class="text-2xl px-4 py-2 border-b text-center font-semibold text-white bg-[#DC911A]">Asignaturas</th>
+          <th class="text-2xl px-4 py-2 border-b text-center font-semibold text-white bg-[#DC911A]">Semestre</th>
+          <th class="text-2xl px-4 py-2 border-b text-center font-semibold text-white bg-[#DC911A]">Cohorte</th>
+          <th class="text-2xl px-4 py-2 border-b text-center font-semibold text-white bg-[#DC911A]">Promedio</th>
+          <th class="text-2xl px-4 py-2 border-b text-center font-semibold text-white bg-[#DC911A]">Aprobación</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(item of resumenAsignaturas; track item; let i = $index) {
+          <tr>
+            <td class="text-xl px-4 py-2 border-b font-bold text-center">{{ item.asignatura }}</td>
+            <td class="text-xl px-4 py-2 border-b font-bold text-center">{{ item.semestre }}</td>
+            <td class="text-xl px-4 py-2 border-b font-bold text-center">{{ item.cohorte }}</td>
+            <td class="text-xl px-4 py-2 border-b font-bold text-center">{{ item.promedio }}</td>
+            <td class="text-xl px-4 py-2 border-b font-bold text-center">{{ item.aprobacion }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

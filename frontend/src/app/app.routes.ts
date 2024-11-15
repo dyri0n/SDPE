@@ -17,9 +17,9 @@ import { AvanceEstudianteComponent } from './components/avance-estudiante/avance
 import { PracticasEstudianteComponent } from './components/practicas-estudiante/practicas-estudiante.component';
 import { AsignaturasComponent } from './components/asignaturas/asignaturas.component';
 import { DetalleAsignaturaComponent } from './components/detalle-asignatura/detalle-asignatura.component';
+import { TendenciasAsignaturaCortePracticoComponent } from './components/tendencias-asignatura-corte-practico/tendencias-asignatura-corte-practico.component';
 
 export const routes: Routes = [
-    {path: '', redirectTo: '/fluxogramas', pathMatch: 'full'},
     {path: 'login', component:LoginComponent, canActivate: [loginGuard]},
     {path: 'menu', component: MenuComponent, canActivate: [authGuard]},
     {path: 'fluxogramas', component: FluxogramasComponent, canActivate: [authGuard]},
@@ -35,10 +35,10 @@ export const routes: Routes = [
     {path: 'asignaturas', component: AsignaturasComponent, canActivate: [authGuard]},
     {path: 'detalle-asignatura/:idAsignatura', component: DetalleAsignaturaComponent, canActivate: [authGuard]},
     {path: 'asignatura-corte-practico', component: AsignaturaCortePracticoComponent, canActivate: [authGuard]},
-    {
-      path: 'avance-estudiante', component: AvanceEstudianteComponent, canActivate: [authGuard]
-    },
-    { path: 'practicas-estudiante', component: PracticasEstudianteComponent, canActivate: [authGuard] },
+    {path: 'avance-estudiante', component: AvanceEstudianteComponent, canActivate: [authGuard]},
+    {path: 'practicas-estudiante', component: PracticasEstudianteComponent, canActivate: [authGuard]},
+    {path: 'ver-tendencias', component: TendenciasAsignaturaCortePracticoComponent, canActivate: [authGuard]},
+    {path: '', redirectTo: '/fluxogramas', pathMatch: 'full'},
     {path: '**', redirectTo: '/menu'} 
     
 ];
