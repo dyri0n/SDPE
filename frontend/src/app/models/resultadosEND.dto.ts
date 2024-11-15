@@ -1,15 +1,15 @@
 export interface resultadoPorTemas {
-    nombreAlumno: string;
-    programa: string;
-    puntaje: number;
-    porcentajeTemas: number[]
+  nombreAlumno: string;
+  programa: string;
+  puntaje: number;
+  porcentajeTemas: number[]
   }
 
 export interface resultadoPorEstandares {
-    nombreAlumno: string;
-    programa: string;
-    puntaje: number;
-    porcentajeEstandares: number[]
+  nombreAlumno: string;
+  programa: string;
+  puntaje: number;
+  porcentajeEstandares: number[]
 }
 
 export interface resultadoPorPA {
@@ -17,4 +17,9 @@ export interface resultadoPorPA {
   programa: string;
   PA_SP: string
   PA_CE: string
+}
+
+export interface resultadosEnd {
+  periodo: number;
+  cohorte: number;
 }

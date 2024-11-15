@@ -28,6 +28,7 @@ export const routes: Routes = [
     {path: 'convenios', component: ListaConveniosComponent, canActivate: [authGuard]},
     {path: 'convenio/:idConvenio', component:ConvenioComponent, canActivate: [authGuard]},
     {path: 'cursos/:idAsignatura', component: CursosComponent, canActivate: [authGuard]},
+    {path: 'lista-end', component: ListaEndComponent, canActivate:[authGuard]},
     {path: 'end', component: ResultadoEndComponent, canActivate: [authGuard]},
     {path: 'semestres', component: SemestresComponent, canActivate: [authGuard]},
     {path: 'aprobacion/:idAsignatura', component: AprobacionCursoComponent, canActivate: [authGuard]},
@@ -38,11 +39,7 @@ export const routes: Routes = [
     {path: 'detalle-asignatura/:idAsignatura', component: DetalleAsignaturaComponent, canActivate: [authGuard]},
     {path: 'asignatura-corte-practico', component: AsignaturaCortePracticoComponent, canActivate: [authGuard]},
     {path: 'avance-estudiante', component: AvanceEstudianteComponent, canActivate: [authGuard]},
-    {path: 'practicas-estudiante', component: PracticasEstudianteComponent, canActivate: [authGuard]},
-    {path: 'ver-tendencias', component: TendenciasAsignaturaCortePracticoComponent, canActivate: [authGuard]},
-    {path: 'practica-detalle/:titulo', component: DetallePracticaComponent, canActivate: [authGuard]},
-    {path: 'practicas-convenio/:idConvenio', component: PracticasConvenioComponent, canActivate: [authGuard]},
-    {path: '', redirectTo: '/fluxogramas', pathMatch: 'full'},
+    {path: 'practicas-estudiante', component: PracticasEstudianteComponent, canActivate: [authGuard] },
     {path: '**', redirectTo: '/menu'} 
     
 ];
