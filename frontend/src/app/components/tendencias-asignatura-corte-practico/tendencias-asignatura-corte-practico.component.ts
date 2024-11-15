@@ -26,10 +26,10 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
     { asignatura: 'Asignatura 1', semestre: 'Semestre I', cohorte: 2020, promedio: 3.8, aprobacion: 50 },
   ]
 
-  lineChartData: any
-  lineChartOptions: any
-  barChartData: any
-  barChartOptions: any
+  public lineChartData: any
+  public lineChartOptions: any
+  public barChartData: any
+  public barChartOptions: any
 
   public cargarDatos() {
     const separarCohortes = Array.from(new Set(this.resumenAsignaturas.map(a => a.cohorte))).sort()
@@ -113,11 +113,11 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
     }
 
     this.barChartData = {
-      labels: separarAsignaturas, 
+      labels: separarAsignaturas,
       datasets: [{
-        label: 'Aprobación Promedio',
-        backgroundColor: separarAsignaturas.map(asignatura => asignaturaColores[asignatura]), 
-        data: aprobacionPorAsignatura 
+        label: 'Aprobación Promedio (Cohorte ' + separarCohortes[separarCohortes.length - 1] + ')',
+        backgroundColor: separarAsignaturas.map(asignatura => asignaturaColores[asignatura]),
+        data: aprobacionPorAsignatura
       }]
     }
 
@@ -125,8 +125,12 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
       responsive: true,
       plugins: {
         legend: {
-          display: true,
-          position: 'top'
+          display: true, 
+          labels: {
+            usePointStyle: true,
+            color: '#000', 
+            boxWidth: 0 
+          }
         }
       },
       scales: {
@@ -139,7 +143,7 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
           min: 0,
           max: 100, 
           ticks: {
-            stepSize: 10, 
+            stepSize: 10,
             callback: function(value: number) {
               return value.toFixed(0)
             }
