@@ -1,73 +1,52 @@
-model Practica {
-  id Int @default(autoincrement())
-
-  nombre                 String
-  posicionRelativa       Int
-  competenciasRequeridas Json // revisar
-
-  // referencia a
-
-  idPlan          Int
-  planRelacionado Plan @relation(name: "define las practicas", fields: [idPlan], references: [id])
-
-  idAsignatura          Int
-  asignaturaContemplada PlanContemplaAsignatura @relation(name: "practica referenciada", fields: [idPlan, idAsignatura], references: [idPlan, idAsignatura])
-
-  // es referenciado por
-
-  PracticaTomada PracticaTomada[] @relation(name: "practica asociada")
-
-  //
-  @@id([id, idPlan, idAsignatura])
-  @@unique([idPlan, idAsignatura])
-}
-
 enum EstadoAprobacion {
   APROBADO
   DESAPROBADO
 }
 
 model PracticaTomada {
-  id Int @default(autoincrement())
-
   fechaInicio          DateTime         @db.Date
   fechaTermino         DateTime         @default(now()) @db.Date
-  resultadoDiagnostico Json
+  resultadoDiagnostico Json // algo para intentar guardar los resultados 🤷
   resultado            EstadoAprobacion @default(APROBADO) // revisar nombre, refiere aprobación de la practica
 
   // referencia a
 
-  idEstudiante       Int
-  EstudianteAsociado Estudiante @relation(name: "tomo las practicas", fields: [idEstudiante], references: [id])
+  idPlan            Int
+  idAsignatura      Int
+  idEstudiante      Int
+  idCursacion       Int
+  CursacionPractica Cursacion @relation(name: "referencia la cursacion", fields: [idAsignatura, idPlan, idEstudiante, idCursacion], references: [idAsignatura, idPlan, idEstudiante, idCursacion])
 
-  idPractica       Int
-  idPlan           Int
-  idAsignatura     Int
-  PracticaAsociada Practica @relation(name: "practica asociada", fields: [idPractica, idPlan, idAsignatura], references: [id, idPlan, idAsignatura])
+  // es referenciado por
 
-  idConvenio       Int
-  ConvenioAsociado Convenio @relation(name: "convenio asociado", fields: [idConvenio], references: [id])
+  PTConvenios PTConvenio[] @relation(name: "cursacion practica")
 
   //
-  @@id([id, idPractica, idPlan, idAsignatura, idEstudiante, idConvenio])
+
+  @@id([idPlan, idAsignatura, idEstudiante, idCursacion])
 }
 
-model Modalidad {
-  id Int @id @default(autoincrement())
+model PTConvenio {
+  nivel Int
 
-  nombreModalidad String @unique
+  // referencia a
 
-  fechaCreacion DateTime  @default(now()) @db.Date
-  fechaDesuso   DateTime? @default(dbgenerated("now() + interval '1000 years'")) @db.Date
-  validez       Boolean   @default(true)
+  idPlan         Int
+  idAsignatura   Int
+  idEstudiante   Int
+  idCursacion    Int
+  PracticaTomada PracticaTomada @relation(name: "cursacion practica", fields: [idAsignatura, idPlan, idEstudiante, idCursacion], references: [idAsignatura, idPlan, idEstudiante, idCursacion])
 
-  // referenciado por
+  idConvenio Int
+  Convenio   Convenio @relation(name: "convenio referenciado", fields: [idConvenio], references: [idConvenio])
 
-  conveniosAsociados Convenio[] @relation(name: "sigue la modalidad")
+  //
+
+  @@id([idPlan, idAsignatura, idEstudiante, idCursacion, idConvenio])
 }
 
 model Convenio {
-  id Int @id @default(autoincrement())
+  idConvenio Int @id @default(autoincrement())
 
   titulo         String @unique
   centroPractica String
@@ -82,9 +61,23 @@ model Convenio {
   // referencia a
 
   idModalidad Int
-  Modalidad   Modalidad @relation(name: "sigue la modalidad", fields: [idModalidad], references: [id])
+  Modalidad   Modalidad @relation(name: "sigue la modalidad", fields: [idModalidad], references: [idModalidad])
 
   // es referenciado por
 
-  PracticaTomada PracticaTomada[] @relation(name: "convenio asociado")
+  PracticasTomadasPorConvenio PTConvenio[] @relation(name: "convenio referenciado")
+}
+
+model Modalidad {
+  idModalidad Int @id @default(autoincrement())
+
+  nombreModalidad String @unique
+
+  fechaCreacion DateTime  @default(now()) @db.Date
+  fechaDesuso   DateTime? @default(dbgenerated("now() + interval '1000 years'")) @db.Date
+  validez       Boolean   @default(true)
+
+  // referenciado por
+
+  conveniosAsociados Convenio[] @relation(name: "sigue la modalidad")
 }

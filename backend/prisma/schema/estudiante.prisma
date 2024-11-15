@@ -1,35 +1,41 @@
 model Estudiante {
-  id  Int    @id @default(autoincrement())
-  rut String @unique
+  idEstudiante Int    @id @default(autoincrement())
+  rut          String @unique
 
   nombreCompleto String
+  nombreSocial   String
   agnioIngreso   Int
 
   // es referenciado por
 
-  Cursacion      Cursacion[]      @relation(name: "curso las asignaturas")
-  PracticaTomada PracticaTomada[] @relation(name: "tomo las practicas")
-  ResultadoEND   ResultadoEND?    @relation(name: "obtiene los resultados")
+  Cursaciones  Cursacion[]   @relation(name: "curso las asignaturas")
+  ResultadoEND ResultadoEND? @relation(name: "obtiene los resultados")
 }
 
 model Cursacion {
-  id Int @default(autoincrement())
+  idCursacion Int @default(autoincrement())
 
-  notaFinal        Float
-  numIntento       Int    @default(1)
-  grupo            String @default("A")
+  notaFinal  Float
+  numIntento Int    @default(1)
+  grupo      String @default("A")
+
   agnio            Int
-  semestreRelativo Int    @default(1)
+  semestreRelativo Int @default(1)
 
   // referencia a
 
-  idPlan                Int
-  idAsignatura          Int
-  asignaturaContemplada PlanContemplaAsignatura @relation(name: "asignatura contemplada", fields: [idAsignatura, idPlan], references: [idAsignatura, idPlan])
+  idPlan       Int
+  idAsignatura Int
+  Asignatura   Asignatura @relation(name: "asignatura referenciada", fields: [idAsignatura, idPlan], references: [idAsignatura, idPlan])
 
-  estudianteRut String
-  estudiante    Estudiante @relation(name: "curso las asignaturas", fields: [estudianteRut], references: [rut])
+  idEstudiante Int
+  Estudiante   Estudiante @relation(name: "curso las asignaturas", fields: [idEstudiante], references: [idEstudiante])
+
+  // es referenciado por
+
+  Practicas PracticaTomada[] @relation(name: "referencia la cursacion")
 
   //
-  @@id([id, estudianteRut, idAsignatura, idPlan])
+
+  @@id([idCursacion, idEstudiante, idAsignatura, idPlan])
 }
