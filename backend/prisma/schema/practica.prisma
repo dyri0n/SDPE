@@ -26,8 +26,14 @@ model PracticaTomada {
   @@id([idPlan, idAsignatura, idEstudiante, idCursacion])
 }
 
+enum NIVEL {
+  BASICA
+  MEDIA
+  SUPERIOR
+}
+
 model PTConvenio {
-  nivel Int
+  nivel NIVEL
 
   // referencia a
 
