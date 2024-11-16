@@ -4,6 +4,6 @@ import { ConveniosService } from './convenios.service';
 
 @Module({
   controllers: [ConveniosController],
-  providers: [ConveniosService]
+  providers: [ConveniosService],
 })
 export class ConveniosModule {}
