@@ -116,7 +116,6 @@ export class ListaConveniosComponent implements OnInit{
     }
   }
 
-  // todo esto es para el paginator de primeng, aun no se como funciona.
   public first: number = 0;
   public rows: number = 5;
   public totalRecords: number= 0
@@ -197,11 +196,26 @@ export class ListaConveniosComponent implements OnInit{
           idModalidad: this.modalidades.indexOf(this.formularioConvenio.value.modalidad) + 1
         }
       
-      this.servicioConvenios.nuevoConvenioTest(nuevoConvenioTest).subscribe(respuesta=>{
-        if(respuesta){
-          this.alternarModal()
-          this.messageService.add({severity: 'success', summary: 'Guardado', detail: 'El convenio se guardó correctamente'});
-          this.obtenerConveniosTest()
+      this.servicioConvenios.nuevoConvenioTest(nuevoConvenioTest).subscribe({
+        next: (respuesta) => {
+          console.log(respuesta);
+          if (respuesta) {
+            this.alternarModal();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Guardado',
+              detail: 'El convenio se guardó correctamente'
+            });
+            this.obtenerConveniosTest();
+          }
+        },
+        error: (error) => {
+          console.error('Error al guardar el convenio:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Ocurrió un problema al guardar el convenio. Inténtalo nuevamente.'
+          });
         }
       })
     } else {

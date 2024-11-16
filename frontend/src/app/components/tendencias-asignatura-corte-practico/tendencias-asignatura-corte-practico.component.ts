@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 
 @Component({
   selector: 'app-tendencias-asignatura-corte-practico',
   standalone: true,
-  imports: [ReactiveFormsModule, ChartModule, CommonModule],
+  imports: [ReactiveFormsModule, ChartModule, CommonModule, FormsModule],
   templateUrl: './tendencias-asignatura-corte-practico.component.html',
   styleUrls: ['./tendencias-asignatura-corte-practico.component.css']
 })
@@ -15,10 +15,12 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.cohortes = Array.from(new Set(this.resumenAsignaturas.map(a => a.cohorte))).sort()
+    this.cohortesSeleccionado = [...this.cohortes]
     this.cargarDatos()
   }
 
-  resumenAsignaturas = [
+  public resumenAsignaturas = [
     { asignatura: 'Asignatura 1', semestre: 'Semestre I', cohorte: 2018, promedio: 3.6, aprobacion: 40 },
     { asignatura: 'Asignatura 1', semestre: 'Semestre I', cohorte: 2019, promedio: 4.0, aprobacion: 60 },
     { asignatura: 'Asignatura 2', semestre: 'Semestre II', cohorte: 2019, promedio: 4.5, aprobacion: 55 },
@@ -30,8 +32,13 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
   public lineChartOptions: any
   public barChartData: any
   public barChartOptions: any
+  public cohortes: number[]=[]
+  public cohortesSeleccionado: number[]=[]
 
   public cargarDatos() {
+    const cohortesFiltrados = this.cohortesSeleccionado.length > 0
+      ? this.cohortesSeleccionado
+      : this.cohortes
     const separarCohortes = Array.from(new Set(this.resumenAsignaturas.map(a => a.cohorte))).sort()
     const separarAsignaturas = Array.from(new Set(this.resumenAsignaturas.map(a => a.asignatura)))
 
@@ -50,7 +57,7 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
       asignaturaColores[asignatura] = getRandomColor()
     })
 
-    const datasets = separarCohortes.map(cohorte => {
+    const datasets = cohortesFiltrados.map(cohorte => {
       const dataPorCohorte = separarAsignaturas.map(asignatura => {
         const asignaturasCohorte = this.resumenAsignaturas.filter(a => a.cohorte === cohorte && a.asignatura === asignatura)
         const promedio = asignaturasCohorte.length > 0
@@ -158,5 +165,6 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
   }
 
   aplicarFiltro() {
+    this.cargarDatos()
   }
 }
