@@ -5,6 +5,8 @@ import {
   estudiantesGetCursos,
   estudiantesGetPromedioIndividualPorSemestre,
   estudiantesGetPromedioCohortePorSemestre,
+  estudiantesListarCohortes,
+  estudiantesGetEstudiantesPorCohorte,
 } from '@prisma/client/sql';
 import {
   AvanceDto,
@@ -12,6 +14,10 @@ import {
   InfoEstudianteDTO,
   SemestreRealizadoDTO,
 } from './dto/avance.dto';
+import {
+  InfoCohorteEstudianteDTO,
+  ListarPorCohorteDTO,
+} from './dto/cohortes.dto';
 @Injectable()
 export class EstudiantesService {
   constructor(private prisma: PrismaService) {}
@@ -162,4 +168,70 @@ export class EstudiantesService {
       avanceCohorte: avanceCohorte,
     } as AvanceDto;
   }
+
+  //Bloque de Obtener a todos los estudiantes
+  private async listarCohortes(): Promise<number[]> {
+    const resultCohortes = await this.prisma.$queryRawTyped(
+      estudiantesListarCohortes(),
+    );
+    return resultCohortes.map((value) => {
+      return value.cohorte as number;
+    });
+  }
+
+  private async getAllEstudiantesCohorte(): Promise<
+    InfoCohorteEstudianteDTO[]
+  > {
+    const resultadoEstudiantes = await this.prisma.$queryRawTyped(
+      estudiantesGetEstudiantesPorCohorte(),
+    );
+    return resultadoEstudiantes.map((value) => {
+      return {
+        nombre_completo: value.nombreCompleto,
+        rut: value.rut,
+        agnio_cohorte: value.agno_cohorte,
+      } as InfoCohorteEstudianteDTO;
+    });
+  }
+  /*
+   * Método Principal del Bloque
+   *
+   * Retorna cada uno de los estudiantes ordenados y clasificados por cohorte usando
+   * ListarPorCohorteDTO[]
+   * [
+   *     {
+   *       "cohorte": 2020,
+   *       "estudiantes": [
+   *           {
+   *               "nombre_completo": "Estudiante Numero Dos",
+   *               "rut": "22.222.222-2",
+   *               "agnio_cohorte": 2020
+   *           },
+   *           { ... },
+   *           { ... },
+   *       ]
+   *     },
+   *     { ... },
+   *     { ... },
+   * ]
+   * */
+  async getEstudiantesPorCohorte() {
+    const cohortes = await this.listarCohortes();
+    const estudiantes = await this.getAllEstudiantesCohorte();
+    const responseDto: ListarPorCohorteDTO[] = [];
+
+    cohortes.forEach((cohorte) => {
+      const mismoCohorte: InfoCohorteEstudianteDTO[] = [];
+      estudiantes.forEach((e) => {
+        if (e.agnio_cohorte == cohorte) mismoCohorte.push(e);
+      });
+      responseDto.push({
+        cohorte: cohorte,
+        estudiantes: mismoCohorte,
+      } as ListarPorCohorteDTO);
+    });
+    return responseDto;
+  }
 }
+
+// FIN Bloque listar a todos los estudiantes
