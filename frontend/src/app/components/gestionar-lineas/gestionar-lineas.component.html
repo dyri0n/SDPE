@@ -1,0 +1,44 @@
+<div class="flex gap-20 m-10">
+    <!-- columna listado asignaturas -->
+    <div class="w-1/2 p-4 bg-white rounded shadow">
+      <h2 class="text-lg font-bold mb-4">Listado de Asignaturas</h2>
+      <div *ngFor="let asignatura of asignaturas" class="mb-2">
+        <div
+          pDraggable
+          (onDragStart)="onDragStart($event, asignatura)"
+          class="p-2 bg-blue-500 text-white rounded shadow cursor-pointer"
+        >
+          {{ asignatura.nombre }}
+        </div>
+      </div>
+    </div>
+  
+    <!-- columna lineas -->
+    <div class="w-1/2 p-4 bg-white rounded shadow">
+      <h2 class="text-lg font-bold mb-4">Líneas de Asignaturas</h2>
+      <div *ngFor="let linea of lineas" class="mb-4">
+        <h3 class="font-semibold">{{ linea.nombre }}</h3>
+        <div
+          pDroppable
+          [ngClass]="{'bg-green-100': isOver}"
+          (onDrop)="onDrop($event, linea)"
+          (onDragEnter)="onDragEnter()"
+          (onDragLeave)="onDragLeave()"
+          class="p-4 bg-white border rounded min-h-[80px] flex flex-wrap gap-2"
+        >
+          <div *ngFor="let asignatura of linea.asignaturas" class="p-2 bg-green-500 text-white rounded shadow">
+            {{ asignatura.nombre }}
+
+            <!-- Botón para eliminar la asignatura de la línea -->
+            <button
+                (click)="onRemoveFromLinea(asignatura, linea)"
+                class="ml-2 text-red-500 hover:text-red-700"
+                >
+                Quitar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

@@ -17,14 +17,14 @@ import { AvanceEstudianteComponent } from './components/avance-estudiante/avance
 import { PracticasEstudianteComponent } from './components/practicas-estudiante/practicas-estudiante.component';
 import { AsignaturasComponent } from './components/asignaturas/asignaturas.component';
 import { DetalleAsignaturaComponent } from './components/detalle-asignatura/detalle-asignatura.component';
-import { TendenciasAsignaturaCortePracticoComponent } from './components/tendencias-asignatura-corte-practico/tendencias-asignatura-corte-practico.component';
-import { DetallePracticaComponent } from './components/detalle-practica/detalle-practica.component';
-import { PracticasConvenioComponent } from './components/practicas-convenio/practicas-convenio.component';
+import { ListaEndComponent } from './components/lista-end/lista-end.component';
+import { GestionarLineasComponent } from './components/gestionar-lineas/gestionar-lineas.component';
 
 export const routes: Routes = [
     {path: 'login', component:LoginComponent, canActivate: [loginGuard]},
     {path: 'menu', component: MenuComponent, canActivate: [authGuard]},
     {path: 'fluxogramas', component: FluxogramasComponent, canActivate: [authGuard]},
+    {path: 'gestionar-lineas', component:GestionarLineasComponent, canActivate: [authGuard]},
     {path: 'convenios', component: ListaConveniosComponent, canActivate: [authGuard]},
     {path: 'convenio/:idConvenio', component:ConvenioComponent, canActivate: [authGuard]},
     {path: 'cursos/:idAsignatura', component: CursosComponent, canActivate: [authGuard]},
