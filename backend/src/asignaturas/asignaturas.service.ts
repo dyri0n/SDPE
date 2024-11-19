@@ -148,12 +148,14 @@ export class AsignaturasService {
     const result = await this.prisma.$queryRawTyped(asignaturasListar());
     return result.map((value) => {
       return {
-        idAsignatura: value.idasignatura,
-        codigo: value.codigo,
-        nombre: value.nombre,
-        semestreRealizacion: value.semestrerealizacion,
-        planesDondeSeImparte: value.planesdondeseimparte,
-        formacion: value.areaformacion,
+        tituloPlan: value.tituloPlan,
+        codigoPlan: value.codigoPlan,
+        fechaInstauracionPlan: value.fechaInstauracionPlan,
+        codigoAsignatura: value.codigoAsignatura,
+        nombreAsignatura: result.nombreAsignatura,
+        nombreCortoAsignatura: result.nombreCortoAsignatura,
+        semestreRealizacion: result.semestreRealizacion,
+        areaFormacion: result.areaFormacion,
       };
     }) as AsignaturaListadaDTO[];
   }

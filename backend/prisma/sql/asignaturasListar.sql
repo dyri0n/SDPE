@@ -1,10 +1,11 @@
-SELECT a."id" as idAsignatura,
-       a."codigo",
-       a."nombre",
-       ARRAY_AGG(pt."semestre") as semestreRealizacion,
-       ARRAY_AGG(p."titulo") as planesDondeSeImparte,
-       ARRAY_AGG(pt."areaFormacion") as areaFormacion
-FROM "PlanContemplaAsignatura" pt
-         JOIN "Asignatura" a ON (a."id" = pt."idAsignatura")
-         JOIN "Plan" p ON (p."id" = pt."idPlan")
-GROUP BY a."id", a."codigo", a."nombre";
+SELECT a."idAsignatura",
+    p."titulo" as tituloPlan,
+    p."codigo" as codigoPlan,
+    p."fechaInstauracion" as fechaInstauracionPlan,
+    a."codigo" as codigoAsignatura,
+    a."nombre" as nombreAsignatura,
+    a."nombreCorto" as nombreCortoAsignatura,
+    a."semestre" as semestreRealizacion,
+    a."areaFormacion"
+FROM "Asignatura" a
+JOIN "Plan" p ON (a."idPlan" = p."idPlan");

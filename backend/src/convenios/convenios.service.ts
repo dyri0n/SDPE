@@ -27,7 +27,7 @@ export class ConveniosService {
 
   private async getConvenioPorId(idConvenio: number): Promise<Convenio> {
     return await this.prisma.convenio.findUnique({
-      where: { id: idConvenio },
+      where: { idConvenio: idConvenio },
       include: {
         Modalidad: {
           select: { nombreModalidad: true },
@@ -40,9 +40,17 @@ export class ConveniosService {
     idConvenio: number,
   ): Promise<number> {
     return await this.prisma.practicaTomada.count({
-      where: { idConvenio: idConvenio },
+      where: {
+        PTConvenios: {
+          some: {
+            idConvenio: idConvenio,
+          },
+        },
+      },
     });
   }
+
+  // TODO: checkear sql modificaciones nuevo modelo
   private async getPromedioDePracticas(idConvenio: number): Promise<number> {
     const response = await this.prisma.$queryRawTyped(
       conveniosGetPromedio(idConvenio),
@@ -55,6 +63,7 @@ export class ConveniosService {
     })[0] as number;
     //por defecto retorna un arreglo de un solo elemento asi que retorna el primer elemento
   }
+
   private async getAprobacionDePracticas(idConvenio: number): Promise<number> {
     const response = await this.prisma.$queryRawTyped(
       conveniosGetAprobacion(idConvenio),
@@ -107,11 +116,11 @@ export class ConveniosService {
   //Usado para "eliminar" un convenio haciendo false su validez
   async invalidarConvenio(idConvenio: number) {
     return await this.prisma.convenio.update({
+      where: {
+        idConvenio: idConvenio,
+      },
       data: {
         validez: false,
-      },
-      where: {
-        id: idConvenio,
       },
     });
   }
@@ -120,7 +129,7 @@ export class ConveniosService {
   async updateConvenio(idConvenio: number, update: UpdateConvenioDTO) {
     try {
       return await this.prisma.convenio.update({
-        where: { id: idConvenio },
+        where: { idConvenio: idConvenio },
         data: {
           titulo: update.titulo,
           centroPractica: update.centroPractica,
@@ -129,7 +138,9 @@ export class ConveniosService {
           documentoConvenio: update.documentoConvenio,
           urlFoto: update.urlFoto,
           Modalidad: {
-            connect: { id: update.idModalidad },
+            connect: {
+              idModalidad: update.idModalidad,
+            },
           },
         },
       });

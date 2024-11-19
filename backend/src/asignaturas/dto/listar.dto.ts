@@ -1,8 +1,12 @@
+import { AREA } from '@prisma/client';
+
 export interface AsignaturaListadaDTO {
-  idAsignatura: number;
-  codigo: string;
-  nombre: string;
-  semestreRealizacion: number[];
-  planesDondeSeImparte: string[];
-  formacion: string[];
+  tituloPlan: string;
+  codigoPlan: number;
+  fechaInstauracionPlan: Date;
+  codigoAsignatura: string;
+  nombreAsignatura: string;
+  nombreCortoAsignatura: string;
+  semestreRealizacion: number;
+  areaFormacion: AREA;
 }
