@@ -2,91 +2,52 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { TendenciaService } from '../../services/tendencia.service';
+
 
 @Component({
   selector: 'app-tendencias-asignatura-corte-practico',
   standalone: true,
-  imports: [ReactiveFormsModule, ChartModule, CommonModule, FormsModule],
+  imports: [ReactiveFormsModule, ChartModule, CommonModule, FormsModule, MultiSelectModule],
   templateUrl: './tendencias-asignatura-corte-practico.component.html',
   styleUrls: ['./tendencias-asignatura-corte-practico.component.css']
 })
 export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
 
-  constructor() {}
+  constructor(
+    private tendenciaService: TendenciaService
+  ) {}
 
   ngOnInit(): void {
+    this.tendenciaService.obtenerAsignaturas().subscribe(respuesta=>{
+      this.resumenAsignaturas=respuesta
+    })
     this.cohortes = Array.from(new Set(this.resumenAsignaturas.map(a => a.cohorte))).sort()
-    this.cohortesSeleccionado = [...this.cohortes]
+    this.cohortesGraficoLineas = Array.from(new Set(this.resumenAsignaturas.map(a => a.cohorte))).sort().map(cohorte => ({ label: cohorte.toString(), value: cohorte }))
+    this.semestres = Array.from(new Set(this.resumenAsignaturas.map(a => a.semestre))).sort()
+    this.cohortesSeleccionadoGraficoLineas = [...this.cohortesGraficoLineas]
+    this.cohorteSeleccionadoGraficoBarras= Math.max(...this.cohortes)
     this.cargarDatos()
   }
 
-  public resumenAsignaturas = [
-    { asignatura: 'Asignatura 1', semestre: 'Semestre I', cohorte: 2018, promedio: 3.6, aprobacion: 40 },
-    { asignatura: 'Asignatura 1', semestre: 'Semestre I', cohorte: 2019, promedio: 4.0, aprobacion: 60 },
-    { asignatura: 'Asignatura 2', semestre: 'Semestre II', cohorte: 2019, promedio: 4.5, aprobacion: 55 },
-    { asignatura: 'Asignatura 3', semestre: 'Semestre III', cohorte: 2020, promedio: 5.0, aprobacion: 70 },
-    { asignatura: 'Asignatura 1', semestre: 'Semestre I', cohorte: 2020, promedio: 3.8, aprobacion: 50 },
-  ]
-
+  public resumenAsignaturas: any[] = []
   public lineChartData: any
   public lineChartOptions: any
   public barChartData: any
   public barChartOptions: any
   public cohortes: number[]=[]
-  public cohortesSeleccionado: number[]=[]
+  public cohortesGraficoLineas: { label: string; value: number; }[] = []
+  public semestres: string[]=[]
+  public cohortesSeleccionadoGraficoLineas: { label: string; value: number }[] = []
+  public cohorteSeleccionadoGraficoBarras: number=0
+  public semestreSeleccionado: string = ''
+  public anioSeleccionado: number | null = null
 
   public cargarDatos() {
-    const cohortesFiltrados = this.cohortesSeleccionado.length > 0
-      ? this.cohortesSeleccionado
-      : this.cohortes
-    const separarCohortes = Array.from(new Set(this.resumenAsignaturas.map(a => a.cohorte))).sort()
-    const separarAsignaturas = Array.from(new Set(this.resumenAsignaturas.map(a => a.asignatura)))
-
-    const asignaturaColores: { [key: string]: string } = {}
-
-    const getRandomColor = () => {
-      const letters = '0123456789ABCDEF'
-      let color = '#'
-      for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)]
-      }
-      return color
-    }
-
-    separarAsignaturas.forEach(asignatura => {
-      asignaturaColores[asignatura] = getRandomColor()
-    })
-
-    const datasets = cohortesFiltrados.map(cohorte => {
-      const dataPorCohorte = separarAsignaturas.map(asignatura => {
-        const asignaturasCohorte = this.resumenAsignaturas.filter(a => a.cohorte === cohorte && a.asignatura === asignatura)
-        const promedio = asignaturasCohorte.length > 0
-          ? asignaturasCohorte.reduce((sum, a) => sum + a.promedio, 0) / asignaturasCohorte.length
-          : 0
-        return parseFloat(promedio.toFixed(1))
-      })
-
-      return {
-        label: 'Cohorte ' + cohorte,
-        data: dataPorCohorte,
-        fill: false,
-        borderColor: getRandomColor(), 
-        tension: 0.4
-      }
-    })
-
-    const aprobacionPorAsignatura: number[] = separarAsignaturas.map(asignatura => {
-      const aprobaciones = this.resumenAsignaturas.filter(a => a.asignatura === asignatura).map(a => a.aprobacion)
-      const aprobacionPromedio = aprobaciones.length > 0
-        ? aprobaciones.reduce((sum, aprobacion) => sum + aprobacion, 0) / aprobaciones.length
-        : 0
-      return parseFloat(aprobacionPromedio.toFixed(1))
-    })
-
     this.lineChartData = {
-      labels: separarAsignaturas, 
-      datasets: datasets,
-
+      labels: Array.from(new Set(this.resumenAsignaturas.map(a => a.asignatura))),
+      datasets: this.filtrarDatosLineChart(),
     }
 
     this.lineChartOptions = {
@@ -94,13 +55,23 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
       plugins: {
         legend: {
           display: true,
-          position: 'top'
+          position: 'top',
+          labels: {
+            font: {
+              size: 16
+            }
+          }
         }
       },
       scales: {
         x: {
           grid: {
             color: '#e0e0e0'
+          },
+          ticks: {
+            font: {
+              size: 16
+            }
           }
         },
         y: {
@@ -108,25 +79,21 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
           max: 7,
           ticks: {
             callback: function(value: number) {
-              return value.toFixed(1);
+              return value.toFixed(1)
+            },
+            font: {
+              size: 16
+            },
+            grid: {
+              color: '#e0e0e0'
             }
-          },
-          grid: {
-            color: '#e0e0e0'
           }
         }
       },
       backgroundColor: '#ffffff'
     }
-
-    this.barChartData = {
-      labels: separarAsignaturas,
-      datasets: [{
-        label: 'Aprobación Promedio (Cohorte ' + separarCohortes[separarCohortes.length - 1] + ')',
-        backgroundColor: separarAsignaturas.map(asignatura => asignaturaColores[asignatura]),
-        data: aprobacionPorAsignatura
-      }]
-    }
+  
+    this.barChartData= this.filtrarDatosBarChart()
 
     this.barChartOptions = {
       responsive: true,
@@ -136,7 +103,10 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
           labels: {
             usePointStyle: true,
             color: '#000', 
-            boxWidth: 0 
+            boxWidth: 0,
+            font: {
+              size: 16
+            }
           }
         }
       },
@@ -144,6 +114,11 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
         x: {
           grid: {
             color: '#e0e0e0'
+          },
+          ticks: {
+            font: {
+              size: 16
+            }
           }
         },
         y: {
@@ -153,10 +128,13 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
             stepSize: 10,
             callback: function(value: number) {
               return value.toFixed(0)
+            },
+            font: {
+              size: 16
+            },
+            grid: {
+              color: '#e0e0e0'
             }
-          },
-          grid: {
-            color: '#e0e0e0'
           }
         }
       },
@@ -164,7 +142,78 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
     }
   }
 
-  aplicarFiltro() {
+  public getRandomColor() {
+    const letters = '0123456789ABCDEF'
+    let color = '#'
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)]
+    }
+    return color
+  }
+
+  public filtrarDatosBarChart() {
+    const asignaturasFiltradas = this.resumenAsignaturas.filter(asignatura => {
+      return (
+        (!this.semestreSeleccionado || asignatura.semestre === this.semestreSeleccionado) && asignatura.cohorte === Number(this.cohorteSeleccionadoGraficoBarras)
+      )
+    })
+  
+    const separarAsignaturas = Array.from(new Set(this.resumenAsignaturas.map(a => a.asignatura)))
+  
+    const filteredData = separarAsignaturas.map(asignatura => {
+      const aprobaciones = asignaturasFiltradas.filter(a => a.asignatura === asignatura).map(a => a.aprobacion)
+      
+      const aprobacionPromedio = aprobaciones.length > 0 ? aprobaciones.reduce((sum, aprobacion) => sum + aprobacion, 0) / aprobaciones.length: 0
+  
+      if (aprobacionPromedio > 0) {
+        return {
+          label: asignatura,
+          data: parseFloat(aprobacionPromedio.toFixed(1)),
+        }
+      } else {
+        return null
+      }
+    }).filter(item => item !== null)
+  
+    const labels = filteredData.map(item => item.label)
+    const data = filteredData.map(item => item.data)
+  
+    return {
+      labels: labels,
+      datasets: [{
+        label: `Aprobación Promedio (Cohorte ${this.cohorteSeleccionadoGraficoBarras})`,
+        backgroundColor: labels.map(() => this.getRandomColor()),
+        data: data
+      }]
+    }
+  }
+
+  public filtrarDatosLineChart() {
+    const cohortesFiltrados = this.cohortesSeleccionadoGraficoLineas.map(c => c.value)  
+    const separarAsignaturas = Array.from(new Set(this.resumenAsignaturas.map(a => a.asignatura)))
+  
+    return cohortesFiltrados.map(cohorte => {
+      const dataPorCohorte = separarAsignaturas.map(asignatura => {
+        const asignaturasCohorte = this.resumenAsignaturas.filter(
+          a => a.cohorte === cohorte && a.asignatura === asignatura
+        )
+        const promedio = asignaturasCohorte.length > 0 ? asignaturasCohorte.reduce((sum, a) => sum + a.promedio, 0) / asignaturasCohorte.length : 0
+        return parseFloat(promedio.toFixed(1))
+      })
+  
+      return {
+        label: 'Cohorte ' + cohorte,
+        data: dataPorCohorte,
+        fill: false,
+        borderColor: this.getRandomColor(),
+        tension: 0.4,
+        borderWidth: 6,
+        pointRadius: 8
+      }
+    })
+  }
+
+  public aplicarFiltro() {
     this.cargarDatos()
   }
 }

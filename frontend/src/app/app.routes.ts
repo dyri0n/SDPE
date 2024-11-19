@@ -18,6 +18,7 @@ import { PracticasEstudianteComponent } from './components/practicas-estudiante/
 import { AsignaturasComponent } from './components/asignaturas/asignaturas.component';
 import { DetalleAsignaturaComponent } from './components/detalle-asignatura/detalle-asignatura.component';
 import { TendenciasAsignaturaCortePracticoComponent } from './components/tendencias-asignatura-corte-practico/tendencias-asignatura-corte-practico.component';
+import { DetallePracticaComponent } from './components/detalle-practica/detalle-practica.component';
 
 export const routes: Routes = [
     {path: 'login', component:LoginComponent, canActivate: [loginGuard]},
@@ -38,6 +39,7 @@ export const routes: Routes = [
     {path: 'avance-estudiante', component: AvanceEstudianteComponent, canActivate: [authGuard]},
     {path: 'practicas-estudiante', component: PracticasEstudianteComponent, canActivate: [authGuard]},
     {path: 'ver-tendencias', component: TendenciasAsignaturaCortePracticoComponent, canActivate: [authGuard]},
+    {path: 'practica-detalle/:titulo', component: DetallePracticaComponent, canActivate: [authGuard]},
     {path: '', redirectTo: '/fluxogramas', pathMatch: 'full'},
     {path: '**', redirectTo: '/menu'} 
     

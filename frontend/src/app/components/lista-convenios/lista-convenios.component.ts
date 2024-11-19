@@ -198,24 +198,33 @@ export class ListaConveniosComponent implements OnInit{
       
       this.servicioConvenios.nuevoConvenioTest(nuevoConvenioTest).subscribe({
         next: (respuesta) => {
-          console.log(respuesta);
+          console.log(respuesta)
           if (respuesta) {
-            this.alternarModal();
+            this.alternarModal()
             this.messageService.add({
               severity: 'success',
               summary: 'Guardado',
               detail: 'El convenio se guardó correctamente'
-            });
-            this.obtenerConveniosTest();
+            })
+            this.obtenerConveniosTest()
           }
         },
         error: (error) => {
-          console.error('Error al guardar el convenio:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Ocurrió un problema al guardar el convenio. Inténtalo nuevamente.'
-          });
+          console.error('Error al guardar el convenio:', error)
+          this.alternarModal()
+          if (error.status === 403) {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Título duplicado',
+              detail: 'Ya existe un convenio con este título. Por favor, verifica y prueba con otro título.'
+            })
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Ocurrió un problema al guardar el convenio. Inténtalo nuevamente.'
+            })
+          }
         }
       })
     } else {

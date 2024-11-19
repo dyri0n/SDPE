@@ -1,0 +1,18 @@
+<div class="alumno-card relative flex items-center bg-white p-4 rounded-lg shadow-md">
+  <div class="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center mr-4">
+    <img [src]="alumno.imagen || 'path/to/default-avatar.png'" alt="Foto del alumno" class="w-full h-full rounded-full" />
+  </div>
+
+  <div class="flex-grow">
+    <p class="text-xl font-bold">{{ alumno.nombreCompleto }}</p>
+    <p class="text-sm text-blue-500">Cohorte {{ alumno.cohorte }}</p>
+    <p class="text-sm text-orange-600">Promedio {{ alumno.promedio }}</p>
+  </div>
+
+  <div class="relative">
+    <button (click)="abrirMenu()" class="p-2 bg-blue-500 text-white rounded-lg shadow-md">
+      Ir a menú Alumno
+    </button>
+
+  </div>
+</div>
