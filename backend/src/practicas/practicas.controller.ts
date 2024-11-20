@@ -55,4 +55,9 @@ export class PracticasController {
 
     return result;
   }
+
+  @Get('convenio/:idConvenio/')
+  async getPracticasDeConvenio(@Param('idConvenio') idConvenio: number) {
+    return this.practicaService.listarPracticasPorConvenio(idConvenio);
+  }
 }
