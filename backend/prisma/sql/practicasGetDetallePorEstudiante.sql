@@ -16,4 +16,23 @@ FROM "Convenio" cn
     )
     JOIN "PlanContemplaAsignatura" pc ON (pc."idAsignatura" = c."idAsignatura" and pc."idPlan" = pt."idPlan")
     JOIN "Practica" pr ON (pr."idAsignatura" = pc."idAsignatura" and pc."idPlan" = pr."idPlan")
-ORDER BY "numeroPractica"
+ORDER BY "numeroPractica";
+
+/*
+SELECT
+    cn."titulo",
+    cu."notaFinal",
+    pt."posicionRelativa",
+    asig."nombre",
+    cu."numIntento",
+    cn."centroPractica",
+    mo."nombreModalidad"
+FROM "Convenio" cn JOIN "Modalidad" mo ON (mo.id = cn."idModalidad")
+    JOIN "PTConvenio" ptc ON (ptc.idConvenio = cn."id")
+    JOIN "PracticaTomada" pt ON (
+        ptc."idPlan" = pt."idPlan" and ptc."idAsignatura" = pt."idAsignatura"  and
+        ptc."idEstudiante" = pt."idEstudiante" and ptc."idCursacion" = pt."idCursacion"
+    )
+    ...
+*/
+--    TODO: ESPERAR A QUE SE SOLUCIONE EL TEMA DE LA MEJORA AL ESQUEMA
