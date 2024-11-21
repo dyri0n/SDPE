@@ -1,0 +1,25 @@
+<div class="min-h-screen p-4 mt-10">
+  <div class="max-w-7xl mx-auto bg-[#21A4DC] p-8 rounded-lg">
+    <h2 class="text-3xl font-bold text-center text-white mb-6">Prácticas realizadas en Convenio Colegio Samoré</h2>
+    <div class="mb-6">
+      <input type="text" placeholder="Buscar práctica..." class="w-full p-3 rounded-lg text-black" />
+    </div>
+    <div class="space-y-4">
+      <div *ngFor="let practica of practicas" class="bg-white rounded-lg shadow-lg p-6 flex justify-between items-center">
+        <!--Falta agregar la modalidad-->
+        <div class="flex-1">
+          <p class="text-lg font-semibold">{{ practica.nombre }}</p>
+          <p class="text-sm text-gray-500">{{ practica.titulo }}</p>
+          <p class="text-sm text-gray-500">Fecha de Inicio: {{ practica.fechaInicio }}</p>
+          <p class="text-sm text-gray-500">Fecha de Término: {{ practica.fechaTermino }}</p>
+        </div>
+        <div class="ml-4">
+          <span class="w-32 h-16 text-center bg-[#DC911A] text-white font-bold rounded-md flex flex-col items-center justify-center">
+            <span class="block">Nota Final:</span>
+            <span class="block">{{ practica.nota }}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

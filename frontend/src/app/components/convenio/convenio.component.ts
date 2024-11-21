@@ -42,4 +42,8 @@ export class ConvenioComponent implements OnInit{
       this.detalleConvenioTest.promedioPracticas = parseFloat(this.detalleConvenioTest.promedioPracticas.toFixed(2))
     })
   }
+
+  public verPracticas(idConvenio: number){
+    this.router.navigate(['/practicas-convenio', idConvenio])
+  }
 }

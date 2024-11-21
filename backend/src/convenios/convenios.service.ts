@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Convenio } from '@prisma/client';
 import { DetalleConvenioDTO } from './dto/detalles.dto';
@@ -9,6 +13,7 @@ import {
 } from '@prisma/client/sql';
 import { CreateConvenioDTO, UpdateConvenioDTO } from './dto/crud.dto';
 import { ListarConvenioDTO } from '../practicas/dto/listar.dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class ConveniosService {
@@ -21,7 +26,7 @@ export class ConveniosService {
   //BLOQUE detalle de convenio
 
   private async getConvenioPorId(idConvenio: number): Promise<Convenio> {
-    return this.prisma.convenio.findUnique({
+    return await this.prisma.convenio.findUnique({
       where: { id: idConvenio },
       include: {
         Modalidad: {
@@ -34,7 +39,7 @@ export class ConveniosService {
   private async getTotalDePracticasEnConvenio(
     idConvenio: number,
   ): Promise<number> {
-    return this.prisma.practicaTomada.count({
+    return await this.prisma.practicaTomada.count({
       where: { idConvenio: idConvenio },
     });
   }
@@ -57,8 +62,7 @@ export class ConveniosService {
     //por defecto retorna un arreglo de un solo elemento asi que retorna el primer elemento
   }
 
-  async getDetalleConvenioCompleto(idConvenio: number) {
-    /*
+  /*
     Retorna el detalle completo de un convenio pasándole su idConvenio
     *@return-type DetalleConvenioDTO
     EJ
@@ -70,6 +74,7 @@ export class ConveniosService {
       porcentajeReprobacion: 15
     }
      */
+  async getDetalleConvenioCompleto(idConvenio: number) {
     const [
       infoConvenio,
       infoPracticasRealizadas,
@@ -95,7 +100,7 @@ export class ConveniosService {
 
   //Usado para "eliminar" un convenio haciendo false su validez
   async invalidarConvenio(idConvenio: number) {
-    return this.prisma.convenio.update({
+    return await this.prisma.convenio.update({
       data: {
         validez: false,
       },
@@ -104,47 +109,70 @@ export class ConveniosService {
       },
     });
   }
+
   //Usado para actualizar la información de un convenio
   async updateConvenio(idConvenio: number, update: UpdateConvenioDTO) {
-    return this.prisma.convenio.update({
-      where: { id: idConvenio },
-      data: {
-        titulo: update.titulo,
-        centroPractica: update.centroPractica,
-        fechaInicioConvenio: new Date(update.fechaInicioConvenio),
-        fechaFinConvenio: new Date(update.fechaFinConvenio),
-        documentoConvenio: update.documentoConvenio,
-        urlFoto: update.urlFoto,
-        Modalidad: {
-          connect: { id: update.idModalidad },
+    try {
+      return await this.prisma.convenio.update({
+        where: { id: idConvenio },
+        data: {
+          titulo: update.titulo,
+          centroPractica: update.centroPractica,
+          fechaInicioConvenio: new Date(update.fechaInicioConvenio),
+          fechaFinConvenio: new Date(update.fechaFinConvenio),
+          documentoConvenio: update.documentoConvenio,
+          urlFoto: update.urlFoto,
+          Modalidad: {
+            connect: { id: update.idModalidad },
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        console.error(error);
+        throw new BadRequestException('Error en los datos de la query');
+      } else {
+        throw error;
+      }
+    }
   }
 
   //Usado para crear un nuevo convenio
   async createConvenio(create: CreateConvenioDTO) {
-    return this.prisma.convenio.create({
-      data: {
-        titulo: create.titulo,
-        centroPractica: create.centroPractica,
-        fechaInicioConvenio: new Date(create.fechaInicioConvenio),
-        fechaFinConvenio: create.fechaFinConvenio,
-        documentoConvenio: create.documentoConvenio,
-        urlFoto: create.urlFoto,
-        validez: true,
-        Modalidad: {
-          connect: {
-            id: create.idModalidad,
+    try {
+      return await this.prisma.convenio.create({
+        data: {
+          titulo: create.titulo,
+          centroPractica: create.centroPractica,
+          fechaInicioConvenio: new Date(create.fechaInicioConvenio),
+          fechaFinConvenio: create.fechaFinConvenio,
+          documentoConvenio: create.documentoConvenio,
+          urlFoto: create.urlFoto,
+          validez: true,
+          Modalidad: {
+            connect: {
+              id: create.idModalidad,
+            },
           },
         },
-      },
-    });
+      });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        // unique constraint
+        if (error.code === 'P2002') {
+          console.error(error);
+          throw new ForbiddenException('Información Duplicada');
+        }
+      } else {
+        throw error;
+      }
+    }
   }
 
   // Bloque Listar Convenios
   async listarConvenios(): Promise<ListarConvenioDTO[]> {
     const resultado = await this.prisma.$queryRawTyped(conveniosListar());
+
     return resultado.map((value) => {
       return {
         idConvenio: value.idConvenio,

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DetallesPracticaDTO } from '../../models/practica';
 import { AccordionModule } from 'primeng/accordion';
 import { InfoPracticaDTO } from '../../models/practica';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-practicas-estudiante',
   standalone: true,
@@ -16,7 +17,10 @@ export class PracticasEstudianteComponent {
   id_estudiante: number = 1;
   practicas_estudiante: DetallesPracticaDTO = new DetallesPracticaDTO();
   tiposPracticas: Practicass[] = [];
-  constructor(private readonly alumnoService: AlumnoService) {}
+  constructor(
+    private readonly alumnoService: AlumnoService,
+    private router: Router
+  ) {}
 
   // Antes que se carge el componente
   ngOnInit() {
@@ -28,6 +32,10 @@ export class PracticasEstudianteComponent {
 
     this.tiposPracticas = this.getMatrizDePracticas();
     console.log(this.tiposPracticas);
+  }
+
+  public verDetallesPractica(titulo: string) {
+    this.router.navigate(['/practica-detalle', titulo])
   }
 
   getMatrizDePracticas() {
