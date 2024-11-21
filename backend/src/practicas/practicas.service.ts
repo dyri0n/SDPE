@@ -1,10 +1,18 @@
-import { Bind, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Practica, PracticaTomada } from '@prisma/client';
 import { DetallePracticasDTO, InfoPracticaDTO } from './dto/detalles.dto';
 import { practicasGetDetallePorEstudiante } from '@prisma/client/sql';
 import { EstudiantesService } from '../estudiantes/estudiantes.service';
 import { InfoEstudianteDTO } from '../estudiantes/dto/avance.dto';
+import {
+  ListarPracticasPorConvenioDTO,
+  PracticaEnConvenioDTO,
+} from './dto/porConvenio.dto';
+import {
+  practicasGetPracticasDeConvenioUsandoId,
+  conveniosGetNombreConvenio,
+} from '@prisma/client/sql';
 
 @Injectable()
 export class PracticasService {
@@ -122,4 +130,67 @@ export class PracticasService {
     });
     return modalidad;
   }
+
+  //Bloque de prácticas por convenio
+  private async getPracticasDeConvenio(
+    idConvenio: number,
+  ): Promise<PracticaEnConvenioDTO[]> {
+    const resultadoPracticas = await this.prisma.$queryRawTyped(
+      practicasGetPracticasDeConvenioUsandoId(idConvenio),
+    );
+    return resultadoPracticas.map((value) => {
+      return {
+        nombreCompleto: value.nombreCompleto,
+        tituloPractica: value.tituloPractica,
+        numeroPractica: value.numeroPractica,
+        fechaInicio: value.fechaInicio,
+        fechaFin: value.fechaFin,
+        notaFinal: value.notaFinal,
+      } as PracticaEnConvenioDTO;
+    });
+  }
+  private async getNombreConvenio(idConvenio: number) {
+    const nombre = await this.prisma.$queryRawTyped(
+      conveniosGetNombreConvenio(idConvenio),
+    );
+    return (
+      (nombre.map((value) => {
+        return value.titulo;
+      })[0] as string) ?? 'NO ENCONTRADO'
+    ); //al ser un arreglo se toma el primer elemento
+  }
+
+  /*
+   * Método principal del Bloque
+   *
+   * Retorna cada uno de las practicas asociadas a un convenio usando
+   * ListarPracticasPorConvenioDTO
+   *{
+    "tituloConvenio": "Convenio con Servicio Local de Educación Pública Chinchorro (SLEP)",
+    "practicas": [
+        {
+            "nombreCompleto": "Estudiante Numero Siete",
+            "tituloPractica": "Currículo en contexto psicopedagógico",
+            "numeroPractica": 4,
+            "fechaInicio": "2024-02-13T00:00:00.000Z",
+            "fechaFin": "2024-11-12T00:00:00.000Z",
+            "notaFinal": 4.76
+        },
+        { ... },
+        { ... },
+    ]
+   *
+   *
+   * */
+  async listarPracticasPorConvenio(idConvenio: number) {
+    const nombreConvenio: string = await this.getNombreConvenio(idConvenio);
+    const resultadoConsulta: PracticaEnConvenioDTO[] =
+      await this.getPracticasDeConvenio(idConvenio);
+    return {
+      tituloConvenio: nombreConvenio,
+      practicas: resultadoConsulta,
+    } as ListarPracticasPorConvenioDTO;
+  }
+
+  //FIN bloque de prácticas por convenio
 }

@@ -18,7 +18,6 @@ model Practica {
   PracticaTomada PracticaTomada[] @relation(name: "practica asociada")
 
   //
-
   @@id([id, idPlan, idAsignatura])
   @@unique([idPlan, idAsignatura])
 }
@@ -50,7 +49,6 @@ model PracticaTomada {
   ConvenioAsociado Convenio @relation(name: "convenio asociado", fields: [idConvenio], references: [id])
 
   //
-
   @@id([id, idPractica, idPlan, idAsignatura, idEstudiante, idConvenio])
 }
 
