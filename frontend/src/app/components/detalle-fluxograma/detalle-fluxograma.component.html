@@ -14,7 +14,7 @@
                             <!-- aqui estaria iterando todas las asignaturas de detalleFluxograma por cada semestre,
                                 entonces no es muy eficiente que digamos por ahora -->
                             @if (asignatura.semestre == i+1){
-                                <div class="p-4 border border-gray-300 rounded-lg  flex flex-col space-y-2 w-[300px] mx-auto" 
+                                <div #card class="p-4 border border-gray-300 rounded-lg  flex flex-col space-y-2 w-[300px] mx-auto" 
                                     [ngClass]="{
                                         'bg-sky-400': esCortePractico(asignatura),
                                         'bg-red-400': esPrevia(asignatura.idAsignatura),
@@ -31,6 +31,13 @@
                                         {{asignatura.asignatura.nombre}}
                                     </div>
                                 </div>
+
+                                <p-contextMenu
+                                    #menu
+                                    [target]="card"
+                                    [model]="lineaMenu"
+                                    (onShow)="onContextMenuOpen(menu, asignatura.idAsignatura)">
+                                </p-contextMenu>
                             }
                         }
                     </div>

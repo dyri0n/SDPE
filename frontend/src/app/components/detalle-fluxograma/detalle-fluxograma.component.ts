@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FluxogramaService } from '../../services/fluxograma.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsignaturaFluxograma } from '../../models/asignatura.dto';
 import { Fluxograma } from '../../models/Fluxograma.model';
+import { AsignaturaService } from '../../services/asignatura.service';
+import { MenuItem } from 'primeng/api';
+import { ContextMenu, ContextMenuModule } from 'primeng/contextmenu';
+
 
 @Component({
   selector: 'app-detalle-fluxograma',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ContextMenuModule],
   templateUrl: './detalle-fluxograma.component.html',
   styleUrl: './detalle-fluxograma.component.css',
 })
@@ -16,13 +20,20 @@ export class DetalleFluxogramaComponent implements OnInit {
   constructor(
     private servicioFluxograma: FluxogramaService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private AsignaturaService: AsignaturaService,
   ) {}
 
   ngOnInit() {
     this.idFluxograma = +this.route.snapshot.paramMap.get('idFluxograma')!;
     this.obtenerFluxograma();
+    this.obtenerLineas()
   }
+
+  @ViewChild('menu') contextMenu!: ContextMenu; // referencia al menu
+  lineaMenu!: MenuItem[]; 
+  private lastContextMenu!: ContextMenu;
+  public selectedAsignaturaId!: number;
 
   detalleFluxograma?: AsignaturaFluxograma[];
   public idFluxograma: number = 0;
@@ -116,4 +127,42 @@ export class DetalleFluxogramaComponent implements OnInit {
         this.fluxograma = fluxograma;
       });
   }
+
+  public obtenerLineas() {
+    this.AsignaturaService.obtenerLineas().subscribe(result => {
+      const lineas = result.map((linea: any) => ({
+        label: linea.nombre,
+        icon: 'pi pi-plus',
+        command: () => this.agregarALinea(linea)
+      }));
+  
+      this.lineaMenu = [
+        {
+          label: 'Agregar a línea de asignaturas',
+          icon: 'pi pi-list',
+          items: lineas,
+          styleClass: 'text-sm'
+        },
+      ];
+      console.log(this.lineaMenu);
+    });
+  }
+  
+  public agregarALinea(linea: any) {
+    console.log(`agregando a linea: ${linea.nombre}`, linea);
+  }
+
+  
+
+  public onContextMenuOpen(menu: ContextMenu, asignaturaId: number) {
+    this.selectedAsignaturaId = asignaturaId;
+
+    if (this.lastContextMenu && this.lastContextMenu !== menu) {
+      this.lastContextMenu.hide();
+    }
+    this.lastContextMenu = menu;
+
+    console.log('asignatura seleccionada:', this.selectedAsignaturaId);
+  }
+
 }

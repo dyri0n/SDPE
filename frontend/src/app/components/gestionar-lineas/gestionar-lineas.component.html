@@ -1,44 +1,79 @@
-<div class="flex gap-20 m-10">
-    <!-- columna listado asignaturas -->
-    <div class="w-1/2 p-4 bg-white rounded shadow">
-      <h2 class="text-lg font-bold mb-4">Listado de Asignaturas</h2>
-      <div *ngFor="let asignatura of asignaturas" class="mb-2">
-        <div
-          pDraggable
-          (onDragStart)="onDragStart($event, asignatura)"
-          class="p-2 bg-blue-500 text-white rounded shadow cursor-pointer"
-        >
-          {{ asignatura.nombre }}
-        </div>
+<div class="bg-white border-y mt-10 py-5 shadow-lg">
+  <div class="flex items-center justify-between w-11/12">
+      <div class="bg-sky-700 w-auto px-10 rounded-r-xl py-4">
+          <h1 class="text-5xl text-white text-center font-bold">Gestionar líneas</h1>
       </div>
-    </div>
-  
-    <!-- columna lineas -->
-    <div class="w-1/2 p-4 bg-white rounded shadow">
-      <h2 class="text-lg font-bold mb-4">Líneas de Asignaturas</h2>
-      <div *ngFor="let linea of lineas" class="mb-4">
-        <h3 class="font-semibold">{{ linea.nombre }}</h3>
-        <div
-          pDroppable
-          [ngClass]="{'bg-green-100': isOver}"
-          (onDrop)="onDrop($event, linea)"
-          (onDragEnter)="onDragEnter()"
-          (onDragLeave)="onDragLeave()"
-          class="p-4 bg-white border rounded min-h-[80px] flex flex-wrap gap-2"
-        >
-          <div *ngFor="let asignatura of linea.asignaturas" class="p-2 bg-green-500 text-white rounded shadow">
-            {{ asignatura.nombre }}
+  </div>
+</div>
 
-            <!-- Botón para eliminar la asignatura de la línea -->
-            <button
-                (click)="onRemoveFromLinea(asignatura, linea)"
-                class="ml-2 text-red-500 hover:text-red-700"
-                >
-                Quitar
-            </button>
-          </div>
-        </div>
+
+
+<div cdkDropListGroup class="flex bg-white space-x-44 w-11/12 mx-auto justify-center mt-10 rounded-md">
+  
+  <!-- Lista de Asignaturas Disponibles -->
+  <div class="w-3/12 p-6 bg-sky-600 rounded-md my-10 flex flex-col" style="height: calc(100vh - 380px);">
+    <h2 class="text-2xl text-center bg-white rounded-md p-4 font-semibold mb-5 text-sky-700 border-4 border-gray-300">Asignaturas Disponibles</h2>
+    <div class="w-full mb-4 flex justify-between items-center">
+      <input type="text" class="px-4 py-2 w-full h-fit rounded-xl font-normal font-bold border border-sky-500 focus:outline-none focus:ring focus:ring-sky-500" placeholder="Buscar asignatura">
+    </div>
+    <div cdkDropList [cdkDropListData]="asignaturas" class="border border-gray-300 min-h-[60px] bg-white rounded-md p-4 space-y-4 overflow-y-auto" (cdkDropListDropped)="drop($event)" cdkDropListSortingDisabled style="flex-grow: 1;">
+      <div class="bg-white border border-gray-300 py-5 text-center text-lg font-medium rounded cursor-pointer hover:bg-sky-200 hover:border-sky-200" *ngFor="let asignatura of asignaturas" cdkDrag>
+        {{ asignatura.nombre }}
       </div>
     </div>
   </div>
-  
+
+  <!-- Líneas de Asignaturas -->
+  <div class="w-3/6 p-6 bg-sky-600 rounded-md my-10 flex flex-col" style="height: calc(100vh - 380px);">
+    <h2 class="text-2xl text-center bg-white rounded-md p-4 font-semibold mb-5 text-sky-700 border-4 border-gray-300">Líneas de Asignaturas</h2>
+    <div *ngIf="hayCambios" class="flex justify-end space-x-4 my-2">
+      <button (click)="cancelarCambios()" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Cancelar</button>
+      <button (click)="confirmarCambios()" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Confirmar</button>
+    </div>
+    <!-- Contenedor de líneas con scroll -->
+    <div class="flex-1 overflow-y-auto mb-6">
+      <div *ngFor="let linea of lineas" class="mb-6 h-fit">
+        <h3 class="text-lg bg-gray-300 rounded-t-md border-4 border-gray-300 p-3 font-medium text-sky-700 font-semibold">{{ linea.nombre }}</h3>
+        <div cdkDropList [cdkDropListData]="linea.asignaturas" class="border-x-4 border-b-0 border-gray-300 h-[250px] overflow-y-auto bg-white p-4 space-y-4" (cdkDropListDropped)="drop($event, linea)">
+          <div class="bg-white border border-gray-300 p-2 rounded relative cursor-pointer hover:bg-sky-200 hover:border-sky-200 flex items-center justify-between" *ngFor="let asignatura of linea.asignaturas" cdkDrag>
+            <span class="text-gray-700 font-medium">{{ asignatura.nombre }}</span>
+            <button type="button" class="delete-button text-white flex items-center justify-center w-6 h-6 bg-red-500 hover:bg-red-700 hover:scale-110 rounded-full" (click)="quitarAsignatura(linea, asignatura)">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+        </div>
+        <div class="border-4 border-t-0 border-gray-300 bg-white text-center rounded-b-md">
+          <p class="bg-orange-100 mx-1 mb-1 rounded-md py-3 text-amber-500 text-2xl flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="h-10 w-10 mx-2 text-amber-500">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+            </svg>
+            Arrastre asignaturas para agregarlas
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón de agregar nueva línea, en la parte inferior -->
+    <button (click)="mostrarModal()" class="w-full rounded-md text-start text-sky-700 bg-sky-100 border-4 p-3 px-5 border-sky-400 text-2xl font-semibold">Agregar nueva línea de asignaturas</button>
+
+    <!-- Modal de PrimeNG -->
+    <p-dialog [(visible)]="display" [modal]="true" [responsive]="true" [style]="{ width: '500px' }" [closable]="false">
+      <p-header>Agregar Nueva Línea</p-header>
+    
+      <div class="p-fluid">
+        <div class="p-field">
+          <label for="nombre">Nombre de la nueva línea</label>
+          <input id="nombre" [(ngModel)]="nuevoNombreLinea" type="text" pInputText placeholder="Ingrese el nombre de la línea" />
+        </div>
+      </div>
+    
+      <p-footer>
+        <button pButton type="button" label="Cancelar" icon="pi pi-times" (click)="esconderModal()"></button>
+        <button pButton type="button" label="Agregar" icon="pi pi-check" (click)="agregarLinea()"></button>
+      </p-footer>
+    </p-dialog>  </div>
+</div>
+

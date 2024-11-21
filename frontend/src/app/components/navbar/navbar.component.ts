@@ -7,12 +7,13 @@ import { MenuModule } from 'primeng/menu';
 import { TreeModule } from 'primeng/tree';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
+import { ContextMenuModule } from 'primeng/contextmenu';
 
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [MenubarModule, ButtonModule, SidebarModule, MenuModule, TreeModule],
+  imports: [MenubarModule, ButtonModule, SidebarModule, MenuModule, TreeModule, ContextMenuModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })

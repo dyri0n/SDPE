@@ -23,7 +23,7 @@
 
     <div class="grid grid-cols-2 px-24 gap-x-20 gap-y-12">
         @for (resultado of resultadosPaginados; track resultado; let i = $index){
-            <p-card styleClass="relative bg-sky-600 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-700 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]" 
+            <p-card styleClass="relative bg-sky-600 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-700 hover:shadow-[0_0_0_3px_theme(colors.sky.500)]" 
             (click)="redirigirHacia(resultado.periodo)">
             <div class="absolute top-0 left-0 w-full bg-sky-700 rounded-t-lg h-6"></div>
             <p class="text-4xl font-semibold">Resultados {{resultado.periodo}}</p>

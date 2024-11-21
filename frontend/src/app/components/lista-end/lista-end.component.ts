@@ -61,7 +61,7 @@ export class ListaEndComponent implements OnInit {
     
     let filtroPeriodo = null;
     let filtroCohorte = null;
-    let buscarEnAmbos = false; // Nueva variable para buscar en ambos campos si solo se ingresa un número
+    let buscarEnAmbos = false;
   
     // Verificar si el query coincide con algún patrón específico
     const resultadoMatch = query.match(resultadoRegex);
@@ -79,12 +79,10 @@ export class ListaEndComponent implements OnInit {
       filtroCohorte = soloNumeroMatch[0];
     }
   
-    // Filtrar en base a los valores encontrados, permitiendo coincidencias parciales
     this.resultadosFiltrados = this.listaResultados.filter(resultado => {
       const periodoMatch = filtroPeriodo ? resultado.periodo.toString().startsWith(filtroPeriodo) : true;
       const cohorteMatch = filtroCohorte ? resultado.cohorte.toString().startsWith(filtroCohorte) : true;
       
-      // Si solo se ingresó un número, buscamos en ambos campos (periodo y cohorte)
       return buscarEnAmbos ? periodoMatch || cohorteMatch : periodoMatch && cohorteMatch;
     });
   
