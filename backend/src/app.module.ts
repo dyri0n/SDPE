@@ -11,6 +11,7 @@ import { EndsModule } from './ends/ends.module';
 import { ConveniosModule } from './convenios/convenios.module';
 import { EstudiantesModule } from './estudiantes/estudiantes.module';
 import { AuthModule } from './auth/auth.module';
+import { LineaAsignaturaModule } from './linea-asignatura/linea-asignatura.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     ConveniosModule,
     EstudiantesModule,
     AuthModule,
+    LineaAsignaturaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

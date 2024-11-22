@@ -1,5 +1,6 @@
 export interface InfoCohorteEstudianteDTO {
-  nombre_completo: string;
+  idEstudiante: number;
+  nombreCompleto: string;
   rut: string;
   agnio_cohorte: number;
 }
