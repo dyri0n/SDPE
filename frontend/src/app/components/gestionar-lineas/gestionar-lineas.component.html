@@ -60,20 +60,44 @@
     <button (click)="mostrarModal()" class="w-full rounded-md text-start text-sky-700 bg-sky-100 border-4 p-3 px-5 border-sky-400 text-2xl font-semibold">Agregar nueva línea de asignaturas</button>
 
     <!-- Modal de PrimeNG -->
-    <p-dialog [(visible)]="display" [modal]="true" [responsive]="true" [style]="{ width: '500px' }" [closable]="false">
-      <p-header>Agregar Nueva Línea</p-header>
+    <p-dialog  
+    [(visible)]="display" 
+    [modal]="true" 
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+    [style]="{ width: '50vw' }" 
+    [draggable]="false" 
+    [resizable]="false">
     
-      <div class="p-fluid">
-        <div class="p-field">
-          <label for="nombre">Nombre de la nueva línea</label>
-          <input id="nombre" [(ngModel)]="nuevoNombreLinea" type="text" pInputText placeholder="Ingrese el nombre de la línea" />
+    <ng-template pTemplate="headless">
+        <div class="bg-gray-100 border-2 border-sky-700 rounded-md shadow-lg">
+            <form [formGroup]="formularioLinea" (ngSubmit)="agregarLinea()">
+                <div class="bg-white mt-5 py-5 shadow-lg border-y">
+                    <h1 class="p-5 rounded-r-2xl w-6/12 bg-sky-700 text-white text-5xl font-black">Agregar Línea</h1>
+                </div>
+                <div class="flex flex-col justify-center border bg-white rounded-lg py-4 my-5 mx-10 shadow-xl overflow-auto h-[30vh]">
+                    <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Nombre de la línea</h2>
+                    <div class="mx-10 mb-12 flex justify-between">
+                        <p-floatLabel class="w-full me-5">
+                            <input id="nombre" formControlName="nombre" type="text" class="bg-gray-100 focus:outline-none focus:border-sky-700 w-full px-3 py-2 border-2 shadow-lg rounded-2xl font-medium" pInputText/>
+                            <label for="Nombre del convenio">Nombre</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <a class="border-2 ms-1 my-1 bg-sky-800 text-center text-white w-6/12 py-5 text-2xl font-bold p-2 rounded-l-md" (click)="esconderModal()">
+                        Volver
+                    </a>
+                    <button class="border-2 me-1 my-1 bg-sky-800 text-white w-6/12 py-5 text-2xl font-bold p-2 rounded-r-md" (click)="agregarLinea()">
+                        Agregar
+                    </button>
+                </div>
+            </form>
         </div>
-      </div>
-    
-      <p-footer>
-        <button pButton type="button" label="Cancelar" icon="pi pi-times" (click)="esconderModal()"></button>
-        <button pButton type="button" label="Agregar" icon="pi pi-check" (click)="agregarLinea()"></button>
-      </p-footer>
-    </p-dialog>  </div>
+    </ng-template>
+  </p-dialog>
+
+  </div>
 </div>
 
+
+<p-toast position="top-right"></p-toast>

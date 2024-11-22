@@ -9,16 +9,20 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { DialogModule } from 'primeng/dialog';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AsignaturaService } from '../../services/asignatura.service';
 import { AsignaturaLinea, Linea } from '../../models/lineaAsignatura.dto';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-gestionar-lineas',
   standalone: true,
-  imports: [CommonModule, CdkDropListGroup, CdkDropList, CdkDrag, DialogModule, FormsModule, ButtonModule, InputTextModule],
+  imports: [CommonModule, CdkDropListGroup, CdkDropList, CdkDrag, DialogModule, FormsModule, ButtonModule, InputTextModule, FloatLabelModule, ReactiveFormsModule, ToastModule],
+  providers: [MessageService],
   templateUrl: './gestionar-lineas.component.html',
   styleUrl: './gestionar-lineas.component.css'
 })
@@ -30,10 +34,14 @@ export class GestionarLineasComponent implements OnInit {
   lineasBackup: Linea[] = [];     
   hayCambios: boolean = false;
   display: boolean = false;
-  nuevoNombreLinea: string = '';
+
+  public formularioLinea: FormGroup = new FormGroup({
+    nombre: new FormControl('', [Validators.required]),
+  })
 
   constructor(
     private servicioAsignatura: AsignaturaService,
+    private messageService: MessageService
   ){ }
 
   ngOnInit(): void {
@@ -46,13 +54,13 @@ export class GestionarLineasComponent implements OnInit {
 
   public esconderModal() {
     this.display = false;
-    this.nuevoNombreLinea = '';
+    this.formularioLinea.reset();
   }
 
   public agregarLinea() {
-    if (this.nuevoNombreLinea.trim()) {
+    if (this.formularioLinea.valid) {
       const nuevaLinea: Linea = {
-        nombre: this.nuevoNombreLinea,
+        nombre: this.formularioLinea.value.nombre,
         asignaturas: []
       };
       this.lineas.push(nuevaLinea);
@@ -129,13 +137,8 @@ export class GestionarLineasComponent implements OnInit {
   }
 
   public confirmarCambios(): void {
-    this.lineasBackup = JSON.parse(JSON.stringify(this.lineas));
-    this.asignaturasBackup = JSON.parse(JSON.stringify(this.asignaturas));
-    this.hayCambios = false;
-
-    this.servicioAsignatura.guardarCambios(this.lineas)
-    // .subscribe(() => {
-    //   alert('Cambios guardados con éxito');
+    // this.servicioAsignatura.guardarCambios(this.lineas).subscribe(() => {
+    //   alert('');
     //   // Actualizar el respaldo con los datos confirmados
     //   this.lineasBackup = [...this.lineas];
     //   this.asignaturasBackup = [...this.asignaturas]; // Respaldo también para asignaturas
@@ -144,5 +147,27 @@ export class GestionarLineasComponent implements OnInit {
     // error => {
     //   alert('Error al guardar cambios: ' + error.message);
     // });
+    
+    this.servicioAsignatura.guardarCambios(this.lineas).subscribe({
+      next: (response: any) => {
+        this.lineasBackup = JSON.parse(JSON.stringify(this.lineas));
+        this.asignaturasBackup = JSON.parse(JSON.stringify(this.asignaturas));
+        this.hayCambios = false;
+        this.messageService.add({
+          severity: 'success', 
+          summary: 'Guardado', 
+          detail: `Cambios guardados con éxito`
+        });
+        console.log(':', response);
+      },
+      error: (error: any) => {
+        this.messageService.add({
+          severity: 'error', 
+          summary: 'Error', 
+          detail: `Error al guardar los cambios: ${error.value}`
+        });
+      },
+    });
   }
 }
+

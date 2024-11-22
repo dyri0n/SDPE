@@ -5,14 +5,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AsignaturaFluxograma } from '../../models/asignatura.dto';
 import { Fluxograma } from '../../models/Fluxograma.model';
 import { AsignaturaService } from '../../services/asignatura.service';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { ContextMenu, ContextMenuModule } from 'primeng/contextmenu';
+import { ToastModule } from 'primeng/toast';
 
 
 @Component({
   selector: 'app-detalle-fluxograma',
   standalone: true,
-  imports: [CommonModule, ContextMenuModule],
+  imports: [CommonModule, ContextMenuModule, ToastModule],
+  providers: [MessageService],
   templateUrl: './detalle-fluxograma.component.html',
   styleUrl: './detalle-fluxograma.component.css',
 })
@@ -21,7 +23,8 @@ export class DetalleFluxogramaComponent implements OnInit {
     private servicioFluxograma: FluxogramaService,
     private route: ActivatedRoute,
     private router: Router,
-    private AsignaturaService: AsignaturaService,
+    private asignaturaService: AsignaturaService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
@@ -129,7 +132,7 @@ export class DetalleFluxogramaComponent implements OnInit {
   }
 
   public obtenerLineas() {
-    this.AsignaturaService.obtenerLineas().subscribe(result => {
+    this.asignaturaService.obtenerLineas().subscribe(result => {
       const lineas = result.map((linea: any) => ({
         label: linea.nombre,
         icon: 'pi pi-plus',
@@ -148,8 +151,30 @@ export class DetalleFluxogramaComponent implements OnInit {
     });
   }
   
-  public agregarALinea(linea: any) {
-    console.log(`agregando a linea: ${linea.nombre}`, linea);
+  agregarALinea(lineaId: number) {
+    if (this.selectedAsignaturaId) {
+      console.log(
+        `Asignatura ID ${this.selectedAsignaturaId} agregada a la línea ID ${lineaId}`
+      );
+
+      this.asignaturaService.agregarAsignaturaLinea(this.selectedAsignaturaId, lineaId).subscribe({
+          next: (response: any) => {
+            this.messageService.add({
+              severity: 'success', 
+              summary: 'Agregada', 
+              detail: `Asignatura agregada correctamente`
+            });
+            console.log(':', response);
+          },
+          error: (error: any) => {
+            this.messageService.add({
+              severity: 'error', 
+              summary: 'Error', 
+              detail: `Error al agregar asignatura a la línea: ${error.value}`
+            });
+          },
+        });
+    }
   }
 
   
@@ -163,6 +188,13 @@ export class DetalleFluxogramaComponent implements OnInit {
     this.lastContextMenu = menu;
 
     console.log('asignatura seleccionada:', this.selectedAsignaturaId);
+  }
+
+  onScroll() {
+    // Cierra el menú contextual si está visible
+    if (this.lastContextMenu?.container) {
+      this.lastContextMenu.hide();
+    }
   }
 
 }

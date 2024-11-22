@@ -2,26 +2,28 @@
 
 <h3 class="text-xl mb-20 text-center font-medium">Año: {{fluxograma?.anio}}</h3>
 
-
 <div class="container mx-auto my-10">
-    <div class="overflow-x-auto py-5">
+    <div class="w-full text-end">
+        <a href="gestionar-lineas" class="text-end bg-amber-500 text-white p-3 rounded-2xl">Gestionar lineas</a>
+    </div>
+    <div class="overflow-x-auto py-5" (scroll)="onScroll()">
         <div class="flex space-x-8 text-center">
-            @for (semestre of semestres; track semestre; let i = $index){
+            @for (semestre of semestres; track semestre; let i = $index) {
                 <div class="p-5 border rounded-lg bg-gray-200 shadow-md flex flex-col space-y-4 w-[400px]">
-                    <div class="p-3 bg-white mb-5 font-bold text-3xl border rounded-lg border-gray-300">{{semestre}} Semestre</div>
+                    <div class="p-3 bg-white mb-5 font-bold text-3xl border rounded-lg border-gray-300">
+                        {{semestre}} Semestre
+                    </div>
                     <div class="space-y-6">
-                        @for (asignatura of detalleFluxograma; track asignatura; let j = $index){
-                            <!-- aqui estaria iterando todas las asignaturas de detalleFluxograma por cada semestre,
-                                entonces no es muy eficiente que digamos por ahora -->
-                            @if (asignatura.semestre == i+1){
-                                <div #card class="p-4 border border-gray-300 rounded-lg  flex flex-col space-y-2 w-[300px] mx-auto" 
+                        @for (asignatura of detalleFluxograma; track asignatura; let j = $index) {
+                            @if (asignatura.semestre == i+1) {
+                                <div #card class="p-4 border border-gray-300 rounded-lg flex flex-col space-y-2 w-[300px] mx-auto" 
                                     [ngClass]="{
                                         'bg-sky-400': esCortePractico(asignatura),
                                         'bg-red-400': esPrevia(asignatura.idAsignatura),
                                         'bg-green-400': esTributada(asignatura.idAsignatura),
                                         'bg-white': !esPrevia(asignatura.idAsignatura) && !esTributada(asignatura.idAsignatura)
                                         }"
-                                    (click)="detalleAsignatura(asignatura.idAsignatura,asignatura.asignatura.nombre, asignatura.esRequeridaEn, asignatura.esTributadaEn)" 
+                                    (click)="detalleAsignatura(asignatura.idAsignatura, asignatura.asignatura.nombre, asignatura.esRequeridaEn, asignatura.esTributadaEn)" 
                                     (mouseenter)="resaltarAsignaturas(asignatura.esRequeridaEn, asignatura.esTributadaEn)"
                                     (mouseleave)="quitarResaltado()">
                                     <div class="flex justify-between items-center mb-2">
@@ -36,7 +38,8 @@
                                     #menu
                                     [target]="card"
                                     [model]="lineaMenu"
-                                    (onShow)="onContextMenuOpen(menu, asignatura.idAsignatura)">
+                                    (onShow)="onContextMenuOpen(menu, asignatura.idAsignatura)"
+                                    [styleClass]="'w-[300px] bg-white shadow-lg border border-gray-300 rounded-md p-2'">
                                 </p-contextMenu>
                             }
                         }
@@ -46,3 +49,5 @@
         </div>
     </div>
 </div>
+
+<p-toast position="top-right"></p-toast>

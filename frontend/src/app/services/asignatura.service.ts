@@ -40,9 +40,14 @@ export class AsignaturaService {
     return of(this.lineas)
   }
 
+  public agregarAsignaturaLinea(idAsignatura: number, idLinea: Number){
+    console.log("si")
+    return this.http.get<Linea[]>(`${this.apiUrl}/lineas`);
+  }
+
   public guardarCambios(lineas: Linea[]){
     console.log("lol", lineas)
-    // return this.http.post<Linea>(`${this.apiUrl}/guardarCambios`, lineas);
+    return this.http.post<Linea>(`${this.apiUrl}/guardarCambios`, lineas);
   }
 
 }
