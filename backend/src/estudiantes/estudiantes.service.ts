@@ -187,9 +187,10 @@ export class EstudiantesService {
     );
     return resultadoEstudiantes.map((value) => {
       return {
-        nombre_completo: value.nombreCompleto,
+        idEstudiante: value.idEstudiante,
+        nombreCompleto: value.nombreCompleto,
         rut: value.rut,
-        agnio_cohorte: value.agno_cohorte,
+        agnio_cohorte: value.agnioIngreso,
       } as InfoCohorteEstudianteDTO;
     });
   }

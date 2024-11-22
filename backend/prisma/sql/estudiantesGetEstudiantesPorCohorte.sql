@@ -1,5 +1,6 @@
 SELECT
+    "id" as "idEstudiante",
     "nombreCompleto",
-    "agnioIngreso" as "agno_cohorte",
+    "agnioIngreso" as "agnioIngreso",
     "rut"
 FROM "Estudiante";
