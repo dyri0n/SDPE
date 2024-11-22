@@ -8,7 +8,7 @@ export interface PromedioHistoricoGeneralDTO {
   promedio: number;
 }
 
-export interface PromedioHistoricoPorTipoIngresoDTO {
+export interface PromedioHistoricoPorPlanDTO {
   agnio: number;
   promedio: number;
 }
@@ -45,8 +45,8 @@ export interface DetalleAsignaturaDTO {
   };
   promedios: {
     general: PromedioHistoricoGeneralDTO[];
-    ingresoRegular: PromedioHistoricoPorTipoIngresoDTO[];
-    ingresoProsecucion: PromedioHistoricoPorTipoIngresoDTO[];
+    ingresoRegular: PromedioHistoricoPorPlanDTO[];
+    ingresoProsecucion: PromedioHistoricoPorPlanDTO[];
     cohortes: PromedioHistoricoPorCohorteDTO[];
   };
   aprobaciones: {

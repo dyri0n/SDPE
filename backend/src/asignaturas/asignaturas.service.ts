@@ -12,13 +12,13 @@ import { CursosService } from '../cursos/cursos.service';
 import {
   AprobacionHistoricaGeneralDTO,
   AprobacionHistoricaPorCohorteDTO,
-  AprobacionHistoricaPorTipoIngresoDTO,
+  AprobacionHistoricaPorTipoIngresoDTO as AprobacionHistoricaPorPlanDTO,
   DetalleAsignaturaDTO,
   ID_INGRESO_PROSECUCION,
   ID_INGRESO_REGULAR,
   PromedioHistoricoGeneralDTO,
   PromedioHistoricoPorCohorteDTO,
-  PromedioHistoricoPorTipoIngresoDTO,
+  PromedioHistoricoPorPlanDTO,
 } from './dto/detalles.dto';
 import { AsignaturaListadaDTO } from './dto/listar.dto';
 import {
@@ -39,26 +39,23 @@ export class AsignaturasService {
     private cursacionService: CursosService,
   ) {}
 
-  async getAsignatura(idAsignatura: number): Promise<Asignatura> {
-    return this.prisma.asignatura.findFirst({
+  async getAsignatura(codigoAsignatura: string): Promise<Asignatura[]> {
+    return await this.prisma.asignatura.findMany({
       where: {
-        id: idAsignatura,
-        //idPlan: 1, //POR DEFECTO SERÁ ASÍ, AL CAMBIAR DE RAMA SE ACTUALIZA
+        codigo: codigoAsignatura,
       },
     });
   }
 
-  async getAsignaturaContemplada(idPlan: number, idAsignatura: number) {
-    const asignaturaContemplada =
-      await this.prisma.planContemplaAsignatura.findUnique({
-        where: {
-          idPlan_idAsignatura: {
-            idPlan: idPlan,
-            idAsignatura: idAsignatura,
-          },
+  async getAsignaturaDePlan(idPlan: number, codigoAsignatura: string) {
+    const asignaturaContemplada = await this.prisma.asignatura.findUnique({
+      where: {
+        codigoPorPlanUnico: {
+          idPlan: idPlan,
+          codigo: codigoAsignatura,
         },
-      });
-
+      },
+    });
     return asignaturaContemplada;
   }
 
@@ -82,13 +79,8 @@ export class AsignaturasService {
     });
   }
 
-  //Obtiene las asignaturas por caracter
-  //la idea es sacar las de corte práctico solamente
-  //Hay que determinar cómo...
-  async getAsignaturasPorCaracter(
-    caracter: CARACTER,
-  ): Promise<PlanContemplaAsignatura[]> {
-    return this.prisma.planContemplaAsignatura.findMany({
+  async getAsignaturasPorCaracter(caracter: CARACTER): Promise<Asignatura[]> {
+    return this.prisma.asignatura.findMany({
       where: { caracter: caracter },
     });
   }
@@ -130,21 +122,7 @@ export class AsignaturasService {
   // Bloque de Listar Asignaturas
   //Método principal del bloque listar asignaturas
   async listarAsignaturas(): Promise<AsignaturaListadaDTO[]> {
-    /*
-     * Retorna información de cada asignatura independiente de su
-     * plan de estudios.
-     *
-     * Por cada Asignatura retorna un AsignaturaListadaDTO
-     * EJ:
-     * {
-     *  2,
-     * 'FI-203',
-     * 'Taller de Comunicación Oral',
-     * {2, 3},
-     * {2018, 2025},
-     * { FP }
-     * }
-     * */
+    // retorna los datos asi como van
     const result = await this.prisma.$queryRawTyped(asignaturasListar());
     return result.map((value) => {
       return {
@@ -165,14 +143,22 @@ export class AsignaturasService {
   //
   // Bloque de Detalles de una asignatura Histórica
 
+  //
+
+  /**
+   * Retorna el promedio general (de todos los planes) por cada año por separado
+   *
+   * EJ : [ {2024: 5.2}, {2023: 5.1}, {2022: 4.6} ]
+   * @param codigoAsignatura Código de la Asignatura
+   * @returns {PromedioHistoricoGeneralDTO[]}
+   */
   private async getPromediosHistoricosGeneral(
-    idAsignatura: number,
+    codigoAsignatura: string,
   ): Promise<PromedioHistoricoGeneralDTO[]> {
-    //Retorna el promedio general de cada año por separado
-    //EJ : [ {2024: 5.2}, {2023: 5.1}, {2022: 4.6} ]
     const result = await this.prisma.$queryRawTyped(
-      asignaturasGetPromediosHistoricosGeneral(idAsignatura),
+      asignaturasGetPromediosHistoricosGeneral(codigoAsignatura),
     );
+
     return result.map((value) => {
       return {
         agnio: value.agnio,
@@ -180,40 +166,51 @@ export class AsignaturasService {
       };
     }) as PromedioHistoricoGeneralDTO[];
   }
+
+  /**
+   * Retorna los promedios históricos por plan de estudios, utilizando el código de la asignatura y del plan
+   * @param codigoAsignatura Código de la asignatura
+   * @param codigoPlan Código del plan
+   * @returns {PromedioHistoricoPorPlanDTO[]}
+   */
   private async getPromediosHistoricosPorPlan(
-    idAsignatura: number,
-    codigo: number,
-  ): Promise<PromedioHistoricoPorTipoIngresoDTO[]> {
+    codigoAsignatura: string,
+    codigoPlan: number,
+  ): Promise<PromedioHistoricoPorPlanDTO[]> {
     //
     //Retorna el promedio por tipo de ingreso de cada año por separado
     //EJ : [ {2024: 5.2}, {2023: 5.1}, {2022: 4.6} ]
     const result = await this.prisma.$queryRawTyped(
-      asignaturasGetPromediosHistoricosPorPlan(codigo, idAsignatura),
+      asignaturasGetPromediosHistoricosPorPlan(codigoAsignatura, codigoPlan),
     );
+
     return result.map((value) => {
       return {
         agnio: value.agnio,
         promedio: value.promedio.toNumber(),
       };
-    }) as PromedioHistoricoPorTipoIngresoDTO[];
+    }) as PromedioHistoricoPorPlanDTO[];
   }
 
+  // TODO: SEGUIR VIENDO EL PEPE
+  /**
+   * Retorna el prmedio de cada cohorte en los años que hayan rendido asignaturas a lo largo del tiempo
+   * En este caso el año se repetiría 1 vez ya que cada cohorte tiene 2 tipos de ingreso: regular y prosecución de estudios
+   * EJ: [
+   *       {2024, 2021, ID_REGULAR, 5.6},
+   *       {2024, 2021, ID_PROSECUCION, 6.6},
+   *       {2024, 2022, ID_REGULAR, 4.6},
+   *       {2024, 2022, ID_PROSECUCION, 4.6},
+   *       ......
+   *     ]
+   * @param codigoAsignatura
+   * @returns
+   */
   private async getPromediosHistoricosPorCohorte(
-    idAsignatura: number,
+    codigoAsignatura: string,
   ): Promise<PromedioHistoricoPorCohorteDTO[]> {
-    /*
-    Retorna el prmedio de cada cohorte en los años que hayan rendido asignaturas a lo largo del tiempo
-    En este caso el año se repetiría 1 vez ya que cada cohorte tiene 2 tipos de ingreso: regular y prosecución de estudios
-    EJ: [
-          {2024, 2021, ID_REGULAR, 5.6},
-          {2024, 2021, ID_PROSECUCION, 6.6},
-          {2024, 2022, ID_REGULAR, 4.6},
-          {2024, 2022, ID_PROSECUCION, 4.6},
-          ......
-        ]
-    */
     const result = await this.prisma.$queryRawTyped(
-      asignaturasGetPromediosHistoricosPorCohorte(idAsignatura),
+      asignaturasGetPromediosHistoricosPorCohorte(codigoAsignatura),
     );
     return result.map((value) => {
       return {
@@ -242,19 +239,27 @@ export class AsignaturasService {
       };
     }) as AprobacionHistoricaGeneralDTO[];
   }
+
+  /**
+   * Retorna los porcentajes de aprobación históricos por plan de estudios, utilizando el código de la asignatura y del plan
+   * @param codigoAsignatura Código de la asignatura
+   * @param codigoPlan Código del plan
+   * @returns {AprobacionHistoricaPorPlanDTO[]}
+   */
   private async getAprobacionHistoricaPorPlan(
-    idAsignatura: number,
-    codigo: number,
-  ): Promise<AprobacionHistoricaPorTipoIngresoDTO[]> {
+    codigoAsignatura: string,
+    codigoPlan: number,
+  ): Promise<AprobacionHistoricaPorPlanDTO[]> {
     const result = await this.prisma.$queryRawTyped(
-      asignaturasGetAprobacionesHistoricasPorPlan(codigo, idAsignatura),
+      asignaturasGetAprobacionesHistoricasPorPlan(codigoAsignatura, codigoPlan),
     );
+
     return result.map((value) => {
       return {
         agnio: value.agnio,
         aprobacion: value.aprobacion.toNumber(),
       };
-    }) as AprobacionHistoricaPorTipoIngresoDTO[];
+    }) as AprobacionHistoricaPorPlanDTO[];
   }
   async getAprobacionHistoricaPorCohorte(
     idAsignatura: number,
@@ -284,28 +289,44 @@ export class AsignaturasService {
   }
   //Método principal del bloque.
   //Retorna todos los detalles históricos de una asignatura por su ID
-  async getDetalleHistoricoAsignatura(idAsignatura: number, posicion: number) {
+  async getDetalleHistoricoAsignatura(codigoAsignatura: string) {
+    const planes = await this.prisma.plan.findMany({
+      select: {
+        codigo: true,
+      },
+    });
+
+    const promediosHistoricosPorPlan = [];
+    const aprobacionHistoricaPorPlan = [];
+
+    planes.map((plan) => {
+      // lista 👌👌👌
+      promediosHistoricosPorPlan.push(
+        this.getPromediosHistoricosPorPlan(codigoAsignatura, plan.codigo),
+      );
+      // lista 👌👌👌👌
+      aprobacionHistoricaPorPlan.push(
+        this.getAprobacionHistoricaPorPlan(codigoAsignatura, plan.codigo),
+      );
+    });
+
     // Resuelve todas las promesas usando await
     const [
       asignatura,
       promedioGeneral,
-      promedioIngresoRegular,
-      promedioIngresoProsecucion,
+      promediosPorPlan,
       promedioPorCohortes,
       aprobacionGeneral,
-      aprobacionIngresoRegular,
-      aprobacionIngresoProsecucion,
+      aprobacionPorPlan,
       aprobacionPorCohortes,
     ] = await Promise.all([
-      this.getAsignatura(idAsignatura),
-      this.getPromediosHistoricosGeneral(idAsignatura),
-      this.getPromediosHistoricosPorPlan(idAsignatura, ID_INGRESO_REGULAR),
-      this.getPromediosHistoricosPorPlan(idAsignatura, ID_INGRESO_PROSECUCION),
-      this.getPromediosHistoricosPorCohorte(idAsignatura),
-      this.getAprobacionHistoricaGeneral(idAsignatura),
-      this.getAprobacionHistoricaPorPlan(idAsignatura, ID_INGRESO_REGULAR),
-      this.getAprobacionHistoricaPorPlan(idAsignatura, ID_INGRESO_PROSECUCION),
-      this.getAprobacionHistoricaPorCohorte(idAsignatura),
+      this.getAsignatura(codigoAsignatura),
+      this.getPromediosHistoricosGeneral(codigoAsignatura),
+      ...promediosHistoricosPorPlan,
+      this.getPromediosHistoricosPorCohorte(codigoAsignatura),
+      this.getAprobacionHistoricaGeneral(codigoAsignatura),
+      ...aprobacionHistoricaPorPlan,
+      this.getAprobacionHistoricaPorCohorte(codigoAsignatura),
     ]);
 
     return {
