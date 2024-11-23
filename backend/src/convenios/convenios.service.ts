@@ -47,6 +47,9 @@ export class ConveniosService {
     const response = await this.prisma.$queryRawTyped(
       conveniosGetPromedio(idConvenio),
     );
+    if (!response) {
+      return 0;
+    }
     return response.map((value) => {
       return value.promedioPracticas;
     })[0] as number;
@@ -56,8 +59,11 @@ export class ConveniosService {
     const response = await this.prisma.$queryRawTyped(
       conveniosGetAprobacion(idConvenio),
     );
+    if (!response) {
+      return 0;
+    }
     return response.map((value) => {
-      return value.porcentajeaprobacion.toNumber();
+      return value.porcentajeaprobacion?.toNumber();
     })[0] as number;
     //por defecto retorna un arreglo de un solo elemento asi que retorna el primer elemento
   }
