@@ -1,13 +1,8 @@
-import {
-  Controller,
-  Get,
-  NotFoundException,
-  Param,
-  ParseIntPipe,
-} from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import { AsignaturasService } from './asignaturas.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Asignatura, CARACTER } from '@prisma/client';
+import { DetalleAsignaturaDTO } from './dto/detalles.dto';
 
 @ApiTags('asignaturas')
 @Controller('asignaturas')
@@ -57,7 +52,7 @@ export class AsignaturasController {
   public getAsignaturaDePlan(
     @Param('codigoAsignatura') codigoAsignatura: string,
     @Param('idPlan') idPlan: number,
-  ) {
+  ): Promise<Asignatura> {
     const result = this.asigService.getAsignaturaDePlan(
       idPlan,
       codigoAsignatura,
@@ -69,11 +64,17 @@ export class AsignaturasController {
     return result;
   }
 
-  // TODO
+  /**
+   * Endpoint para recuperar información estadística detallada de una asignatura
+   * dependiendo del plan, del cohorte y datos generales a lo largo del tiempo.
+   *
+   * @param codigoAsignatura Código de la asignatura
+   * @returns {}
+   */
   @Get(':codigoAsignatura/detalle')
   public async getDetalleAsignatura(
     @Param('codigoAsignatura') codigoAsignatura: string,
-  ) {
+  ): Promise<DetalleAsignaturaDTO> {
     return this.asigService.getDetalleHistoricoAsignatura(codigoAsignatura);
   }
 

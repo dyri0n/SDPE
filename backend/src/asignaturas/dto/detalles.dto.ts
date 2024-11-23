@@ -15,8 +15,8 @@ export interface PromedioHistoricoPorPlanDTO {
 
 export interface PromedioHistoricoPorCohorteDTO {
   agnio: number;
-  agnioIngreso: number;
-  tipoIngreso: string;
+  cohorte: number;
+  plan: string;
   promedio: number;
 }
 //fin bloque promedios
@@ -32,27 +32,21 @@ export interface AprobacionHistoricaPorTipoIngresoDTO {
 export interface AprobacionHistoricaPorCohorteDTO {
   agnio: number;
   cohorte: number;
-  tipoIngreso: string;
+  plan: string;
   aprobacion: number;
 }
 //fin bloque aprobacion
 
 export interface DetalleAsignaturaDTO {
-  asignatura: {
-    idAsignatura: number;
-    posicion: number;
-    codigo: string;
-  };
+  asignaturas: Asignatura[];
   promedios: {
     general: PromedioHistoricoGeneralDTO[];
-    ingresoRegular: PromedioHistoricoPorPlanDTO[];
-    ingresoProsecucion: PromedioHistoricoPorPlanDTO[];
+    promediosPorPlan: PromedioHistoricoPorPlanDTO[][];
     cohortes: PromedioHistoricoPorCohorteDTO[];
   };
   aprobaciones: {
     general: AprobacionHistoricaGeneralDTO[];
-    ingresoRegular: AprobacionHistoricaPorTipoIngresoDTO[];
-    ingresoProsecucion: AprobacionHistoricaPorTipoIngresoDTO[];
+    aprobacionesPorPlan: AprobacionHistoricaPorTipoIngresoDTO[][];
     cohortes: AprobacionHistoricaPorCohorteDTO[];
   };
 }

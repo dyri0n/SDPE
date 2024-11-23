@@ -43,9 +43,6 @@ export class PlanesEstudioController {
     return result;
   }
 
-  /*
-   * Retorna cada asignatura registrada
-   * */
   @Get(':idPlan/asignaturas')
   public getAsignaturas(@Param('idPlan', ParseIntPipe) idPlan: number) {
     const result = this.asignaturasService.getAsignaturasDePlan(idPlan);
