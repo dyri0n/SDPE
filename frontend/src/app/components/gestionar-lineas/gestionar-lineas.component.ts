@@ -28,6 +28,11 @@ import { ToastModule } from 'primeng/toast';
 })
 export class GestionarLineasComponent implements OnInit {
 
+  searchTermAsignaturas: string = '';
+  searchTermLineas: string = '';
+
+
+  
   asignaturas: AsignaturaLinea[] = []; 
   lineas: Linea[] = [];     
   asignaturasBackup: AsignaturaLinea[] = [];
@@ -63,10 +68,9 @@ export class GestionarLineasComponent implements OnInit {
         nombre: this.formularioLinea.value.nombre,
         asignaturas: []
       };
-      this.lineas.push(nuevaLinea);
-      this.lineasBackup.push(JSON.parse(JSON.stringify(nuevaLinea)));
+      this.lineas.push(nuevaLinea); // Se agrega a las líneas visibles
       this.esconderModal();
-      this.detectarCambios();
+      this.detectarCambios(); // Detectar cambios al estado actual
     }
   }
 
@@ -94,7 +98,9 @@ export class GestionarLineasComponent implements OnInit {
   public drop(event: CdkDragDrop<any[]>, linea?: Linea): void {
     if (linea) {
       const asignatura = event.previousContainer.data[event.previousIndex];
-      if (event.previousContainer !== event.container) {
+      if (event.previousContainer === event.container) {
+        moveItemInArray(linea.asignaturas, event.previousIndex, event.currentIndex);
+      } else {
         event.previousContainer.data.splice(event.previousIndex, 1);
         linea.asignaturas.push(asignatura);
       }
@@ -114,22 +120,28 @@ export class GestionarLineasComponent implements OnInit {
   }
 
   public detectarCambios(): void {
-    console.log(this.lineas)
-    console.log(this.lineasBackup)
     const asignaturasIguales = this.compararAsignaturasSinOrden(this.asignaturas, this.asignaturasBackup);
     const lineasIguales = this.lineas.every((linea, index) => {
-      return this.compararAsignaturasSinOrden(linea.asignaturas, this.lineasBackup[index].asignaturas);
+      const lineaBackup = this.lineasBackup[index];
+      if (!lineaBackup) {
+        return false;
+      }
+      return (
+        linea.nombre === lineaBackup.nombre &&
+        this.compararAsignaturasSinOrden(linea.asignaturas, lineaBackup.asignaturas)
+      );
     });
-    this.hayCambios = !(asignaturasIguales && lineasIguales);
+    const lineasNuevasOEliminadas = this.lineas.length !== this.lineasBackup.length;
+    this.hayCambios = !(asignaturasIguales && lineasIguales && !lineasNuevasOEliminadas);
     console.log('Cambios detectados', this.hayCambios);
   }
 
   public cancelarCambios(): void {
-    this.lineas.forEach(linea => {
-      linea.asignaturas = linea.asignaturas.filter(asignatura =>
-        this.asignaturasBackup.some(origAsignatura => origAsignatura.nombre === asignatura.nombre)
-      );
-    });
+    // this.lineas.forEach(linea => {
+    //   linea.asignaturas = linea.asignaturas.filter(asignatura =>
+    //     this.asignaturasBackup.some(origAsignatura => origAsignatura.nombre === asignatura.nombre)
+    //   );
+    // });
 
     this.asignaturas = JSON.parse(JSON.stringify(this.asignaturasBackup));
     this.lineas = JSON.parse(JSON.stringify(this.lineasBackup));
@@ -149,25 +161,47 @@ export class GestionarLineasComponent implements OnInit {
     // });
     
     this.servicioAsignatura.guardarCambios(this.lineas).subscribe({
-      next: (response: any) => {
-        this.lineasBackup = JSON.parse(JSON.stringify(this.lineas));
-        this.asignaturasBackup = JSON.parse(JSON.stringify(this.asignaturas));
-        this.hayCambios = false;
-        this.messageService.add({
-          severity: 'success', 
-          summary: 'Guardado', 
-          detail: `Cambios guardados con éxito`
-        });
-        console.log(':', response);
-      },
-      error: (error: any) => {
-        this.messageService.add({
-          severity: 'error', 
-          summary: 'Error', 
-          detail: `Error al guardar los cambios: ${error.value}`
-        });
-      },
-    });
+    next: (response) => {
+      // Actualizar respaldo con el estado actual
+      this.lineasBackup = JSON.parse(JSON.stringify(this.lineas));
+      this.asignaturasBackup = JSON.parse(JSON.stringify(this.asignaturas));
+      this.hayCambios = false;
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Guardado',
+        detail: 'Cambios guardados con éxito',
+      });
+      console.log("xd",response)
+    },
+    error: (error: any) => {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: `Error al guardar los cambios: ${error.message}`,
+      });
+    },
+  });
+  }
+
+  get asignaturasFiltradas(): AsignaturaLinea[] {
+    if (!this.searchTermAsignaturas) {
+      return this.asignaturas;
+    }
+    return this.asignaturas.filter(asignatura =>
+      asignatura.nombre.toLowerCase().includes(this.searchTermAsignaturas.toLowerCase())
+    );
+  }
+  
+  get lineasFiltradas(): Linea[] {
+    if (!this.searchTermLineas) {
+      return this.lineas;
+    }
+    return this.lineas.filter(linea =>
+      linea.nombre.toLowerCase().includes(this.searchTermLineas.toLowerCase()) || // busca por nombre de la linea
+      linea.asignaturas.some(asignatura =>
+        asignatura.nombre.toLowerCase().includes(this.searchTermLineas.toLowerCase()) // busca por asignaturas dentro de la linea
+      )
+    );
   }
 }
 

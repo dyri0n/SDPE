@@ -18,7 +18,7 @@ export class AsignaturaService {
   }
 
   asignaturas: AsignaturaLinea[] = [
-    { id: 1, nombre: 'Expresión Oral y Escrita II' },
+    
     { id: 2, nombre: 'Educación Inclusiva y su Contexto' },
     { id: 3, nombre: 'Política y Marco Jurídico' },
     { id: 4, nombre: 'Salud Alimentaria' },
@@ -26,7 +26,7 @@ export class AsignaturaService {
   ];
 
   lineas: Linea[] = [
-    { id: 1, nombre: 'Línea de Corte Práctica', asignaturas: [] },
+    { id: 1, nombre: 'Línea de Corte Práctica', asignaturas: [{ id: 1, nombre: 'Expresión Oral y Escrita II' },] },
     { id: 2, nombre: 'Línea de Licenciatura', asignaturas: [] },
   ];
 

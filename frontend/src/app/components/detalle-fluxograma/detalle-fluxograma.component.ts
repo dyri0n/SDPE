@@ -170,7 +170,7 @@ export class DetalleFluxogramaComponent implements OnInit {
             this.messageService.add({
               severity: 'error', 
               summary: 'Error', 
-              detail: `Error al agregar asignatura a la línea: ${error.value}`
+              detail: `Error al agregar asignatura a la línea: ${error.message}`
             });
           },
         });
