@@ -30,6 +30,7 @@ import {
   asignaturasGetAprobacionesHistoricasPorPlan,
   asignaturasGetAprobacionesHistoricasPorCohorte,
 } from '@prisma/client/sql';
+import { distinct } from 'rxjs';
 
 @Injectable()
 export class AsignaturasService {
@@ -39,9 +40,10 @@ export class AsignaturasService {
   ) {}
 
   async getAsignatura(idAsignatura: number): Promise<Asignatura> {
-    return this.prisma.asignatura.findUnique({
+    return this.prisma.asignatura.findFirst({
       where: {
         id: idAsignatura,
+        //idPlan: 1, //POR DEFECTO SERÁ ASÍ, AL CAMBIAR DE RAMA SE ACTUALIZA
       },
     });
   }
@@ -280,7 +282,7 @@ export class AsignaturasService {
   }
   //Método principal del bloque.
   //Retorna todos los detalles históricos de una asignatura por su ID
-  async getDetalleHistoricoAsignatura(idAsignatura: number) {
+  async getDetalleHistoricoAsignatura(idAsignatura: number, posicion: number) {
     // Resuelve todas las promesas usando await
     const [
       asignatura,
@@ -305,7 +307,11 @@ export class AsignaturasService {
     ]);
 
     return {
-      asignatura: asignatura, // Asignatura response
+      asignatura: {
+        idAsignatura: asignatura.id,
+        posicion: posicion,
+        codigo: asignatura.codigo,
+      }, // Asignatura response
       promedios: {
         general: promedioGeneral, // PromedioHistoricoGeneralDTO[]
         ingresoRegular: promedioIngresoRegular, // PromedioHistoricoPorTipoIngresoDTO[]
@@ -321,4 +327,25 @@ export class AsignaturasService {
     } as DetalleAsignaturaDTO;
   }
   // FIN Bloque de Detalles de una asignatura Histórica
+  //BLOQUE Tendencias de Corte práctico
+  async getDetalleHistoricoAsignaturasCortePractico(): Promise<
+    DetalleAsignaturaDTO[]
+  > {
+    const idsAsignaturasCortePractico =
+      await this.prisma.planContemplaAsignatura.findMany({
+        select: { idAsignatura: true, asignatura: true, posicion: true },
+        where: { areaFormacion: 'FP' }, //TODO: CAMBIAR LUEGO EL PLAN
+      }); //BUSCA ASIGNATURAS DE CORTE PRACTICO
+
+    //AGREGA CADA UNO DE LOS DetalleAsignaturaDTO[] correspondientes a asignaturas de corte práctico
+    const responseAsignaturas: DetalleAsignaturaDTO[] = [];
+    for (const asignatura of idsAsignaturasCortePractico) {
+      const detalle = await this.getDetalleHistoricoAsignatura(
+        asignatura.idAsignatura,
+        asignatura.posicion,
+      );
+      responseAsignaturas.push(detalle);
+    }
+    return responseAsignaturas;
+  }
 }

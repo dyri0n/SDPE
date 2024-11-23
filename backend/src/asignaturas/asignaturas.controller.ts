@@ -55,6 +55,11 @@ export class AsignaturasController {
   public async getDetalleAsignatura(
     @Param('idAsignatura', ParseIntPipe) idAsignatura: number,
   ) {
-    return this.asigService.getDetalleHistoricoAsignatura(idAsignatura);
+    return this.asigService.getDetalleHistoricoAsignatura(idAsignatura, null);
+  }
+
+  @Get('corte-practico/tendencias')
+  public async getTendenciasCortePractico() {
+    return this.asigService.getDetalleHistoricoAsignaturasCortePractico();
   }
 }
