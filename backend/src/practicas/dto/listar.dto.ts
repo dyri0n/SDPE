@@ -5,4 +5,5 @@ export interface ListarConvenioDTO {
   centroPractica: string;
   inicio: Date;
   nombreModalidad: string;
+  modalidadesDisponibles?: { idModalidad: number; nombre: string };
 }

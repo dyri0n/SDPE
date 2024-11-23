@@ -176,10 +176,25 @@ export class ConveniosService {
   }
 
   // Bloque Listar Convenios
-  async listarConvenios(): Promise<ListarConvenioDTO[]> {
+  private async getModalidades(): Promise<
+    { idModalidad: number; nombre: string }[]
+  > {
+    const modalidades = await this.prisma.modalidad.findMany({
+      select: { id: true, nombreModalidad: true },
+    });
+    return modalidades.map((modalidad) => {
+      return { idModalidad: modalidad.id, nombre: modalidad.nombreModalidad };
+    });
+  }
+  /**
+   * Método principal del BLoque
+   * Devuelve un listado de DetalleConvenioDTO[] llamado listadoConvenios
+   * acompañado de un arreglo llamado modalidades junto a su id y nombre
+   * */
+  async listarConvenios() {
     const resultado = await this.prisma.$queryRawTyped(conveniosListar());
-
-    return resultado.map((value) => {
+    const modalidades = await this.getModalidades();
+    const convenios = resultado.map((value) => {
       return {
         idConvenio: value.idConvenio,
         imagen: value.imagen,
@@ -189,6 +204,10 @@ export class ConveniosService {
         nombreModalidad: value.nombreModalidad,
       };
     }) as ListarConvenioDTO[];
+    return {
+      listadoConvenios: convenios,
+      modalidades: modalidades,
+    };
   }
 
   //Fin Bloque Listar Convenios
