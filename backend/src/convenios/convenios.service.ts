@@ -47,6 +47,9 @@ export class ConveniosService {
     const response = await this.prisma.$queryRawTyped(
       conveniosGetPromedio(idConvenio),
     );
+    if (!response) {
+      return 0;
+    }
     return response.map((value) => {
       return value.promedioPracticas;
     })[0] as number;
@@ -56,8 +59,11 @@ export class ConveniosService {
     const response = await this.prisma.$queryRawTyped(
       conveniosGetAprobacion(idConvenio),
     );
+    if (!response) {
+      return 0;
+    }
     return response.map((value) => {
-      return value.porcentajeaprobacion.toNumber();
+      return value.porcentajeaprobacion?.toNumber();
     })[0] as number;
     //por defecto retorna un arreglo de un solo elemento asi que retorna el primer elemento
   }
@@ -170,10 +176,25 @@ export class ConveniosService {
   }
 
   // Bloque Listar Convenios
-  async listarConvenios(): Promise<ListarConvenioDTO[]> {
+  private async getModalidades(): Promise<
+    { idModalidad: number; nombre: string }[]
+  > {
+    const modalidades = await this.prisma.modalidad.findMany({
+      select: { id: true, nombreModalidad: true },
+    });
+    return modalidades.map((modalidad) => {
+      return { idModalidad: modalidad.id, nombre: modalidad.nombreModalidad };
+    });
+  }
+  /**
+   * Método principal del BLoque
+   * Devuelve un listado de DetalleConvenioDTO[] llamado listadoConvenios
+   * acompañado de un arreglo llamado modalidades junto a su id y nombre
+   * */
+  async listarConvenios() {
     const resultado = await this.prisma.$queryRawTyped(conveniosListar());
-
-    return resultado.map((value) => {
+    const modalidades = await this.getModalidades();
+    const convenios = resultado.map((value) => {
       return {
         idConvenio: value.idConvenio,
         imagen: value.imagen,
@@ -183,6 +204,10 @@ export class ConveniosService {
         nombreModalidad: value.nombreModalidad,
       };
     }) as ListarConvenioDTO[];
+    return {
+      listadoConvenios: convenios,
+      modalidades: modalidades,
+    };
   }
 
   //Fin Bloque Listar Convenios
