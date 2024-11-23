@@ -12,13 +12,14 @@ export class LineaAsignaturaController {
     return this.lineaService.getAllLineasAsignatura();
   }
 
+  //OBTIENE SOLO LOS TITULOS DE LAS LINEAS
   @Get(':idPlan')
   public getAllLineaAsignaturasDePlan(
     @Param('idPlan', ParseIntPipe) idPlan: number,
   ) {
     return this.lineaService.getAllLineasAsignaturasDePlan(idPlan);
   }
-
+  //OBTIENE LAS LINEAS Y SUS ASIGNATURAS
   @Get('/asignaturas/:idPlan')
   public getAsignaturasEnLineasDeAsignaturaDePlan(
     @Param('idPlan', ParseIntPipe) idPlan: number,
