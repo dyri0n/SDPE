@@ -1,13 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  CdkDrag,
-  CdkDragDrop,
-  CdkDropList,
-  CdkDropListGroup,
-  moveItemInArray,
-  transferArrayItem,
-} from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DialogModule } from 'primeng/dialog';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -31,8 +24,6 @@ export class GestionarLineasComponent implements OnInit {
   searchTermAsignaturas: string = '';
   searchTermLineas: string = '';
 
-
-  
   asignaturas: AsignaturaLinea[] = []; 
   lineas: Linea[] = [];     
   asignaturasBackup: AsignaturaLinea[] = [];
@@ -68,9 +59,9 @@ export class GestionarLineasComponent implements OnInit {
         nombre: this.formularioLinea.value.nombre,
         asignaturas: []
       };
-      this.lineas.push(nuevaLinea); // Se agrega a las líneas visibles
+      this.lineas.push(nuevaLinea);
       this.esconderModal();
-      this.detectarCambios(); // Detectar cambios al estado actual
+      this.detectarCambios();
     }
   }
 
@@ -101,7 +92,11 @@ export class GestionarLineasComponent implements OnInit {
       if (event.previousContainer === event.container) {
         moveItemInArray(linea.asignaturas, event.previousIndex, event.currentIndex);
       } else {
-        event.previousContainer.data.splice(event.previousIndex, 1);
+        // saca la asignatura del listado general y la agrega a la linea
+        const index = this.asignaturas.findIndex(a => a.id === asignatura.id);
+        if (index !== -1) {
+          this.asignaturas.splice(index, 1);
+        }
         linea.asignaturas.push(asignatura);
       }
     } else {
@@ -162,7 +157,6 @@ export class GestionarLineasComponent implements OnInit {
     
     this.servicioAsignatura.guardarCambios(this.lineas).subscribe({
     next: (response) => {
-      // Actualizar respaldo con el estado actual
       this.lineasBackup = JSON.parse(JSON.stringify(this.lineas));
       this.asignaturasBackup = JSON.parse(JSON.stringify(this.asignaturas));
       this.hayCambios = false;
