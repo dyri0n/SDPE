@@ -14,7 +14,7 @@
     <div class="w-full mb-3 flex justify-between items-center">
       <input type="text" class="px-3 py-1 w-full h-fit rounded-xl font-normal font-bold border border-sky-500 focus:outline-none focus:ring focus:ring-sky-500" placeholder="Buscar asignatura" [(ngModel)]="searchTermAsignaturas">
     </div>
-    <div cdkDropList [cdkDropListData]="asignaturasFiltradas" class="border border-gray-300 min-h-[60px] bg-white rounded-md p-3 space-y-3 overflow-y-auto" (cdkDropListDropped)="drop($event)" cdkDropListSortingDisabled style="flex-grow: 1;">
+    <div cdkDropList [cdkDropListData]="asignaturas" class="border border-gray-300 min-h-[60px] bg-white rounded-md p-3 space-y-3 overflow-y-auto" (cdkDropListDropped)="drop($event)" cdkDropListSortingDisabled style="flex-grow: 1;">
       <div class="bg-white border border-gray-300 py-4 text-center text-base font-medium rounded cursor-pointer hover:bg-sky-200 hover:border-sky-200" *ngFor="let asignatura of asignaturasFiltradas" cdkDrag>
         {{ asignatura.nombre }}
       </div>
