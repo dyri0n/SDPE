@@ -62,4 +62,11 @@ export class AsignaturasController {
   public async getTendenciasCortePractico() {
     return this.asigService.getDetalleHistoricoAsignaturasCortePractico();
   }
+
+  @Get('aprobacion-curso/:idAsignatura')
+  public async getAprobacionPorCursacionDeAsignatura(
+    @Param('idAsignatura', ParseIntPipe) idAsignatura: number,
+  ) {
+    return this.asigService.getAprobacionHistoricaPorCohorte(idAsignatura);
+  }
 }

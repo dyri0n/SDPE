@@ -254,7 +254,7 @@ export class AsignaturasService {
       };
     }) as AprobacionHistoricaPorTipoIngresoDTO[];
   }
-  private async getAprobacionHistoricaPorCohorte(
+  async getAprobacionHistoricaPorCohorte(
     idAsignatura: number,
   ): Promise<AprobacionHistoricaPorCohorteDTO[]> {
     /*
