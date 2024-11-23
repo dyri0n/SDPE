@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FluxogramaService } from '../../services/fluxograma.service';
 import { MenubarModule } from 'primeng/menubar';
+import { CardModule } from 'primeng/card';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { MenubarModule } from 'primeng/menubar';
   templateUrl: './fluxogramas.component.html',
   styleUrls: ['./fluxogramas.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule, MenubarModule]
+  imports: [CommonModule, RouterModule, MenubarModule, CardModule]
 })
 export class FluxogramasComponent implements OnInit {
   constructor(
@@ -24,14 +25,21 @@ export class FluxogramasComponent implements OnInit {
   }
 
   fluxogramas: Fluxograma[] = [];
+  public cargando = true
+  public timeout: any
 
   public cargarFluxogramas(): void {
     this.fluxogramaService.obtenerFluxogramas().subscribe((fluxogramas) => {
-      this.fluxogramas = fluxogramas;
+      this.fluxogramas = fluxogramas
     });
+    this.timeout = setTimeout(() => {this.cargando = false}, 1000)
   }
 
   public escogerPlan(id: number): void {
     this.router.navigate(['/fluxograma/', id]);
+  }
+  
+  public devolverAlMenu() {
+    this.router.navigateByUrl('/menu')
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CursoDTO } from '../../models/Curso.dto';
 import { CursosService } from '../../services/Cursos.service';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-cursos',
@@ -14,16 +14,19 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 export class CursosComponent implements OnInit {
   constructor(
     private cursosService: CursosService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.idFluxograma = +this.route.snapshot.paramMap.get('idFluxograma')!
     this.idAsignatura = +this.route.snapshot.paramMap.get('idAsignatura')!;
     this.cargarCursos();
   }
 
   cursos: CursoDTO[] = [];
   public idAsignatura: number = 0;
+  public idFluxograma: number = 0
   semestreSeleccionado: number = 1;
 
   public cargarCursos(): void {
@@ -32,5 +35,9 @@ export class CursosComponent implements OnInit {
       .subscribe((cursos) => {
         this.cursos = cursos;
       });
+  }
+
+  public devolverAlFluxograma() {
+    this.router.navigate(['/fluxograma', this.idFluxograma])
   }
 }

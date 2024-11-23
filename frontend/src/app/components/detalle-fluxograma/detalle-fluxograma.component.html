@@ -1,41 +1,43 @@
-<h1 class="text-5xl my-10 text-center font-semibold">Plan de estudios: {{fluxograma?.titulo}}</h1>
-
-<h3 class="text-xl mb-20 text-center font-medium">Año: {{fluxograma?.anio}}</h3>
-
-
-<div class="container mx-auto my-10">
-    <div class="overflow-x-auto py-5">
-        <div class="flex space-x-8 text-center">
-            @for (semestre of semestres; track semestre; let i = $index){
-                <div class="p-5 border rounded-lg bg-gray-200 shadow-md flex flex-col space-y-4 w-[400px]">
-                    <div class="p-3 bg-white mb-5 font-bold text-3xl border rounded-lg border-gray-300">{{semestre}} Semestre</div>
-                    <div class="space-y-6">
-                        @for (asignatura of detalleFluxograma; track asignatura; let j = $index){
-                            <!-- aqui estaria iterando todas las asignaturas de detalleFluxograma por cada semestre,
-                                entonces no es muy eficiente que digamos por ahora -->
-                            @if (asignatura.semestre == i+1){
-                                <div class="p-4 border border-gray-300 rounded-lg  flex flex-col space-y-2 w-[300px] mx-auto" 
-                                    [ngClass]="{
-                                        'bg-sky-400': esCortePractico(asignatura),
-                                        'bg-red-400': esPrevia(asignatura.idAsignatura),
-                                        'bg-green-400': esTributada(asignatura.idAsignatura),
-                                        'bg-white': !esPrevia(asignatura.idAsignatura) && !esTributada(asignatura.idAsignatura)
-                                        }"
-                                    (click)="detalleAsignatura(asignatura.idAsignatura,asignatura.asignatura.nombre, asignatura.esRequeridaEn, asignatura.esTributadaEn)" 
-                                    (mouseenter)="resaltarAsignaturas(asignatura.esRequeridaEn, asignatura.esTributadaEn)"
-                                    (mouseleave)="quitarResaltado()">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <div class="text-sm text-gray-600 font-medium">{{asignatura.asignatura.codigo}}</div>
-                                    </div>
-                                    <div class="text-lg font-semibold">
-                                        {{asignatura.asignatura.nombre}}
-                                    </div>
-                                </div>
-                            }
-                        }
-                    </div>
-                </div>
-            }
-        </div>
+<div class="min-h-screen bg-gray-100 py-10">
+  <div class="container mx-auto rounded-lg overflow-hidden">
+    <div (click)="devolverAListarFluxogramas()" class="p-4 bg-slate-400 mb-6 rounded-2xl cursor-pointer hover:bg-slate-500 transition duration-300 ease-in-out size-fit">
+      <p class="font-bold text-white"><- Volver a ver la lista de fluxogramas</p>
     </div>
+    
+    <div class="bg-[#21A4DC] p-8 text-center rounded-t-lg">
+      
+      <h1 class="text-5xl font-black text-white">Plan de Estudios: {{fluxograma?.titulo}}</h1>
+      <h3 class="text-xl font-medium text-white mt-4">Año: {{fluxograma?.anio}}</h3>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-8 bg-white py-10 px-6 shadow-lg">
+      <div *ngIf="!semestres?.length" class="w-full flex justify-center items-center">
+        <div class="spinner-border animate-spin inline-block w-16 h-16 border-4 rounded-full border-t-transparent border-[#21A4DC]"></div>
+      </div>
+
+      <div *ngFor="let semestre of semestres; let i = index" class="p-6 bg-gray-100 rounded-lg shadow-md w-[400px]">
+        <div class="mb-6 p-4 bg-[#DC911A] text-white text-2xl font-bold rounded-lg">{{semestre}} Semestre</div>
+
+        <div class="space-y-4">
+          @for (asignatura of detalleFluxograma; track asignatura; let j = $index){
+            <div *ngIf="asignatura.semestre == i + 1">
+              <div class="p-4 rounded-xl cursor-pointer transition-transform hover:scale-105 hover:shadow-lg"
+                [ngClass]="{
+                  'bg-sky-500 text-white': esCortePractico(asignatura),
+                  'bg-red-500 text-white': esPrevia(asignatura.idAsignatura),
+                  'bg-green-500 text-white': esTributada(asignatura.idAsignatura),
+                  'bg-gray-300 text-gray-800': !esPrevia(asignatura.idAsignatura) && !esTributada(asignatura.idAsignatura)
+                }"
+                (click)="detalleAsignatura(asignatura.idAsignatura, asignatura.asignatura.nombre, asignatura.esRequeridaEn, asignatura.esTributadaEn)"
+                (mouseenter)="resaltarAsignaturas(asignatura.esRequeridaEn, asignatura.esTributadaEn)"
+                (mouseleave)="quitarResaltado()">
+                <div class="text-sm font-semibold mb-1">{{asignatura.asignatura.codigo}}</div>
+                <div class="text-lg font-bold">{{asignatura.asignatura.nombre}}</div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

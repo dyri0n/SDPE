@@ -73,7 +73,7 @@ export class DetalleFluxogramaComponent implements OnInit {
         if (asignatura.caracter === 'PRACTICA') {
           this.router.navigate(['/estadisticas/', idAsignatura]);
         } else {
-          this.router.navigate(['/cursos/', idAsignatura]);
+          this.router.navigate(['/cursos/', this.idFluxograma, idAsignatura]);
         }
       }
     });
@@ -115,5 +115,9 @@ export class DetalleFluxogramaComponent implements OnInit {
       .subscribe((fluxograma) => {
         this.fluxograma = fluxograma;
       });
+  }
+
+  public devolverAListarFluxogramas() {
+    this.router.navigateByUrl('/fluxogramas')
   }
 }
