@@ -8,19 +8,35 @@ export class CursosService {
 
   //proximamente desaparecerá...
   async getCursosDeAsignatura(idAsig: number) {
-    return this.prisma.cursacion.findMany({
+    return await this.prisma.cursacion.findMany({
       where: {
         idAsignatura: idAsig,
       },
     });
   }
 
-  async getCursacionesDeAsignatura(
+  async getCursacionesPorIdAsignatura(
+    idPlan: number,
     idAsignatura: number,
-    idPlan,
   ): Promise<Cursacion[]> {
-    return this.prisma.cursacion.findMany({
+    return await this.prisma.cursacion.findMany({
       where: { idPlan: idPlan, idAsignatura: idAsignatura },
+    });
+  }
+
+  async getCursacionesPorCodigoDeAsignatura(
+    idPlan: number,
+    codigoAsignatura: string,
+  ): Promise<Cursacion[]> {
+    return await this.prisma.cursacion.findMany({
+      where: {
+        idPlan: idPlan,
+        AND: {
+          Asignatura: {
+            codigo: codigoAsignatura,
+          },
+        },
+      },
     });
   }
 }

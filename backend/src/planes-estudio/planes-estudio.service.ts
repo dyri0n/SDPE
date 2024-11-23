@@ -34,6 +34,9 @@ export class PlanesEstudioService {
   async getFluxogram(idPlan: number): Promise<Asignatura[]> {
     return this.prisma.asignatura.findMany({
       where: { idPlan: idPlan },
+      orderBy: {
+        posicion: 'asc',
+      },
     });
   }
 
@@ -53,8 +56,10 @@ export class PlanesEstudioService {
     return this.prisma.lineaAsignatura.findUnique({
       where: {
         idLinea: idLinea,
+      },
+      include: {
         Asignatura: {
-          some: {
+          where: {
             idPlan: idPlan,
           },
         },

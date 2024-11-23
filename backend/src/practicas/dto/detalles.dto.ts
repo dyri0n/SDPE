@@ -5,11 +5,14 @@ export interface DetallePracticasDTO {
   practicas: InfoPracticaDTO[];
 }
 export interface InfoPracticaDTO {
-  titulo: string;
-  tipoPractica: string;
-  posicionRelativa: number;
-  centroPractica: string;
-  nombreModalidad: string;
+  idCursacion: number;
   notaFinal: number;
+  codigoAsignatura: string;
+  nombrePractica: string;
+  plan: string;
   numIntento: number;
+  posicionRelativa: number;
+  convenios: string[];
+  centrosDePractica: string[];
+  modadidades: string[];
 }

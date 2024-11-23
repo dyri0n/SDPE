@@ -106,7 +106,7 @@ export class AsignaturasService {
     idPlan: number,
     idAsignatura: number,
   ): Promise<number> {
-    const cursos = await this.cursacionService.getCursacionesDeAsignatura(
+    const cursos = await this.cursacionService.getCursacionesPorIdAsignatura(
       idAsignatura,
       idPlan,
     );

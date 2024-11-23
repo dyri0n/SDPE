@@ -1,6 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Practica, PracticaTomada } from '@prisma/client';
+import {
+  Asignatura,
+  Cursacion,
+  Modalidad,
+  PracticaTomada,
+} from '@prisma/client';
 import { DetallePracticasDTO, InfoPracticaDTO } from './dto/detalles.dto';
 import { practicasGetDetallePorEstudiante } from '@prisma/client/sql';
 import { EstudiantesService } from '../estudiantes/estudiantes.service';
@@ -13,31 +18,73 @@ import {
   practicasGetPracticasDeConvenioUsandoId,
   conveniosGetNombreConvenio,
 } from '@prisma/client/sql';
+import { CursosService } from 'src/cursos/cursos.service';
 
 @Injectable()
 export class PracticasService {
   constructor(
     private prisma: PrismaService,
     private estudianteService: EstudiantesService,
+    private cursoService: CursosService,
   ) {}
 
-  async getAllInfoPracticas(): Promise<Practica[]> {
-    return this.prisma.practica.findMany();
-  }
-
-  async getAllPracticasCursadasPorIdPractica(
-    idPractica: number,
-  ): Promise<PracticaTomada[]> {
-    return this.prisma.practicaTomada.findMany({
-      where: { idPractica: idPractica },
+  /**
+   * Retorna todas las asignaturas prácticas, independientes del plan
+   * @returns {Asignatura[]} Prácticas de la carrera
+   */
+  async getAllPracticas() {
+    return await this.prisma.asignatura.findMany({
+      where: {
+        caracter: 'PRACTICA',
+      },
     });
   }
 
+  /**
+   * Retorna las asignaturas de práctica de la carrera
+   * @param idPlan Identificador del plan
+   * @returns {Asignatura[]} Prácticas del plan
+   */
+  async getAllPracticasDelPlan(idPlan: number): Promise<Asignatura[]> {
+    return await this.prisma.asignatura.findMany({
+      where: {
+        idPlan: idPlan,
+        AND: {
+          caracter: 'PRACTICA',
+        },
+      },
+    });
+  }
+
+  /**
+   * Retorna todas las cursaciones de una asignatura práctica
+   * de un plan especificado
+   * @param codigoAsignatura
+   * @returns
+   */
+  async getAllCursacionesPorCodigoAsignaturaPractica(
+    idPlan: number,
+    codigoAsignatura: string,
+  ): Promise<Cursacion[]> {
+    return await this.cursoService.getCursacionesPorCodigoDeAsignatura(
+      idPlan,
+      codigoAsignatura,
+    );
+  }
+
+  /**
+   * Retorna todas las cursaciones y prácticas relacionadas
+   * a un estudiante
+   * @param idEstudiante Id del estudiante
+   */
   async getAllPracticasCursadasPorEstudiante(
     idEstudiante: number,
   ): Promise<PracticaTomada[]> {
     return this.prisma.practicaTomada.findMany({
-      where: { EstudianteAsociado: { id: idEstudiante } },
+      where: { idEstudiante: idEstudiante },
+      include: {
+        CursacionPractica: true,
+      },
     });
   }
 
@@ -79,15 +126,10 @@ export class PracticasService {
     const resultado = await this.prisma.$queryRawTyped(
       practicasGetDetallePorEstudiante(idEstudiante),
     );
+
     return resultado.map((value) => {
       return {
-        titulo: value.titulo,
-        centroPractica: value.centroPractica,
-        nombreModalidad: value.nombreModalidad,
-        notaFinal: value.notaFinal,
-        numIntento: value.numIntento,
-        tipoPractica: value.nombrePractica,
-        posicionRelativa: value.numeroPractica,
+        ...value,
       };
     }) as InfoPracticaDTO[];
   }
@@ -103,6 +145,7 @@ export class PracticasService {
   async getDetallePracticasDeEstudiante(idEstudiante: number) {
     const estudiante: InfoEstudianteDTO =
       await this.estudianteService.getEstudianteById(idEstudiante);
+
     if (!estudiante) throw NotFoundException;
 
     const infoPracticas: InfoPracticaDTO[] =
@@ -116,18 +159,19 @@ export class PracticasService {
 
   // FIN bloque detalle de practica por estudiante
 
-  async getAllModalidades() {
+  async getAllModalidades(): Promise<Modalidad[]> {
     const modalidades = await this.prisma.modalidad.findMany();
 
     return modalidades;
   }
 
-  async getOneModalidad(id) {
+  async getOneModalidad(idModalidad: number): Promise<Modalidad> {
     const modalidad = await this.prisma.modalidad.findUnique({
       where: {
-        id: id,
+        idModalidad: idModalidad,
       },
     });
+
     return modalidad;
   }
 
