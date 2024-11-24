@@ -2,8 +2,8 @@ SELECT
     "semestreRelativo", avg("notaFinal") as "promedio"
 FROM "Cursacion" c
          JOIN "Estudiante" e using ("idEstudiante")
-WHERE e."agnioIngreso" = 2019
-GROUP BY "semestreRelativo"
+WHERE e."agnioIngreso" = $1
+GROUP BY "semestreRelativo";
 
 --MIGRADO A NUEVO MODELO
 

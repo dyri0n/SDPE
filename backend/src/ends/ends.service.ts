@@ -11,19 +11,19 @@ export class EndsService {
 
   async getOneEnd(endId: number) {
     return this.prisma.eND.findMany({
-      where: { id: endId },
+      where: { idEND: endId },
     });
   }
 
   async getResultadosEND(endId: number) {
     return this.prisma.resultadoEND.findMany({
-      where: { endId: endId },
+      where: { idEND: endId },
     });
   }
 
-  async getResumenPorAlumnoEND(endId: number, estudianteId: number) {
+  async getResumenPorAlumnoEND(idEND: number, idEstudiante: number) {
     return this.prisma.resultadoEND.findMany({
-      where: { endId: endId, estudianteId: estudianteId },
+      where: { idEND: idEND, idEstudiante: idEstudiante },
       include: {
         EstudianteAsociado: true,
         ENDAsociada: true,

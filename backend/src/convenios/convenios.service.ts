@@ -25,6 +25,11 @@ export class ConveniosService {
 
   //BLOQUE detalle de convenio
 
+  /**
+   * Retorna el convenio y su modalidad con el identificador especificado
+   * @param idConvenio Id del convenio
+   * @returns {Convenio} El convenio y su modalidad con la id especificada
+   */
   private async getConvenioPorId(idConvenio: number): Promise<Convenio> {
     return await this.prisma.convenio.findUnique({
       where: { idConvenio: idConvenio },
@@ -36,10 +41,15 @@ export class ConveniosService {
     });
   }
 
+  /**
+   * Cuenta el total de prácticas tomadas por convenio almacenado
+   * @param idConvenio Id del convenio
+   * @returns {number} Número de prácticas tomadas por convenio
+   */
   private async getTotalDePracticasEnConvenio(
     idConvenio: number,
   ): Promise<number> {
-    return await this.prisma.practicaTomada.count({
+    const count = await this.prisma.practicaTomada.count({
       where: {
         PTConvenios: {
           some: {
@@ -48,33 +58,34 @@ export class ConveniosService {
         },
       },
     });
+
+    return count ?? 0;
   }
 
-  // TODO: checkear sql modificaciones nuevo modelo
+  /**
+   * Retorna el promedio de las prácticas tomadas de un convenio
+   * @param idConvenio Id del convenio
+   * @returns {number} Promedio de las prácticas tomadas por convenio
+   */
   private async getPromedioDePracticas(idConvenio: number): Promise<number> {
     const response = await this.prisma.$queryRawTyped(
       conveniosGetPromedio(idConvenio),
     );
-    if (!response) {
-      return 0;
-    }
-    return response.map((value) => {
-      return value.promedioPracticas;
-    })[0] as number;
-    //por defecto retorna un arreglo de un solo elemento asi que retorna el primer elemento
+
+    return response[0].promedioPracticas.toNumber() ?? 0;
   }
 
+  /**
+   * Retorna el porcentaje de aprobación de las prácticas tomadas de un convenio
+   * @param idConvenio Id del convenio
+   * @returns {number} Porcentaje de aprobación de las prácticas tomadas por convenio
+   */
   private async getAprobacionDePracticas(idConvenio: number): Promise<number> {
     const response = await this.prisma.$queryRawTyped(
       conveniosGetAprobacion(idConvenio),
     );
-    if (!response) {
-      return 0;
-    }
-    return response.map((value) => {
-      return value.porcentajeaprobacion?.toNumber();
-    })[0] as number;
-    //por defecto retorna un arreglo de un solo elemento asi que retorna el primer elemento
+
+    return response[0].porcentajeAprobacion.toNumber() ?? 0;
   }
 
   /*
@@ -89,7 +100,23 @@ export class ConveniosService {
       porcentajeReprobacion: 15
     }
      */
-  async getDetalleConvenioCompleto(idConvenio: number) {
+
+  /**
+   * Retorna el detalle completo de un convenio pasándole su idConvenio
+   * EJ:
+   * {
+   *   convenio: {....},
+   *   nroPracticasRealizadas: 45,
+   *   promedioPracticas: 6.4,
+   *   porcentajeAprobacion: 85,
+   *    porcentajeReprobacion: 15
+   * }
+   * @param idConvenio Id del convenio
+   * @returns {Promise<DetalleConvenioDTO>}
+   */
+  async getDetalleConvenioCompleto(
+    idConvenio: number,
+  ): Promise<DetalleConvenioDTO> {
     const [
       infoConvenio,
       infoPracticasRealizadas,
@@ -104,15 +131,16 @@ export class ConveniosService {
     return {
       convenio: infoConvenio,
       nroPracticasRealizadas: infoPracticasRealizadas,
-      promedioPracticas: infoPromedio || 0,
-      porcentajeAprobacion: infoAprobacion || 0,
-      porcentajeReprobacion: 100 - (infoAprobacion || 0),
+      promedioPracticas: infoPromedio,
+      porcentajeAprobacion: infoAprobacion,
+      porcentajeReprobacion: 100 - infoAprobacion,
     } as DetalleConvenioDTO;
   }
   // FIN bloque detalles de convenio
 
   // Bloque CRUD de Convenios
 
+  //TODO
   //Usado para "eliminar" un convenio haciendo false su validez
   async invalidarConvenio(idConvenio: number) {
     return await this.prisma.convenio.update({
@@ -125,6 +153,7 @@ export class ConveniosService {
     });
   }
 
+  // TODO
   //Usado para actualizar la información de un convenio
   async updateConvenio(idConvenio: number, update: UpdateConvenioDTO) {
     try {
@@ -252,18 +281,26 @@ export class ConveniosService {
     }
   }
 
-  // TODO
   // Bloque Listar Convenios
+
+  /**
+   * Retorna el identificador y el nombre de las modalidades existentes
+   * @returns {{ idModalidad: number; nombreModalidad: string }[]}
+   * Ids y Nombres de las modalidades
+   */
   private async getModalidades(): Promise<
-    { idModalidad: number; nombre: string }[]
+    { idModalidad: number; nombreModalidad: string }[]
   > {
     const modalidades = await this.prisma.modalidad.findMany({
-      select: { id: true, nombreModalidad: true },
+      select: {
+        idModalidad: true,
+        nombreModalidad: true,
+      },
     });
-    return modalidades.map((modalidad) => {
-      return { idModalidad: modalidad.id, nombre: modalidad.nombreModalidad };
-    });
+
+    return modalidades;
   }
+
   /**
    * Método principal del BLoque
    * Devuelve un listado de DetalleConvenioDTO[] llamado listadoConvenios

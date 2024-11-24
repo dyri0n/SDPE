@@ -27,7 +27,9 @@ select
     asi."nombre" as "nombrePractica",
     pla."titulo" as "plan",
     cur."numIntento",
-    rank() over (order by asi."posicion") as "posicionRelativa",
+    (
+        rank() over (order by asi."posicion")
+    )::numeric as "posicionRelativa",
     array_agg(con."titulo") as "convenios",
     array_agg(con."centroPractica") as "centrosDePractica",
     array_agg(mod."nombreModalidad") as "modalidades"

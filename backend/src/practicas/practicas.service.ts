@@ -14,10 +14,7 @@ import {
   ListarPracticasPorConvenioDTO,
   PracticaEnConvenioDTO,
 } from './dto/porConvenio.dto';
-import {
-  practicasGetPracticasDeConvenioUsandoId,
-  conveniosGetNombreConvenio,
-} from '@prisma/client/sql';
+import { practicasGetPracticasDeConvenioUsandoId } from '@prisma/client/sql';
 import { CursosService } from 'src/cursos/cursos.service';
 
 @Injectable()
@@ -127,9 +124,18 @@ export class PracticasService {
       practicasGetDetallePorEstudiante(idEstudiante),
     );
 
-    return resultado.map((value) => {
+    return resultado.map((v) => {
       return {
-        ...value,
+        idCursacion: v.idCursacion,
+        notaFinal: v.notaFinal,
+        codigoAsignatura: v.codigoAsignatura,
+        nombrePractica: v.nombrePractica,
+        plan: v.plan,
+        numIntento: v.numIntento,
+        posicionRelativa: v.posicionRelativa.toNumber(),
+        convenios: v.convenios,
+        centrosDePractica: v.centrosDePractica,
+        modadidades: v.modalidades,
       };
     }) as InfoPracticaDTO[];
   }
@@ -182,26 +188,17 @@ export class PracticasService {
     const resultadoPracticas = await this.prisma.$queryRawTyped(
       practicasGetPracticasDeConvenioUsandoId(idConvenio),
     );
+
     return resultadoPracticas.map((value) => {
       return {
         nombreCompleto: value.nombreCompleto,
         tituloPractica: value.tituloPractica,
-        numeroPractica: value.numeroPractica,
+        numeroPractica: value.numeroPractica.toNumber(),
         fechaInicio: value.fechaInicio,
         fechaFin: value.fechaFin,
         notaFinal: value.notaFinal,
       } as PracticaEnConvenioDTO;
     });
-  }
-  private async getNombreConvenio(idConvenio: number) {
-    const nombre = await this.prisma.$queryRawTyped(
-      conveniosGetNombreConvenio(idConvenio),
-    );
-    return (
-      (nombre.map((value) => {
-        return value.titulo;
-      })[0] as string) ?? 'NO ENCONTRADO'
-    ); //al ser un arreglo se toma el primer elemento
   }
 
   /*
@@ -227,11 +224,20 @@ export class PracticasService {
    *
    * */
   async listarPracticasPorConvenio(idConvenio: number) {
-    const nombreConvenio: string = await this.getNombreConvenio(idConvenio);
+    const convenio = await this.prisma.convenio.findUnique({
+      where: {
+        idConvenio: idConvenio,
+      },
+      select: {
+        titulo: true,
+      },
+    });
+
     const resultadoConsulta: PracticaEnConvenioDTO[] =
       await this.getPracticasDeConvenio(idConvenio);
+
     return {
-      tituloConvenio: nombreConvenio,
+      tituloConvenio: convenio.titulo,
       practicas: resultadoConsulta,
     } as ListarPracticasPorConvenioDTO;
   }

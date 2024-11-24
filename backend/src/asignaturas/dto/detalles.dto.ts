@@ -9,6 +9,7 @@ export interface PromedioHistoricoGeneralDTO {
 }
 
 export interface PromedioHistoricoPorPlanDTO {
+  codigoPlan: number;
   agnio: number;
   promedio: number;
 }

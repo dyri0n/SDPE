@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ConveniosService } from './convenios.service';
-import { CreateConvenioDTO, UpdateConvenioDTO } from './dto';
+import { CreateConvenioDTO, UpdateConvenioDTO } from './dto/crud.dto';
 @ApiTags('convenios')
 @Controller('convenios')
 export class ConveniosController {

@@ -19,6 +19,7 @@ export class LineaAsignaturaController {
   ) {
     return this.lineaService.getAllLineasAsignaturasDePlan(idPlan);
   }
+
   //OBTIENE LAS LINEAS Y SUS ASIGNATURAS
   @Get('/asignaturas/:idPlan')
   public getAsignaturasEnLineasDeAsignaturaDePlan(

@@ -11,6 +11,7 @@ export class EstudiantesController {
   ) {
     return this.estudianteService.obtAvanceDe(idEstudiante);
   }
+
   @Get('cohorte')
   public async getEstudiantesPorCohorte() {
     return this.estudianteService.getEstudiantesPorCohorte();

@@ -5,8 +5,6 @@ import {
   estudiantesGetCursos,
   estudiantesGetPromedioIndividualPorSemestre,
   estudiantesGetPromedioCohortePorSemestre,
-  estudiantesListarCohortes,
-  estudiantesGetEstudiantesPorCohorte,
 } from '@prisma/client/sql';
 import {
   AvanceDto,
@@ -76,7 +74,7 @@ export class EstudiantesService {
     );
     return infoCursos.map((value) => {
       return {
-        idAsignatura: value.id,
+        idAsignatura: value.idAsignatura,
         nombreAsignatura: value.nombre,
         codigo: value.codigo,
         areaFormacion: value.areaFormacion,
@@ -117,6 +115,7 @@ export class EstudiantesService {
       };
     }) as SemestreRealizadoDTO[];
   }
+
   /*
    * Retorna la información del promedio de un cohorte o generación a lo largo
    * de los semestres que han rendido utilizando
@@ -147,6 +146,7 @@ export class EstudiantesService {
       };
     }) as SemestreRealizadoDTO[];
   }
+
   async obtAvanceDe(idEstudiante: number) {
     const infoEstudiante = await this.getEstudianteById(idEstudiante);
     if (!infoEstudiante.rut)
@@ -170,21 +170,32 @@ export class EstudiantesService {
   }
 
   //Bloque de Obtener a todos los estudiantes
+
   private async listarCohortes(): Promise<number[]> {
-    const resultCohortes = await this.prisma.$queryRawTyped(
-      estudiantesListarCohortes(),
-    );
-    return resultCohortes.map((value) => {
-      return value.cohorte as number;
+    const resultCohortes = await this.prisma.estudiante.findMany({
+      select: {
+        agnioIngreso: true,
+      },
+      distinct: ['agnioIngreso'],
+    });
+
+    return resultCohortes.flatMap((v) => {
+      return v.agnioIngreso;
     });
   }
 
   private async getAllEstudiantesCohorte(): Promise<
     InfoCohorteEstudianteDTO[]
   > {
-    const resultadoEstudiantes = await this.prisma.$queryRawTyped(
-      estudiantesGetEstudiantesPorCohorte(),
-    );
+    const resultadoEstudiantes = await this.prisma.estudiante.findMany({
+      select: {
+        idEstudiante: true,
+        nombreCompleto: true,
+        agnioIngreso: true,
+        rut: true,
+      },
+    });
+
     return resultadoEstudiantes.map((value) => {
       return {
         idEstudiante: value.idEstudiante,
@@ -194,6 +205,7 @@ export class EstudiantesService {
       } as InfoCohorteEstudianteDTO;
     });
   }
+
   /*
    * Método Principal del Bloque
    *

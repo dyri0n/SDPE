@@ -39,6 +39,9 @@ export class AsignaturasService {
       where: {
         codigo: codigoAsignatura,
       },
+      include: {
+        PlanDeEstudio: true,
+      },
     });
   }
 
@@ -140,10 +143,10 @@ export class AsignaturasService {
     // retorna los datos asi como van
     const result = await this.prisma.$queryRawTyped(asignaturasListar());
 
-    return result.map((value) => {
-      return {
-        ...value,
-      };
+    console.log(result);
+
+    return result.map((v) => {
+      return { ...v };
     }) as AsignaturaListadaDTO[];
   }
 
@@ -190,6 +193,7 @@ export class AsignaturasService {
 
     return result.map((value) => {
       return {
+        codigoPlan: codigoPlan,
         agnio: value.agnio,
         promedio: value.promedio.toNumber(),
       };
@@ -297,7 +301,7 @@ export class AsignaturasService {
    * @param codigoAsignatura
    * @returns
    */
-  private async getAprobacionHistoricaPorCohorte(
+  async getAprobacionHistoricaPorCohorte(
     codigoAsignatura: string,
   ): Promise<AprobacionHistoricaPorCohorteDTO[]> {
     const result = await this.prisma.$queryRawTyped(
@@ -376,26 +380,37 @@ export class AsignaturasService {
       },
     } as DetalleAsignaturaDTO;
   }
+
   // FIN Bloque de Detalles de una asignatura Histórica
+
   //BLOQUE Tendencias de Corte práctico
+
+  //todo
   async getDetalleHistoricoAsignaturasCortePractico(): Promise<
     DetalleAsignaturaDTO[]
   > {
-    const idsAsignaturasCortePractico =
-      await this.prisma.planContemplaAsignatura.findMany({
-        select: { idAsignatura: true, asignatura: true, posicion: true },
-        where: { areaFormacion: 'FP' }, //TODO: CAMBIAR LUEGO EL PLAN
-      }); //BUSCA ASIGNATURAS DE CORTE PRACTICO
+    const idsAsignaturasCortePractico = await this.prisma.asignatura.findMany({
+      where: {
+        caracter: 'PRACTICA',
+      }, //TODO: CAMBIAR LUEGO EL PLAN
+      select: {
+        codigo: true,
+        idPlan: false,
+      },
+    }); //BUSCA ASIGNATURAS DE CORTE PRACTICO
+
+    console.log(idsAsignaturasCortePractico);
 
     //AGREGA CADA UNO DE LOS DetalleAsignaturaDTO[] correspondientes a asignaturas de corte práctico
-    const responseAsignaturas: DetalleAsignaturaDTO[] = [];
+    const responseAsignaturas: Promise<DetalleAsignaturaDTO>[] = [];
+
     for (const asignatura of idsAsignaturasCortePractico) {
-      const detalle = await this.getDetalleHistoricoAsignatura(
-        asignatura.idAsignatura,
-        asignatura.posicion,
-      );
+      const detalle = this.getDetalleHistoricoAsignatura(asignatura.codigo);
       responseAsignaturas.push(detalle);
     }
-    return responseAsignaturas;
+
+    const response = Promise.all(responseAsignaturas);
+
+    return response;
   }
 }
