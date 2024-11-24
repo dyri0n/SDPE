@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -10,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ConveniosService } from './convenios.service';
-import { CreateConvenioDTO, UpdateConvenioDTO } from './dto/crud.dto';
+import { CreateConvenioDTO, UpdateConvenioDTO } from './dto';
 @ApiTags('convenios')
 @Controller('convenios')
 export class ConveniosController {
@@ -40,7 +41,16 @@ export class ConveniosController {
   }
 
   @Post()
-  async create(@Body() createDTO: CreateConvenioDTO) {
-    return this.convenioService.createConvenio(createDTO);
+  async create(
+    @Body()
+    createDTO: CreateConvenioDTO,
+  ) {
+    if (createDTO.idModalidad) {
+      return this.convenioService.createConvenioConRefModalidad(createDTO);
+    } else if (createDTO.nombreModalidad) {
+      return this.convenioService.createConvenioConTituloModalidad(createDTO);
+    } else {
+      throw new BadRequestException('Los datos no sirven arreglalos');
+    }
   }
 }

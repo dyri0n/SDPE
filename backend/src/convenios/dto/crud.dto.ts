@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  ValidateIf,
 } from 'class-validator';
 
 export class UpdateConvenioDTO {
@@ -45,9 +46,9 @@ export class CreateConvenioDTO {
   @IsString()
   centroPractica: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDate()
-  fechaInicioConvenio: Date;
+  fechaInicioConvenio?: Date;
 
   @IsOptional()
   @IsDate()
@@ -63,5 +64,11 @@ export class CreateConvenioDTO {
 
   @IsNotEmpty()
   @IsNumber()
-  idModalidad: number;
+  @ValidateIf((obj) => !obj.nombreModalidad)
+  idModalidad?: number;
+
+  @IsNotEmpty()
+  @IsString()
+  @ValidateIf((obj) => !obj.idModalidad)
+  nombreModalidad?: string;
 }
