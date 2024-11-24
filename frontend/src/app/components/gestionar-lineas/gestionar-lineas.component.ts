@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DialogModule } from 'primeng/dialog';
@@ -10,12 +9,14 @@ import { AsignaturaLinea, Linea } from '../../models/lineaAsignatura.dto';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
 
 @Component({
   selector: 'app-gestionar-lineas',
   standalone: true,
-  imports: [CommonModule, CdkDropListGroup, CdkDropList, CdkDrag, DialogModule, FormsModule, ButtonModule, InputTextModule, FloatLabelModule, ReactiveFormsModule, ToastModule],
+  imports: [CdkDropListGroup, CdkDropList, CdkDrag, DialogModule, FormsModule, ButtonModule, InputTextModule, FloatLabelModule, ReactiveFormsModule, ToastModule, ProgressSpinnerModule],
   providers: [MessageService],
   templateUrl: './gestionar-lineas.component.html',
   styleUrl: './gestionar-lineas.component.css'
@@ -34,12 +35,16 @@ export class GestionarLineasComponent implements OnInit {
 
   idPlan!: number;
 
+  cargando: boolean = true;
+
+
   public formularioLinea: FormGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
   })
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private servicioAsignatura: AsignaturaService,
     private messageService: MessageService
   ){ }
@@ -82,7 +87,7 @@ export class GestionarLineasComponent implements OnInit {
   public cargarDatos(): void {
     //obtener las asignaturas de
     this.servicioAsignatura.obtenerListadoAsignaturas(this.idPlan).subscribe((asignaturasData) => {
-      // Filtramos las asignaturas "SIN LINEA" y las asignamos a 'this.asignaturas'
+      // buscar las asignaturas "SIN LINEA"
       this.asignaturas = asignaturasData["SIN LINEA"].map((asignatura: any) => ({
         titulo: asignatura.titulo,
         codigo: asignatura.codigo,
@@ -123,6 +128,7 @@ export class GestionarLineasComponent implements OnInit {
 
         console.log(this.asignaturas)
         console.log(this.lineas)
+        this.cargando = false
       });
     });
   }
@@ -173,29 +179,12 @@ export class GestionarLineasComponent implements OnInit {
   }
 
   public cancelarCambios(): void {
-    // this.lineas.forEach(linea => {
-    //   linea.asignaturas = linea.asignaturas.filter(asignatura =>
-    //     this.asignaturasBackup.some(origAsignatura => origAsignatura.nombre === asignatura.nombre)
-    //   );
-    // });
-
     this.asignaturas = JSON.parse(JSON.stringify(this.asignaturasBackup));
     this.lineas = JSON.parse(JSON.stringify(this.lineasBackup));
     this.detectarCambios();
   }
 
   public confirmarCambios(): void {
-    // this.servicioAsignatura.guardarCambios(this.lineas).subscribe(() => {
-    //   alert('');
-    //   // Actualizar el respaldo con los datos confirmados
-    //   this.lineasBackup = [...this.lineas];
-    //   this.asignaturasBackup = [...this.asignaturas]; // Respaldo también para asignaturas
-    //   this.hayCambios = false; // Resetear el estado de cambios
-    // },
-    // error => {
-    //   alert('Error al guardar cambios: ' + error.message);
-    // });
-    
     this.servicioAsignatura.guardarCambios(this.lineas).subscribe({
     next: (response) => {
       this.lineasBackup = JSON.parse(JSON.stringify(this.lineas));
@@ -216,6 +205,10 @@ export class GestionarLineasComponent implements OnInit {
       });
     },
   });
+  }
+
+  public volverFLuxograma(){
+    this.router.navigateByUrl(`fluxograma/${this.idPlan}`)
   }
 
   get asignaturasFiltradas(): AsignaturaLinea[] {

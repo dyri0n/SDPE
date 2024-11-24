@@ -24,3 +24,6 @@
   min-width: 0; /* Opcional: evita que el dropdown tenga un ancho mínimo */
 }
 
+:host ::ng-deep .p-progress-spinner-circle {
+  stroke: rgb(3 105 161) !important;
+}

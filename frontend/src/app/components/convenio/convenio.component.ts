@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConveniosService } from '../../services/convenios.service';
-import { Convenio, DetalleConvenio, DetalleConvenioTest } from '../../models/convenios.dto';
+import { DetalleConvenio } from '../../models/convenios.dto';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -23,21 +23,16 @@ export class ConvenioComponent implements OnInit{
     this.idConvenio= +this.route.snapshot.paramMap.get('idConvenio')!
     console.log(this.idConvenio)
     //this.obtenerDetalleConvenio()
-    this.obtenerDetalleConvenioTest()
+    this.obtenerDetalleConvenio()
   }
 
   public idConvenio: number = -1
-  public detalleConvenio!: DetalleConvenio // por ahora lo dejo como convenio pero deberia ser detalleConvenio para traer los datos de practicas.
-  public detalleConvenioTest!: DetalleConvenioTest
+  public detalleConvenioTest!: DetalleConvenio
+
+ 
 
   public obtenerDetalleConvenio(){
-    this.servicioConvenios.obtenerDetalleConvenio(this.idConvenio).subscribe(convenio =>{
-      this.detalleConvenio = convenio
-    })
-  }
-
-  public obtenerDetalleConvenioTest(){
-    this.servicioConvenios.obtenerDetalleConvenioTest(this.idConvenio).subscribe(convenio =>{
+    this.servicioConvenios.obtenerDetalleConvenios(this.idConvenio).subscribe(convenio =>{
       this.detalleConvenioTest = convenio
       this.detalleConvenioTest.promedioPracticas = parseFloat(this.detalleConvenioTest.promedioPracticas.toFixed(2))
     })

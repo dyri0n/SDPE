@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConveniosService } from '../../services/convenios.service';
-import { ConvenioListaTest, CreateConvenioDTO } from '../../models/convenios.dto';
+import { ConvenioLista, Convenios, CreateConvenioDTO, Modalidad} from '../../models/convenios.dto';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
@@ -14,12 +14,13 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2'
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 
 @Component({
   selector: 'app-lista-convenios',
   standalone: true,
-  imports: [PaginatorModule, DialogModule, ButtonModule, FloatLabelModule, CalendarModule, FileUploadModule, ReactiveFormsModule, InputTextModule, ToastModule, CommonModule],
+  imports: [PaginatorModule, DialogModule, ButtonModule, FloatLabelModule, CalendarModule, FileUploadModule, ReactiveFormsModule, InputTextModule, ToastModule, CommonModule, ProgressSpinnerModule],
   providers: [MessageService],
   templateUrl: './lista-convenios.component.html',
   styleUrl: './lista-convenios.component.css'
@@ -33,15 +34,14 @@ export class ListaConveniosComponent implements OnInit{
   ){}
 
   ngOnInit() {
-    this.obtenerConveniosTest()
+    this.obtenerConvenios()
   }
 
+  public cargando: boolean = true
   public visible: boolean = false;
   public periodo: boolean = true;
   public modalidadNueva: boolean = false;
-
-  //llamarlas desde servicio (backend)
-  public modalidades = ['Modalidad 1', 'Modalidad 2', 'Modalidad 3'];
+  public modalidades:Modalidad[] = [];
 
   public inicioMinimo: Date = new Date(2017, 0, 1);;
   public inicioMaximo: Date = new Date();;
@@ -49,17 +49,18 @@ export class ListaConveniosComponent implements OnInit{
   public formularioConvenio: FormGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
     centro: new FormControl('', [Validators.required]),
-    modalidad: new FormControl('', [Validators.required]),
+    idModalidad: new FormControl('', [Validators.required]),
     inicio: new FormControl('', [Validators.required]),
     imagen: new FormControl(null,  [Validators.required]),
     terminos: new FormControl(null,  [Validators.required])
   })
   
-  value = ''
   public alternarModal() {
     this.visible = !this.visible;
     if(!this.visible){
       this.formularioConvenio.reset()
+      this.periodo = true;
+      this.modalidadNueva = false;
     }
   }
 
@@ -85,7 +86,7 @@ export class ListaConveniosComponent implements OnInit{
     else{
       this.modalidadNueva = true;
       this.formularioConvenio.patchValue({
-        modalidad: ''
+        idModalidad: ''
       });
     }
   }
@@ -128,12 +129,13 @@ export class ListaConveniosComponent implements OnInit{
   public actualizarConveniosPaginados() {
     const inicio = this.first
     const final = this.first + this.rows
+    console.log(this.conveniosFiltrados)
     this.conveniosPaginados = this.conveniosFiltrados.slice(inicio, final)
   }
   
-  public conveniosTest: ConvenioListaTest[] = []
-  public conveniosFiltrados: ConvenioListaTest[]=[]
-  public conveniosPaginados: ConvenioListaTest[]=[]
+  public convenios: ConvenioLista[] = []
+  public conveniosFiltrados: ConvenioLista[]=[]
+  public conveniosPaginados: ConvenioLista[]=[]
 
 
   public verDetalle(id: number){
@@ -148,7 +150,7 @@ export class ListaConveniosComponent implements OnInit{
           'El convenio ha sido eliminado.',
           'success'
         )
-        this.obtenerConveniosTest()
+        this.obtenerConvenios()
         }
       })
   }
@@ -193,38 +195,14 @@ export class ListaConveniosComponent implements OnInit{
           fechaFinConvenio: fechaFinConvenio,
           documentoConvenio: this.formularioConvenio.value.terminos.name,
           urlFoto: this.formularioConvenio.value.imagen.name,
-          idModalidad: this.modalidades.indexOf(this.formularioConvenio.value.modalidad) + 1
+          idModalidad: this.formularioConvenio.value.idModalidad
         }
       
-      this.servicioConvenios.nuevoConvenioTest(nuevoConvenioTest).subscribe({
-        next: (respuesta) => {
-          console.log(respuesta)
-          if (respuesta) {
-            this.alternarModal()
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Guardado',
-              detail: 'El convenio se guardó correctamente'
-            })
-            this.obtenerConveniosTest()
-          }
-        },
-        error: (error) => {
-          console.error('Error al guardar el convenio:', error)
+      this.servicioConvenios.nuevoConvenio(nuevoConvenioTest).subscribe(respuesta=>{
+        if(respuesta){
           this.alternarModal()
-          if (error.status === 403) {
-            this.messageService.add({
-              severity: 'warn',
-              summary: 'Título duplicado',
-              detail: 'Ya existe un convenio con este título. Por favor, verifica y prueba con otro título.'
-            })
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Ocurrió un problema al guardar el convenio. Inténtalo nuevamente.'
-            })
-          }
+          this.messageService.add({severity: 'success', summary: 'Guardado', detail: 'El convenio se guardó correctamente'});
+          this.obtenerConveniosTest()
         }
       })
     } else {
@@ -236,18 +214,21 @@ export class ListaConveniosComponent implements OnInit{
     }
   }
 
-  public obtenerConveniosTest(){
-    this.servicioConvenios.obtenerConveniosTest().subscribe(convenio=>{
-      this.conveniosTest=convenio
-      this.conveniosFiltrados=this.conveniosTest
+  public obtenerConvenios(){
+    this.servicioConvenios.obtenerConvenios().subscribe((convenio: Convenios)=>{
+      this.convenios=convenio.listadoConvenios
+      this.conveniosFiltrados=this.convenios
+      this.modalidades=convenio.modalidades
       this.totalRecords=this.conveniosFiltrados.length
+      console.log(this.modalidades)
       this.actualizarConveniosPaginados()
+      this.cargando = false
     })
   }
 
   public filtrarConvenios(evento: any) {
     const query = evento.target.value.toLowerCase();
-    this.conveniosFiltrados = this.conveniosTest.filter(convenio =>
+    this.conveniosFiltrados = this.convenios.filter(convenio =>
       convenio.nombreConvenio.toLowerCase().includes(query) || convenio.centroPractica.toLowerCase().includes(query)
     )
     this.totalRecords=this.conveniosFiltrados.length
