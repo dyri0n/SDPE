@@ -10,6 +10,7 @@ import { AsignaturaLinea, Linea } from '../../models/lineaAsignatura.dto';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-gestionar-lineas',
@@ -31,16 +32,20 @@ export class GestionarLineasComponent implements OnInit {
   hayCambios: boolean = false;
   display: boolean = false;
 
+  idPlan!: number;
+
   public formularioLinea: FormGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
   })
 
   constructor(
+    private route: ActivatedRoute,
     private servicioAsignatura: AsignaturaService,
     private messageService: MessageService
   ){ }
 
   ngOnInit(): void {
+    this.idPlan= +this.route.snapshot.paramMap.get('idPlan')!
     this.cargarDatos()
   }
  
@@ -75,14 +80,50 @@ export class GestionarLineasComponent implements OnInit {
   }
 
   public cargarDatos(): void {
-    this.servicioAsignatura.obtenerListadoAsignaturas().subscribe(data => {
-      this.asignaturas = [...data];
-      this.asignaturasBackup = JSON.parse(JSON.stringify(data));
-    });
-    
-    this.servicioAsignatura.obtenerLineas().subscribe(data => {
-      this.lineas = [...data];
-      this.lineasBackup = JSON.parse(JSON.stringify(data));
+    //obtener las asignaturas de
+    this.servicioAsignatura.obtenerListadoAsignaturas(this.idPlan).subscribe((asignaturasData) => {
+      // Filtramos las asignaturas "SIN LINEA" y las asignamos a 'this.asignaturas'
+      this.asignaturas = asignaturasData["SIN LINEA"].map((asignatura: any) => ({
+        titulo: asignatura.titulo,
+        codigo: asignatura.codigo,
+        nombre: asignatura.nombre,
+        areaFormacion: asignatura.areaFormacion,
+        idAsignatura: asignatura.idAsignatura,
+      }));
+  
+
+      this.asignaturasBackup = JSON.parse(JSON.stringify(this.asignaturas));
+
+      const lineasData = Object.keys(asignaturasData).filter(linea => linea !== "SIN LINEA");
+  
+      this.servicioAsignatura.obtenerLineasPlan(this.idPlan).subscribe((lineasResponse) => {
+        const lineasConId = lineasResponse.lineasAsignatura;
+  
+        this.lineas = lineasData.map((lineaNombre) => {
+          const asignaturas = asignaturasData[lineaNombre].map((asignatura: AsignaturaLinea) => ({
+            titulo: asignatura.titulo,
+            codigo: asignatura.codigo,
+            nombre: asignatura.nombre,
+            areaFormacion: asignatura.areaFormacion,
+            idAsignatura: asignatura.idAsignatura,
+          }));
+  
+          // se busca la id de la linea correspondiente
+          const lineaId = lineasConId.find(linea => linea.titulo === lineaNombre)?.idLinea;
+  
+          // devovler linea con id
+          return {
+            id: lineaId,
+            nombre: lineaNombre,
+            asignaturas: asignaturas,
+          };
+        });
+  
+        this.lineasBackup = JSON.parse(JSON.stringify(this.lineas));
+
+        console.log(this.asignaturas)
+        console.log(this.lineas)
+      });
     });
   }
 
@@ -93,7 +134,7 @@ export class GestionarLineasComponent implements OnInit {
         moveItemInArray(linea.asignaturas, event.previousIndex, event.currentIndex);
       } else {
         // saca la asignatura del listado general y la agrega a la linea
-        const index = this.asignaturas.findIndex(a => a.id === asignatura.id);
+        const index = this.asignaturas.findIndex(a => a.idAsignatura === asignatura.idAsignatura);
         if (index !== -1) {
           this.asignaturas.splice(index, 1);
         }

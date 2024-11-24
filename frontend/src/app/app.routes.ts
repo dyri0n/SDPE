@@ -24,7 +24,7 @@ export const routes: Routes = [
     {path: 'login', component:LoginComponent, canActivate: [loginGuard]},
     {path: 'menu', component: MenuComponent, canActivate: [authGuard]},
     {path: 'fluxogramas', component: FluxogramasComponent, canActivate: [authGuard]},
-    {path: 'gestionar-lineas', component:GestionarLineasComponent,canActivate: [authGuard]},
+    {path: 'gestionar-lineas/:idPlan', component:GestionarLineasComponent,canActivate: [authGuard]},
     {path: 'convenios', component: ListaConveniosComponent, canActivate: [authGuard]},
     {path: 'convenio/:idConvenio', component:ConvenioComponent, canActivate: [authGuard]},
     {path: 'cursos/:idAsignatura', component: CursosComponent, canActivate: [authGuard]},

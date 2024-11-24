@@ -8,6 +8,7 @@ import { AsignaturaService } from '../../services/asignatura.service';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ContextMenu, ContextMenuModule } from 'primeng/contextmenu';
 import { ToastModule } from 'primeng/toast';
+import { LineaPlan } from '../../models/lineaAsignatura.dto';
 
 
 @Component({
@@ -132,11 +133,11 @@ export class DetalleFluxogramaComponent implements OnInit {
   }
 
   public obtenerLineas() {
-    this.asignaturaService.obtenerLineas().subscribe(result => {
-      const lineas = result.map((linea: any) => ({
-        label: linea.nombre,
+    this.asignaturaService.obtenerLineasPlan(this.idFluxograma).subscribe((result: LineaPlan) => {
+      const lineas = result.lineasAsignatura.map((linea: any) => ({
+        label: "Línea de " + linea.titulo,
         icon: 'pi pi-plus',
-        command: () => this.agregarALinea(linea)
+        command: () => this.agregarALinea(linea.idLinea)
       }));
   
       this.lineaMenu = [
@@ -151,7 +152,7 @@ export class DetalleFluxogramaComponent implements OnInit {
     });
   }
   
-  agregarALinea(lineaId: number) {
+  public agregarALinea(lineaId: number) {
     if (this.selectedAsignaturaId) {
       console.log(
         `Asignatura ID ${this.selectedAsignaturaId} agregada a la línea ID ${lineaId}`
@@ -177,8 +178,6 @@ export class DetalleFluxogramaComponent implements OnInit {
     }
   }
 
-  
-
   public onContextMenuOpen(menu: ContextMenu, asignaturaId: number) {
     this.selectedAsignaturaId = asignaturaId;
 
@@ -191,10 +190,13 @@ export class DetalleFluxogramaComponent implements OnInit {
   }
 
   onScroll() {
-    // Cierra el menú contextual si está visible
     if (this.lastContextMenu?.container) {
       this.lastContextMenu.hide();
     }
+  }
+
+  public gestionarLinea(){
+    this.router.navigateByUrl(`gestionar-lineas/${this.idFluxograma}`)
   }
 
 }
