@@ -1,5 +1,5 @@
 //bloque promedios
-import { Asignatura, PlanContemplaAsignatura } from '@prisma/client';
+import { Asignatura } from '@prisma/client';
 
 export const ID_INGRESO_REGULAR = 309;
 export const ID_INGRESO_PROSECUCION = 325;

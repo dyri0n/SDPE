@@ -154,7 +154,11 @@ export class ConveniosService {
     }
   }
 
-  //Usado para crear un nuevo convenio
+  /**
+   * Usado para crear un convenio creando también una modalidad nueva
+   * @param create DTO para crear el convenio junto a la modalidad
+   * @returns {Convenio} El convenio creado
+   */
   async createConvenioConTituloModalidad(create: CreateConvenioDTO) {
     try {
       const nuevoConvenio = await this.prisma.convenio.create({
@@ -172,6 +176,7 @@ export class ConveniosService {
           },
         },
       });
+
       return nuevoConvenio;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
@@ -186,6 +191,11 @@ export class ConveniosService {
     }
   }
 
+  /**
+   * Usado para crear un convenio referenciando una modalidad ya creada
+   * @param create DTO para crear el convenio junto al identificador de modalidad
+   * @returns {Convenio} El convenio creado
+   */
   async createConvenioConRefModalidad(create: CreateConvenioDTO) {
     try {
       const nuevoConvenio = await this.prisma.convenio.create({
@@ -198,7 +208,7 @@ export class ConveniosService {
           urlFoto: create.urlFoto,
           Modalidad: {
             connect: {
-              id: create.idModalidad,
+              idModalidad: create.idModalidad,
             },
           },
         },
@@ -218,6 +228,11 @@ export class ConveniosService {
     }
   }
 
+  /**
+   * Crea una modalidad nueva
+   * @param create DTO para crear la modalidad
+   * @returns {Modalidad} La modalidad creada
+   */
   async createModalidad(create: Modalidad) {
     try {
       const nuevaModalidad = this.prisma.modalidad.create({
@@ -237,6 +252,7 @@ export class ConveniosService {
     }
   }
 
+  // TODO
   // Bloque Listar Convenios
   private async getModalidades(): Promise<
     { idModalidad: number; nombre: string }[]

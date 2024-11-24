@@ -85,8 +85,8 @@ export class AsignaturasController {
 
   @Get('aprobacion-curso/:idAsignatura')
   public async getAprobacionPorCursacionDeAsignatura(
-    @Param('idAsignatura', ParseIntPipe) idAsignatura: number,
+    @Param('idAsignatura') codigoAsignatura: string,
   ) {
-    return this.asigService.getAprobacionHistoricaPorCohorte(idAsignatura);
+    return this.asigService.getAprobacionHistoricaPorCohorte(codigoAsignatura);
   }
 }

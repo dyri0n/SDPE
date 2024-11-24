@@ -21,7 +21,6 @@ import {
   asignaturasGetAprobacionesHistoricasPorPlan,
   asignaturasGetAprobacionesHistoricasPorCohorte,
 } from '@prisma/client/sql';
-import { distinct } from 'rxjs';
 
 @Injectable()
 export class AsignaturasService {
