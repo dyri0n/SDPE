@@ -4,16 +4,16 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Convenio } from '@prisma/client';
+import { Convenio, Modalidad } from '@prisma/client';
 import { DetalleConvenioDTO } from './dto/detalles.dto';
 import {
   conveniosGetAprobacion,
   conveniosGetPromedio,
   conveniosListar,
 } from '@prisma/client/sql';
-import { CreateConvenioDTO, UpdateConvenioDTO } from './dto/crud.dto';
 import { ListarConvenioDTO } from '../practicas/dto/listar.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { UpdateConvenioDTO, CreateConvenioDTO } from './dto';
 
 @Injectable()
 export class ConveniosService {
@@ -144,17 +144,47 @@ export class ConveniosService {
   }
 
   //Usado para crear un nuevo convenio
-  async createConvenio(create: CreateConvenioDTO) {
+  async createConvenioConTituloModalidad(create: CreateConvenioDTO) {
     try {
-      return await this.prisma.convenio.create({
+      const nuevoConvenio = await this.prisma.convenio.create({
         data: {
           titulo: create.titulo,
           centroPractica: create.centroPractica,
-          fechaInicioConvenio: new Date(create.fechaInicioConvenio),
+          fechaInicioConvenio: create.fechaInicioConvenio,
           fechaFinConvenio: create.fechaFinConvenio,
           documentoConvenio: create.documentoConvenio,
           urlFoto: create.urlFoto,
-          validez: true,
+          Modalidad: {
+            create: {
+              nombreModalidad: create.nombreModalidad,
+            },
+          },
+        },
+      });
+      return nuevoConvenio;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        // unique constraint
+        if (error.code === 'P2002') {
+          console.error(error);
+          throw new ForbiddenException('Información Duplicada');
+        }
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  async createConvenioConRefModalidad(create: CreateConvenioDTO) {
+    try {
+      const nuevoConvenio = await this.prisma.convenio.create({
+        data: {
+          titulo: create.titulo,
+          centroPractica: create.centroPractica,
+          fechaInicioConvenio: create.fechaInicioConvenio,
+          fechaFinConvenio: create.fechaFinConvenio,
+          documentoConvenio: create.documentoConvenio,
+          urlFoto: create.urlFoto,
           Modalidad: {
             connect: {
               id: create.idModalidad,
@@ -162,9 +192,30 @@ export class ConveniosService {
           },
         },
       });
+
+      return nuevoConvenio;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         // unique constraint
+        if (error.code === 'P2002') {
+          console.error(error);
+          throw new ForbiddenException('Información Duplicada');
+        }
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  async createModalidad(create: Modalidad) {
+    try {
+      const nuevaModalidad = this.prisma.modalidad.create({
+        data: create,
+      });
+
+      return nuevaModalidad;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           console.error(error);
           throw new ForbiddenException('Información Duplicada');
