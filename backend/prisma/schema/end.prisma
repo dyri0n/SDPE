@@ -24,3 +24,12 @@ model END {
 
   ResultadosEND ResultadoEND[] @relation(name: "refiere a la END")
 }
+
+//PRUEBA DE CÓMO SERÍA GUARDAR LOS RESULTADOS
+model DocumentoEND {
+  idDato          Int @id @default(autoincrement())
+  rutaDocumento   String
+  cohorteAsociado Int
+  agnoRendicion   Int
+  fechaSubida     DateTime @db.Date
+}
