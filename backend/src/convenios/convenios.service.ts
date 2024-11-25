@@ -72,7 +72,7 @@ export class ConveniosService {
       conveniosGetPromedio(idConvenio),
     );
 
-    return response[0].promedioPracticas.toNumber() ?? 0;
+    return response[0]?.promedioPracticas ?? 0;
   }
 
   /**
@@ -85,7 +85,7 @@ export class ConveniosService {
       conveniosGetAprobacion(idConvenio),
     );
 
-    return response[0].porcentajeAprobacion.toNumber() ?? 0;
+    return response[0]?.porcentajeAprobacion.toNumber() ?? 0;
   }
 
   /*
@@ -186,9 +186,15 @@ export class ConveniosService {
   /**
    * Usado para crear un convenio creando también una modalidad nueva
    * @param create DTO para crear el convenio junto a la modalidad
+   * @param pdfPath Ruta del archivo PDF subido
+   * @param imagePath Ruta de la imagen subida (o la imagen por defecto)
    * @returns {Convenio} El convenio creado
    */
-  async createConvenioConTituloModalidad(create: CreateConvenioDTO) {
+  async createConvenioConTituloModalidad(
+    create: CreateConvenioDTO,
+    pdfPath: string,
+    imagePath: string,
+  ) {
     try {
       const nuevoConvenio = await this.prisma.convenio.create({
         data: {
@@ -196,8 +202,8 @@ export class ConveniosService {
           centroPractica: create.centroPractica,
           fechaInicioConvenio: create.fechaInicioConvenio,
           fechaFinConvenio: create.fechaFinConvenio,
-          documentoConvenio: create.documentoConvenio,
-          urlFoto: create.urlFoto,
+          documentoConvenio: pdfPath,
+          urlFoto: imagePath,
           Modalidad: {
             create: {
               nombreModalidad: create.nombreModalidad,
@@ -223,9 +229,15 @@ export class ConveniosService {
   /**
    * Usado para crear un convenio referenciando una modalidad ya creada
    * @param create DTO para crear el convenio junto al identificador de modalidad
+   * @param pdfPath Ruta del archivo PDF subido
+   * @param imagePath Ruta de la imagen subida (o la imagen por defecto)
    * @returns {Convenio} El convenio creado
    */
-  async createConvenioConRefModalidad(create: CreateConvenioDTO) {
+  async createConvenioConRefModalidad(
+    create: CreateConvenioDTO,
+    pdfPath: string,
+    imagePath: string,
+  ) {
     try {
       const nuevoConvenio = await this.prisma.convenio.create({
         data: {
@@ -233,8 +245,8 @@ export class ConveniosService {
           centroPractica: create.centroPractica,
           fechaInicioConvenio: create.fechaInicioConvenio,
           fechaFinConvenio: create.fechaFinConvenio,
-          documentoConvenio: create.documentoConvenio,
-          urlFoto: create.urlFoto,
+          documentoConvenio: pdfPath,
+          urlFoto: imagePath,
           Modalidad: {
             connect: {
               idModalidad: create.idModalidad,

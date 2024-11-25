@@ -34,8 +34,8 @@ export class AsignaturasController {
    * @returns Asignatura[]
    */
   @Get(':codigoAsignatura')
-  public getAsignatura(@Param('idAsignatura') idAsignatura: string) {
-    const result = this.asigService.getAsignatura(idAsignatura);
+  public getAsignatura(@Param('codigoAsignatura') codigoAsignatura: string) {
+    const result = this.asigService.getAsignatura(codigoAsignatura);
 
     if (!result) throw new NotFoundException('La asignatura no existe');
 
@@ -83,9 +83,9 @@ export class AsignaturasController {
     return this.asigService.getDetalleHistoricoAsignaturasCortePractico();
   }
 
-  @Get('aprobacion-curso/:idAsignatura')
+  @Get('aprobacion-curso/:codigoAsignatura')
   public async getAprobacionPorCursacionDeAsignatura(
-    @Param('idAsignatura') codigoAsignatura: string,
+    @Param('codigoAsignatura') codigoAsignatura: string,
   ) {
     return this.asigService.getAprobacionHistoricaPorCohorte(codigoAsignatura);
   }

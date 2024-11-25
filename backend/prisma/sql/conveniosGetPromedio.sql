@@ -16,7 +16,7 @@
 select 
     (
         avg(cur."notaFinal")
-    ):: numeric
+    )
     as "promedioPracticas"
 from "Convenio" con
 join "PTConvenio" ptc using ("idConvenio")
