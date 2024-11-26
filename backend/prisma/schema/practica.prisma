@@ -1,0 +1,89 @@
+enum EstadoAprobacion {
+  APROBADO
+  DESAPROBADO
+}
+
+model PracticaTomada {
+  fechaInicio          DateTime         @db.Date
+  fechaTermino         DateTime         @default(now()) @db.Date
+  resultadoDiagnostico Json // algo para intentar guardar los resultados 🤷
+  resultado            EstadoAprobacion @default(APROBADO) // revisar nombre, refiere aprobación de la practica
+
+  // referencia a
+
+  idPlan            Int
+  idAsignatura      Int
+  idEstudiante      Int
+  idCursacion       Int
+  CursacionPractica Cursacion @relation(name: "referencia la cursacion", fields: [idAsignatura, idPlan, idEstudiante, idCursacion], references: [idAsignatura, idPlan, idEstudiante, idCursacion])
+
+  // es referenciado por
+
+  PTConvenios PTConvenio[] @relation(name: "cursacion practica")
+
+  //
+
+  @@id([idPlan, idAsignatura, idEstudiante, idCursacion])
+}
+
+enum NIVEL {
+  BASICA
+  MEDIA
+  SUPERIOR
+}
+
+model PTConvenio {
+  nivel NIVEL
+
+  // referencia a
+
+  idPlan         Int
+  idAsignatura   Int
+  idEstudiante   Int
+  idCursacion    Int
+  PracticaTomada PracticaTomada @relation(name: "cursacion practica", fields: [idAsignatura, idPlan, idEstudiante, idCursacion], references: [idAsignatura, idPlan, idEstudiante, idCursacion])
+
+  idConvenio Int
+  Convenio   Convenio @relation(name: "convenio referenciado", fields: [idConvenio], references: [idConvenio])
+
+  //
+
+  @@id([idPlan, idAsignatura, idEstudiante, idCursacion, idConvenio])
+}
+
+model Convenio {
+  idConvenio Int @id @default(autoincrement())
+
+  titulo         String @unique
+  centroPractica String
+
+  fechaInicioConvenio DateTime @default(now()) @db.Date
+  fechaFinConvenio    DateTime @default(dbgenerated("now() + interval '1000 years'")) @db.Date
+  validez             Boolean  @default(true)
+
+  documentoConvenio String?
+  urlFoto           String?
+
+  // referencia a
+
+  idModalidad Int
+  Modalidad   Modalidad @relation(name: "sigue la modalidad", fields: [idModalidad], references: [idModalidad])
+
+  // es referenciado por
+
+  PracticasTomadasPorConvenio PTConvenio[] @relation(name: "convenio referenciado")
+}
+
+model Modalidad {
+  idModalidad Int @id @default(autoincrement())
+
+  nombreModalidad String @unique
+
+  fechaCreacion DateTime  @default(now()) @db.Date
+  fechaDesuso   DateTime? @default(dbgenerated("now() + interval '1000 years'")) @db.Date
+  validez       Boolean   @default(true)
+
+  // referenciado por
+
+  conveniosAsociados Convenio[] @relation(name: "sigue la modalidad")
+}

@@ -1,0 +1,35 @@
+model ResultadoEND {
+  resultados Json
+
+  // refiere a
+
+  idEND       Int
+  ENDAsociada END @relation(name: "refiere a la END", fields: [idEND], references: [idEND])
+
+  idEstudiante       Int        @unique
+  EstudianteAsociado Estudiante @relation(name: "obtiene los resultados", fields: [idEstudiante], references: [idEstudiante])
+
+  //
+
+  @@id([idEND, idEstudiante])
+}
+
+model END {
+  idEND Int @id
+
+  fechaRendicion DateTime @db.Date
+  formato        Json
+
+  // es referenciado por
+
+  ResultadosEND ResultadoEND[] @relation(name: "refiere a la END")
+}
+
+//PRUEBA DE CÓMO SERÍA GUARDAR LOS RESULTADOS
+model DocumentoEND {
+  idDato          Int @id @default(autoincrement())
+  rutaDocumento   String
+  cohorteAsociado Int
+  agnoRendicion   Int
+  fechaSubida     DateTime @db.Date
+}
