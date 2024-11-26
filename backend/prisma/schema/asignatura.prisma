@@ -1,19 +1,3 @@
-model Asignatura {
-  id     Int    @id @default(autoincrement())
-  codigo String @unique
-
-  nombre String
-
-  descripcion String?
-  unidad      String?
-
-  linkSyllabus String?
-
-  // es referenciado por
-
-  PlanContemplaAsignatura PlanContemplaAsignatura[] @relation(name: "contempla la asignatura")
-}
-
 enum CARACTER {
   NORMAL
   ELECTIVO
@@ -28,82 +12,56 @@ enum AREA {
   FB
 }
 
-model PlanContemplaAsignatura {
-  semestre      Int
-  posicion      Int
+model Asignatura {
+  idAsignatura Int    @default(autoincrement())
+  codigo       String
+
+  nombre      String
+  nombreCorto String
+
+  unidad        String?
   caracter      CARACTER
   areaFormacion AREA
 
+  creditos       Int
+  tributaciones  Int[]
+  prerrequisitos Int[]
+
+  posicion Int
+  semestre Int
+
+  competencias String[]
+
+  descripcion String?
+
+  linkSyllabus String?
+
   // referencia a
 
-  idPlan Int
-  plan   Plan @relation(name: "es contemplada por", fields: [idPlan], references: [id])
+  idPlan        Int
+  PlanDeEstudio Plan @relation(name: "es contemplada por", fields: [idPlan], references: [idPlan])
 
-  idAsignatura Int
-  asignatura   Asignatura @relation(name: "contempla la asignatura", fields: [idAsignatura], references: [id])
+  idLinea                  Int?
+  LineaContemplaAsignatura LineaAsignatura? @relation(name: "referencia a la asignatura", fields: [idLinea], references: [idLinea])
 
   // es referenciado por
 
-  esRequeridaEn            Tributacion[]              @relation(name: "es la requerida")
-  esTributadaEn            Tributacion[]              @relation(name: "es la tributada")
-  practicaReferenciada     Practica?                  @relation(name: "practica referenciada")
-  cursacionTomada          Cursacion[]                @relation(name: "asignatura contemplada")
-  LineaContemplaAsignatura LineaContemplaAsignatura[] @relation(name: "referencia a la asigcont")
+  CursacionesTomadas Cursacion[] @relation(name: "asignatura referenciada")
 
   //
 
   @@id([idPlan, idAsignatura])
-}
-
-model Tributacion {
-  // referencia a 
-
-  idPlan                Int
-  idAsignaturaRequerida Int
-  idAsignaturaTributada Int
-
-  asignaturaRequerida PlanContemplaAsignatura @relation(name: "es la requerida", fields: [idPlan, idAsignaturaRequerida], references: [idPlan, idAsignatura])
-  asignaturaTributada PlanContemplaAsignatura @relation(name: "es la tributada", fields: [idPlan, idAsignaturaTributada], references: [idPlan, idAsignatura])
-
-  //
-
-  @@id([idPlan, idAsignaturaTributada, idAsignaturaRequerida])
+  @@unique(name: "codigoPorPlanUnico", [idPlan, codigo])
+  @@unique(name: "nombrePorPlanUnico", [idPlan, nombre])
+  @@unique(name: "nombreCortoPorPlanUnico", [idPlan, nombreCorto])
 }
 
 model LineaAsignatura {
-  id Int @default(autoincrement())
+  idLinea Int @id @default(autoincrement())
 
-  titulo String
-
-  // referencia a
-
-  idPlan           Int
-  PlanReferenciado Plan @relation(name: "es definido por", fields: [idPlan], references: [id])
+  titulo String @unique
 
   // es referenciado por
 
-  LineaContemplaAsignatura LineaContemplaAsignatura[] @relation(name: "referencia a la linea")
-
-  //
-
-  @@id([id, idPlan])
-  @@unique([idPlan, titulo])
-}
-
-model LineaContemplaAsignatura {
-  posicion Int
-
-  // referencia a
-
-  idPlan                      Int
-  idLinea                     Int
-  LineaAsignaturaReferenciada LineaAsignatura @relation(name: "referencia a la linea", fields: [idLinea, idPlan], references: [id, idPlan])
-
-  idAsignatura                      Int
-  AsignaturaContempladaReferenciada PlanContemplaAsignatura @relation(name: "referencia a la asigcont", fields: [idPlan, idAsignatura], references: [idPlan, idAsignatura])
-
-  // 
-
-  @@id([posicion, idPlan, idLinea, idAsignatura])
-  @@unique([idPlan, idLinea, posicion])
+  Asignatura Asignatura[] @relation(name: "referencia a la asignatura")
 }

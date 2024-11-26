@@ -1,48 +1,61 @@
-import {
-  Controller,
-  Get,
-  NotFoundException,
-  Param,
-  ParseIntPipe,
-} from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import { AsignaturasService } from './asignaturas.service';
 import { ApiTags } from '@nestjs/swagger';
-import { CARACTER } from '@prisma/client';
+import { Asignatura, CARACTER } from '@prisma/client';
+import { DetalleAsignaturaDTO } from './dto/detalles.dto';
 
 @ApiTags('asignaturas')
 @Controller('asignaturas')
 export class AsignaturasController {
   constructor(private asigService: AsignaturasService) {}
 
+  /**
+   * Retorna todas las asignaturas
+   * @returns AsignaturaListadaDTO[]
+   */
   @Get()
   public async getListaAsignaturas() {
     return await this.asigService.listarAsignaturas();
   }
 
+  /**
+   * Retorna las asignaturas con carácter práctico
+   * Retorna más de una asignatura si es que esta participa en varios planes
+   * @returns Asignatura[]
+   */
   @Get('corte-practico')
   public getAsignaturasCortePractico() {
     return this.asigService.getAsignaturasPorCaracter(CARACTER.PRACTICA);
   }
 
-  @Get(':idAsignatura')
-  public getAsignatura(
-    @Param('idAsignatura', ParseIntPipe) idAsignatura: number,
-  ) {
-    const result = this.asigService.getAsignatura(idAsignatura);
+  /**
+   * Retorna las asignaturas dado el código que tienen
+   * Retorna más de una asignatura si es que esta participa en varios planes
+   * @returns Asignatura[]
+   */
+  @Get(':codigoAsignatura')
+  public getAsignatura(@Param('codigoAsignatura') codigoAsignatura: string) {
+    const result = this.asigService.getAsignatura(codigoAsignatura);
 
     if (!result) throw new NotFoundException('La asignatura no existe');
 
     return result;
   }
 
-  @Get(':idAsignatura/plan/:idPlan')
-  public getAsignaturaContemplada(
-    @Param('idAsignatura', ParseIntPipe) idAsignatura: number,
-    @Param('idPlan', ParseIntPipe) idPlan: number,
-  ) {
-    const result = this.asigService.getAsignaturaContemplada(
+  /**
+   * Retorna la asignatura con el código de asignatura y el id del plan especificados
+   * @param codigoAsignatura Código de la Asignatura
+   * @param idPlan Id del Plan
+   * @returns {Asignatura[]}
+   */
+  @Get(':codigoAsignatura/plan/:idPlan')
+  public getAsignaturaDePlan(
+    @Param('codigoAsignatura') codigoAsignatura: string,
+    @Param('idPlan') idPlan: number,
+  ): Promise<Asignatura> {
+    const result = this.asigService.getAsignaturaDePlan(
       idPlan,
-      idAsignatura,
+      codigoAsignatura,
     );
 
     if (!result)
@@ -51,11 +64,18 @@ export class AsignaturasController {
     return result;
   }
 
-  @Get(':idAsignatura/detalle')
+  /**
+   * Endpoint para recuperar información estadística detallada de una asignatura
+   * dependiendo del plan, del cohorte y datos generales a lo largo del tiempo.
+   *
+   * @param codigoAsignatura Código de la asignatura
+   * @returns {}
+   */
+  @Get(':codigoAsignatura/detalle')
   public async getDetalleAsignatura(
-    @Param('idAsignatura', ParseIntPipe) idAsignatura: number,
-  ) {
-    return this.asigService.getDetalleHistoricoAsignatura(idAsignatura, null);
+    @Param('codigoAsignatura') codigoAsignatura: string,
+  ): Promise<DetalleAsignaturaDTO> {
+    return this.asigService.getDetalleHistoricoAsignatura(codigoAsignatura);
   }
 
   @Get('corte-practico/tendencias')
@@ -63,10 +83,10 @@ export class AsignaturasController {
     return this.asigService.getDetalleHistoricoAsignaturasCortePractico();
   }
 
-  @Get('aprobacion-curso/:idAsignatura')
+  @Get('aprobacion-curso/:codigoAsignatura')
   public async getAprobacionPorCursacionDeAsignatura(
-    @Param('idAsignatura', ParseIntPipe) idAsignatura: number,
+    @Param('codigoAsignatura') codigoAsignatura: string,
   ) {
-    return this.asigService.getAprobacionHistoricaPorCohorte(idAsignatura);
+    return this.asigService.getAprobacionHistoricaPorCohorte(codigoAsignatura);
   }
 }

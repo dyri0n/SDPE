@@ -55,11 +55,9 @@ export class CreateConvenioDTO {
   fechaFinConvenio?: Date;
 
   @IsOptional()
-  @IsString()
   documentoConvenio?: string;
 
   @IsOptional()
-  @IsString()
   urlFoto?: string;
 
   @IsNotEmpty()

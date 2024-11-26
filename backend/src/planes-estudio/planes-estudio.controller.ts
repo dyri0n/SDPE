@@ -43,9 +43,6 @@ export class PlanesEstudioController {
     return result;
   }
 
-  /*
-   * Retorna cada asignatura registrada
-   * */
   @Get(':idPlan/asignaturas')
   public getAsignaturas(@Param('idPlan', ParseIntPipe) idPlan: number) {
     const result = this.asignaturasService.getAsignaturasDePlan(idPlan);
@@ -70,7 +67,6 @@ export class PlanesEstudioController {
     return this.planesEstudioService.modifyPlan(idPlan, dto);
   }
 
-  // retorna el fluxograma de un plan de estudio
   @Get(':idPlan/fluxograma')
   async getFluxogramaDe(@Param('idPlan', ParseIntPipe) idPlan: number) {
     return this.planesEstudioService.getFluxogram(idPlan);

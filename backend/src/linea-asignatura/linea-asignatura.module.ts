@@ -4,6 +4,6 @@ import { LineaAsignaturaService } from './linea-asignatura.service';
 
 @Module({
   controllers: [LineaAsignaturaController],
-  providers: [LineaAsignaturaService]
+  providers: [LineaAsignaturaService],
 })
 export class LineaAsignaturaModule {}

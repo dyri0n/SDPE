@@ -12,6 +12,9 @@ import { ConveniosModule } from './convenios/convenios.module';
 import { EstudiantesModule } from './estudiantes/estudiantes.module';
 import { AuthModule } from './auth/auth.module';
 import { LineaAsignaturaModule } from './linea-asignatura/linea-asignatura.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -26,7 +29,13 @@ import { LineaAsignaturaModule } from './linea-asignatura/linea-asignatura.modul
     EstudiantesModule,
     AuthModule,
     LineaAsignaturaModule,
+    MulterModule.register({ dest: './dist/documents/convenios' }),
+    ServeStaticModule.forRoot({
+      rootPath: path.join(__dirname, '..', 'documents'),
+      serveRoot: '/documents',
+    }),
   ],
+
   controllers: [AppController],
   providers: [AppService],
 })
