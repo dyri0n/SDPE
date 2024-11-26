@@ -11,10 +11,14 @@ import {
   PrismaClient,
   PTConvenio,
   ResultadoEND,
+  Usuario,
 } from '@prisma/client';
 import * as constants from './seed-constants';
 import * as util from 'util';
+import * as argon from 'argon2';
+
 const prisma = new PrismaClient();
+
 async function main() {
   // ESTUDIANTES
 
@@ -313,6 +317,27 @@ async function main() {
 
   console.timeEnd('LINEA_ASIGNATURA SEEDING');
   console.info('El seeding de lineas de asignaturas termino');
+
+  console.time('Crear Usuarios');
+
+  const usuariosQueries: Usuario[] = [];
+  for (const user of constants.USUARIOS) {
+    const hashedPassword = await argon.hash(user.hashedPassword);
+    delete user.hashedPassword;
+
+    user.hashedPassword = hashedPassword;
+
+    usuariosQueries.push(user);
+  }
+
+  const usuarios: Usuario[] = await prisma.usuario.createManyAndReturn({
+    data: usuariosQueries,
+  });
+
+  console.log(usuarios);
+
+  console.timeEnd('Crear Usuarios');
+  console.log('termino todo');
 }
 
 const moreLog = function (obj: any): void {

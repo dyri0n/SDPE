@@ -6,6 +6,7 @@ import {
   LineaAsignatura,
   Modalidad,
   Plan,
+  Usuario,
 } from '@prisma/client';
 
 export const ESTUDIANTES: Estudiante[] = [
@@ -1197,6 +1198,23 @@ export const LINEA_ASIGNATURA: LineaAsignatura[] = [
   {
     idLinea: 2,
     titulo: 'Licenciatura',
+  },
+];
+
+export const USUARIOS: Usuario[] = [
+  {
+    id: undefined,
+    username: 'admin',
+    email: 'admin@admin.com',
+    hashedPassword: 'admin',
+    nombreCompleto: 'admin',
+  },
+  {
+    id: undefined,
+    username: 'user',
+    email: 'user@user.com',
+    hashedPassword: 'user',
+    nombreCompleto: 'user',
   },
 ];
 
