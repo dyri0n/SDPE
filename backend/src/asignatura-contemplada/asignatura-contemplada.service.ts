@@ -6,7 +6,9 @@ export class AsignaturaContempladaService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return await this.prisma.planContemplaAsignatura.findMany();
+    /*
+    walala walala lol
+    return await this.prisma.planContemplaAsignatura.findMany();*/
   }
 
   getByIDs(idPlan: number, idAsig: number) {
