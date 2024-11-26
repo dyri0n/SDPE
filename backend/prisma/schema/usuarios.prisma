@@ -1,9 +1,0 @@
-model Usuario {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  email    String @unique
-
-  hashedPassword String
-
-  nombreCompleto String
-}
