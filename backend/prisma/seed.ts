@@ -77,9 +77,14 @@ async function main() {
     );
 
     for (const estudiante of estudiantes) {
-      const nroAsignaturasCursadas: number = Math.floor(
-        Math.random() * asignaturasPorPlan.length,
-      );
+      // Porcentaje de asignaturas del plan cursadas
+      // const nroAsignaturasCursadas: number = Math.floor(
+      //   Math.random() * asignaturasPorPlan.length,
+      // );
+
+      // Total de asignaturas de los planes cursadas
+      const nroAsignaturasCursadas: number = asignaturasPorPlan.length;
+
       let cursacionId = 0;
       for (const asignaturaCursada of asignaturasPorPlan.slice(
         0,
