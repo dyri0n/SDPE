@@ -92,7 +92,8 @@ export class ListaEndComponent implements OnInit {
   }
   
   public redirigirHacia(route: number) {
-    this.router.navigateByUrl(`/${route}`);
+    // this.router.navigateByUrl(`/${route}`);
+    this.router.navigate(['end'])
   }
 
 }

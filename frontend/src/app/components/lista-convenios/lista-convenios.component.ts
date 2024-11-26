@@ -51,8 +51,9 @@ export class ListaConveniosComponent implements OnInit{
     centro: new FormControl('', [Validators.required]),
     idModalidad: new FormControl('', [Validators.required]),
     inicio: new FormControl('', [Validators.required]),
-    imagen: new FormControl(null,  [Validators.required]),
-    terminos: new FormControl(null,  [Validators.required])
+    imagen: new FormControl(null),
+    terminos: new FormControl(null),
+    nombreModalidad: new FormControl('')
   })
   
   public alternarModal() {
@@ -82,13 +83,18 @@ export class ListaConveniosComponent implements OnInit{
   public alternarModalidad() {
     if (this.modalidadNueva){
       this.modalidadNueva = false;
+      this.formularioConvenio.patchValue({
+        nombreModalidad: null
+      });
     }
     else{
       this.modalidadNueva = true;
       this.formularioConvenio.patchValue({
-        idModalidad: ''
+        idModalidad: 0,
+        nombreModalidad: ''
       });
     }
+    console.log(this.formularioConvenio.value)
   }
 
   public seleccionarArchivo(event: any, tipo: string) {
@@ -193,18 +199,41 @@ export class ListaConveniosComponent implements OnInit{
           centroPractica: this.formularioConvenio.value.centro,
           fechaInicioConvenio: fechaInicioConvenio,
           fechaFinConvenio: fechaFinConvenio,
-          documentoConvenio: this.formularioConvenio.value.terminos.name,
-          urlFoto: this.formularioConvenio.value.imagen.name,
+          documentoConvenio: this.formularioConvenio.value.terminos,
+          urlFoto: this.formularioConvenio.value.imagen,
           idModalidad: this.formularioConvenio.value.idModalidad
         }
       
-      this.servicioConvenios.nuevoConvenio(nuevoConvenioTest).subscribe(respuesta=>{
-        if(respuesta){
-          this.alternarModal()
-          this.messageService.add({severity: 'success', summary: 'Guardado', detail: 'El convenio se guardó correctamente'});
-          this.obtenerConveniosTest()
+      if (this.modalidadNueva && !this.formularioConvenio.value.nombreModalidad) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Debe ingresar un nombre de modalidad.'
+        });
+        return;
+           
+      } else {
+        nuevoConvenioTest.nombreModalidad = this.formularioConvenio.value.nombreModalidad   
+      }
+
+      console.log(nuevoConvenioTest, "LOL")
+      this.servicioConvenios.nuevoConvenio(nuevoConvenioTest).subscribe(
+        respuesta=>{
+          if(respuesta){
+            this.alternarModal()
+            this.messageService.add({severity: 'success', summary: 'Guardado', detail: 'El convenio se guardó correctamente'});
+            this.obtenerConvenios()
+          }
+        },
+        error => {
+          const mensaje = error.error.message
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error al guardar',
+            detail: mensaje,
+          });
         }
-      })
+      )
     } else {
       this.messageService.add({
         severity: 'error', 

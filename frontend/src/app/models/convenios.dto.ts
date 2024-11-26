@@ -18,6 +18,7 @@ export interface Convenio {
   urlFoto?: string;
   idModalidad: number;
   Modalidad: Modalidad;
+  nombreModalidad?: string
 }
 
 export interface DetalleConvenio {
@@ -38,15 +39,28 @@ export interface CreateConvenioDTO {
   centroPractica: string;
   fechaInicioConvenio: Date;
   fechaFinConvenio?: Date;
-  documentoConvenio: string; //titulo del documento
-  urlFoto: string;  //titulo foto
+  documentoConvenio?: string; //titulo del documento
+  urlFoto?: string;  //titulo foto
   idModalidad: number;
+  nombreModalidad?: string
 }
 
 export interface Convenios{
   listadoConvenios: ConvenioLista[];
   modalidades: Modalidad[];
 }
+
+export interface ActualizarConvenio{
+  titulo?: string;
+  centroPractica?: string;
+  fechaInicioConvenio?: Date;
+  fechaFinConvenio?: Date;
+  documentoConvenio?: string;
+  urlFoto?: string;
+  idModalidad?: number;
+  nombreModalidad?: string;
+}
+
 
 // imange y link pdf estan como File o string porque en si se guardan files 
 // con el componente en el registrar convenio para las pruebas yo solo ocupe strings

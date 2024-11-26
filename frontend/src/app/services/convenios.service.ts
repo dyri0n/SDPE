@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Convenios, CreateConvenioDTO, DetalleConvenio} from '../models/convenios.dto';
+import { ActualizarConvenio, Convenio, Convenios, CreateConvenioDTO, DetalleConvenio} from '../models/convenios.dto';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -17,6 +17,10 @@ export class ConveniosService {
 
   public obtenerDetalleConvenios(idConvenio: number): Observable<DetalleConvenio>{
     return this.http.get<DetalleConvenio>(this.apiUrl + "/" + idConvenio)
+  }
+
+  public actualizarConvenio(idConvenio: number, datos: ActualizarConvenio): Observable<Convenio>{
+    return this.http.patch<Convenio>(this.apiUrl + "/" + idConvenio, datos)
   }
 
   public eliminarConvenio(idConvenio: number): Observable<any>{

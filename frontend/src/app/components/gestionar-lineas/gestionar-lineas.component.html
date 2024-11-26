@@ -1,6 +1,6 @@
 <div class="bg-white border-y mt-10 py-3 shadow-lg">
     <div class="flex items-center justify-between w-11/12">
-        <div class="bg-sky-700 w-auto px-6 rounded-r-xl py-3">
+        <div class="bg-sky-700 w-auto px-10 rounded-r-xl py-4">
             <h1 class="text-4xl text-white text-center font-bold">Gestionar líneas</h1>
         </div>
     </div>
@@ -90,7 +90,7 @@
                     <div class="bg-gray-100 border-2 border-sky-700 rounded-md shadow-lg">
                         <form [formGroup]="formularioLinea" (ngSubmit)="agregarLinea()">
                             <div class="bg-white mt-5 py-5 shadow-lg border-y">
-                                <h1 class="p-5 rounded-r-2xl w-6/12 bg-sky-700 text-white text-4xl font-bold">Agregar Línea</h1>
+                                <h1 class="p-4 rounded-r-2xl w-fit px-10 bg-sky-700 text-white text-4xl font-bold">Agregar Línea</h1>
                             </div>
                             <div class="flex flex-col justify-center border bg-white rounded-lg py-3 my-4 mx-8 shadow-xl overflow-auto h-[20vh]">
                                 <h2 class="mx-8 my-4 text-xl p-2 font-bold">Nueva línea</h2>
@@ -102,10 +102,10 @@
                                 </div>
                             </div>
                             <div class="flex justify-center">
-                                <a class="border-2 ms-1 my-1 bg-sky-800 text-center text-white w-6/12 py-4 text-xl font-bold p-2 rounded-l-md" (click)="esconderModal()">
+                                <a class="border-2 ms-1 my-1 bg-sky-700 hover:bg-sky-800 cursor-pointer text-center text-white w-6/12 py-4 text-xl font-bold p-2 rounded-l-md" (click)="esconderModal()">
                                     Volver
                                 </a>
-                                <button class="border-2 me-1 my-1 bg-sky-800 text-center text-white w-6/12 py-4 text-xl font-bold p-2 rounded-r-md" type="submit">
+                                <button class="border-2 me-1 my-1 bg-sky-700 hover:bg-sky-800 text-center text-white w-6/12 py-4 text-xl font-bold p-2 rounded-r-md" type="submit">
                                     Guardar
                                 </button>
                             </div>
