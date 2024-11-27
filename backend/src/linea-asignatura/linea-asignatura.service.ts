@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { LineaAsignatura } from '@prisma/client';
 import { lineaAsignaturasGetAsignaturasPorIdLinea } from '@prisma/client/sql';
@@ -9,6 +13,7 @@ import {
   LineaConAsignaturas,
   ActualizarDatosLineaDTO,
 } from './dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class LineaAsignaturaService {
@@ -57,6 +62,9 @@ export class LineaAsignaturaService {
       where: { idPlan: idPlan },
       select: { titulo: true },
     });
+
+    if (!resultadoTituloPlan)
+      throw new NotFoundException('El plan solicitado no existe');
 
     const lineas: GetLineaAsignaturaDTO[] = await this.getLineasPorPlan(idPlan);
 
@@ -121,7 +129,137 @@ export class LineaAsignaturaService {
     return hashMapLineaConAsignatura as LineaConAsignaturas;
   }
 
-  updateDatosLineaPorPlan(idPlan: number, data: ActualizarDatosLineaDTO) {
-    return data ? true : false;
+  async findOne(idLinea: number) {
+    const lineaEncontrada = await this.prisma.lineaAsignatura.findUnique({
+      where: {
+        idLinea: idLinea,
+      },
+    });
+
+    return lineaEncontrada;
+  }
+
+  async crearLinea(tituloLinea: string) {
+    try {
+      const lineaCreada = await this.prisma.lineaAsignatura.create({
+        data: {
+          titulo: tituloLinea,
+        },
+      });
+
+      return lineaCreada;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ForbiddenException('Credenciales duplicadas');
+        }
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  async borrarLinea(idLinea: number) {
+    try {
+      const lineaBorrada = await this.prisma.lineaAsignatura.delete({
+        where: {
+          idLinea: idLinea,
+        },
+      });
+
+      return lineaBorrada;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException('La línea proporcionada no existe');
+        }
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  async actualizarLinea(idLinea: number, tituloNuevoLinea: string) {
+    try {
+      const lineaActualizada = await this.prisma.lineaAsignatura.update({
+        where: {
+          idLinea: idLinea,
+        },
+        data: {
+          titulo: tituloNuevoLinea,
+        },
+      });
+
+      return lineaActualizada;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        switch (error.code) {
+          case 'P2025':
+            throw new NotFoundException('La línea no existe');
+        }
+      }
+    }
+  }
+
+  /**
+   * Permite actualizar las líneas de asignaturas del plan especificado
+   * Las asignaturas se
+   * */
+  async updateDatosLineaPorPlan(idPlan: number, data: ActualizarDatosLineaDTO) {
+    const lineasUpdateQueries = [];
+
+    for (const asignaturaLineaNueva of data.lineasNuevas) {
+      if (!asignaturaLineaNueva.tituloLineaRelacionada) {
+        lineasUpdateQueries.push(
+          this.prisma.asignatura.update({
+            where: {
+              codigoPorPlanUnico: {
+                idPlan: idPlan,
+                codigo: asignaturaLineaNueva.codigoAsignatura,
+              },
+            },
+            data: {
+              LineaContemplaAsignatura: {
+                disconnect: true,
+              },
+            },
+          }),
+        );
+      } else {
+        lineasUpdateQueries.push(
+          this.prisma.asignatura.update({
+            where: {
+              codigoPorPlanUnico: {
+                idPlan: idPlan,
+                codigo: asignaturaLineaNueva.codigoAsignatura,
+              },
+            },
+            data: {
+              LineaContemplaAsignatura: {
+                connectOrCreate: {
+                  create: {
+                    titulo: asignaturaLineaNueva.tituloLineaRelacionada,
+                  },
+                  where: {
+                    titulo: asignaturaLineaNueva.tituloLineaRelacionada,
+                  },
+                },
+              },
+            },
+            include: {
+              LineaContemplaAsignatura: {
+                select: {
+                  titulo: true,
+                },
+              },
+            },
+          }),
+        );
+      }
+    }
+
+    const result = await Promise.all(lineasUpdateQueries);
+
+    return result;
   }
 }
