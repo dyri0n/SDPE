@@ -191,12 +191,15 @@ export class PracticasService {
 
     return resultadoPracticas.map((value) => {
       return {
+        idEstudiante: value.idEstudiante,
         nombreCompleto: value.nombreCompleto,
         tituloPractica: value.tituloPractica,
         numeroPractica: value.numeroPractica.toNumber(),
         fechaInicio: value.fechaInicio,
         fechaFin: value.fechaFin,
         notaFinal: value.notaFinal,
+        idModalidad: value.idModalidad,
+        nombreModalidad: value.nombreModalidad,
       } as PracticaEnConvenioDTO;
     });
   }

@@ -16,7 +16,7 @@
 
 -- modelo nuevo
 
-sselect distinct
+select distinct
     est."nombreCompleto",
     asi."nombre" as "tituloPractica",
     asi."caracter",
