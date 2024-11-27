@@ -9,7 +9,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
-    "prisma:gen": "prisma generate && prisma generate --sql",
+    "prisma:gen": "prisma generate && prisma generate --sql && psql postgresql://testdb_owner:80qaoYpKvcgs@ep-fragrant-wave-a4xf8ris.us-east-1.aws.neon.tech/testdb?sslmode=require -f prisma/sql/prismaSincronizaLosAutoIncrementales.sql",
     "prisma:dev": "prisma migrate dev",
     "prisma:pull": "prisma db pull",
     "prisma:push:dev": "npm run prisma:gen && npm run prisma:dev",
@@ -36,7 +36,7 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.4.8",
-    "@nestjs/serve-static": "^4.0.2",
+    "@nestjs/serve-static": "^2.2.2",
     "@prisma/client": "^5.22.0",
     "@types/multer": "^1.4.12",
     "argon2": "^0.41.1",
