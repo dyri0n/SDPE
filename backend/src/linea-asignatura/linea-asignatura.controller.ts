@@ -1,51 +1,85 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   ImATeapotException,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
+  Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { LineaAsignaturaService } from './linea-asignatura.service';
-import { ActualizarDatosLineaDTO } from './dto';
+import { ActualizarDatosLineaDTO, CrearLineaDTO, UpdateLineaDTO } from './dto';
 
-@ApiTags('linea-asignatura')
-@Controller('linea-asignatura')
+@ApiTags('Lineas de Asignaturas')
+@Controller('lineas-asignaturas')
 export class LineaAsignaturaController {
   constructor(private lineaService: LineaAsignaturaService) {}
+
+  //OBTIENE LAS LINEAS Y SUS ASIGNATURAS
+  @Get('/planes/:idPlan/asignaturas')
+  public async getAsignaturasEnLineasDeAsignaturaDePlan(
+    @Param('idPlan', ParseIntPipe) idPlan: number,
+  ) {
+    return await this.lineaService.getLineasConAsignaturasDePlan(idPlan);
+  }
+
+  //OBTIENE SOLO LOS TITULOS DE LAS LINEAS
+  @Get('/planes/:idPlan')
+  public async getAllLineaAsignaturasDePlan(
+    @Param('idPlan', ParseIntPipe) idPlan: number,
+  ) {
+    return await this.lineaService.getAllLineasAsignaturasDePlan(idPlan);
+  }
+
+  @Post('/planes/:idPlan/asignaturas')
+  public async actualizarDatosPorPlan(
+    @Param('idPlan', ParseIntPipe) idPlan: number,
+    @Body() dto: ActualizarDatosLineaDTO,
+  ) {
+    const result = await this.lineaService.updateDatosLineaPorPlan(idPlan, dto);
+
+    if (!result) throw new ImATeapotException('qe');
+
+    return result;
+  }
 
   @Get()
   public getAllLineaAsignaturas() {
     return this.lineaService.getAllLineasAsignatura();
   }
 
-  //OBTIENE LAS LINEAS Y SUS ASIGNATURAS
-  @Get('/asignaturas/:idPlan')
-  public getAsignaturasEnLineasDeAsignaturaDePlan(
-    @Param('idPlan', ParseIntPipe) idPlan: number,
-  ) {
-    return this.lineaService.getLineasConAsignaturasDePlan(idPlan);
-  }
+  @Get('/:idLinea')
+  public async getLinea(@Param('idLinea', ParseIntPipe) idLinea: number) {
+    const result = await this.lineaService.findOne(idLinea);
 
-  //OBTIENE SOLO LOS TITULOS DE LAS LINEAS
-  @Get(':idPlan')
-  public getAllLineaAsignaturasDePlan(
-    @Param('idPlan', ParseIntPipe) idPlan: number,
-  ) {
-    return this.lineaService.getAllLineasAsignaturasDePlan(idPlan);
-  }
-
-  @Post('/asignaturas/:idPlan')
-  public actualizarDatosPorPlan(
-    @Param('idPlan') idPlan: number,
-    @Body() dto: ActualizarDatosLineaDTO,
-  ) {
-    const result = this.lineaService.updateDatosLineaPorPlan(idPlan, dto);
-
-    if (!result) throw new ImATeapotException('qe');
+    if (!result)
+      throw new NotFoundException('No existe ninguna línea con ese título');
 
     return result;
+  }
+
+  @Delete('/:idlinea')
+  public async deleteLinea(@Param('idlinea', ParseIntPipe) idLinea: number) {
+    return await this.lineaService.borrarLinea(idLinea);
+  }
+
+  @Put('/:idLinea')
+  public async updateLinea(
+    @Param('idLinea', ParseIntPipe) idLinea: number,
+    @Body() dto: UpdateLineaDTO,
+  ) {
+    return await this.lineaService.actualizarLinea(
+      idLinea,
+      dto.tituloLineaNuevo,
+    );
+  }
+
+  @Post()
+  public async createLinea(@Body() dto: CrearLineaDTO) {
+    return await this.lineaService.crearLinea(dto.tituloLineaNuevo);
   }
 }

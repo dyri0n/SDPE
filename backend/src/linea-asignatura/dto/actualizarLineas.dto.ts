@@ -4,11 +4,10 @@ import {
   ArrayMinSize,
   IsArray,
   IsNotEmpty,
-  IsNumber,
+  IsOptional,
   IsString,
   Length,
   Matches,
-  Min,
   ValidateNested,
 } from 'class-validator';
 
@@ -31,8 +30,7 @@ class LineasNuevas {
   })
   codigoAsignatura: Asignatura['codigo'];
 
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
-  idLineaRelacionada: LineaAsignatura['idLinea'];
+  @IsOptional()
+  @IsString()
+  tituloLineaRelacionada?: LineaAsignatura['titulo'];
 }
