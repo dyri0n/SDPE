@@ -56,8 +56,8 @@ export class EndsService {
       return this.prisma.documentoEND.create({
         data: {
           rutaDocumento: pathDocumento,
-          cohorteAsociado: createDto.cohorteAsociado,
-          agnoRendicion: createDto.agnoRendicion,
+          cohorteAsociado: +createDto.cohorteAsociado,
+          agnoRendicion: +createDto.agnoRendicion,
           fechaSubida: new Date(),
         },
       });
@@ -82,8 +82,8 @@ export class EndsService {
         where: { idDato: updateDto.idDato },
         data: {
           rutaDocumento: pathDocumento,
-          cohorteAsociado: updateDto.cohorteAsociado,
-          agnoRendicion: updateDto.agnoRendicion,
+          cohorteAsociado: +updateDto.cohorteAsociado,
+          agnoRendicion: +updateDto.agnoRendicion,
           fechaSubida: new Date(),
         },
       });
