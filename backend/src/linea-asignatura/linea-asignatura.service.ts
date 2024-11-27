@@ -7,6 +7,7 @@ import {
   ListarLineasAsignaturaDTO,
   AsignaturaDeLinea,
   LineaConAsignaturas,
+  ActualizarDatosLineaDTO,
 } from './dto';
 
 @Injectable()
@@ -118,5 +119,9 @@ export class LineaAsignaturaService {
     });
 
     return hashMapLineaConAsignatura as LineaConAsignaturas;
+  }
+
+  updateDatosLineaPorPlan(idPlan: number, data: ActualizarDatosLineaDTO) {
+    return data ? true : false;
   }
 }
