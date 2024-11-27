@@ -21,7 +21,7 @@ import { PatchResultadoENDDTO, PostResultadoENDDTO } from './dto/documento.dto';
 @Controller('ends')
 export class EndsController {
   constructor(private endsService: EndsService) {}
-
+  /*
   @Get()
   getAllENDs() {
     const result = this.endsService.getAll();
@@ -61,7 +61,7 @@ export class EndsController {
       );
     return result;
   }
-
+  */
   //BLOQUE Documentos de END
 
   @Get('documentos/')
