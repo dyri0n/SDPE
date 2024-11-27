@@ -16,7 +16,7 @@
 
 -- modelo nuevo
 
-select distinct
+sselect distinct
     est."nombreCompleto",
     asi."nombre" as "tituloPractica",
     asi."caracter",
@@ -25,9 +25,12 @@ select distinct
     )::numeric as "numeroPractica",
     pto."fechaInicio",
     pto."fechaTermino" as "fechaFin",
-    cur."notaFinal"
-
+    cur."notaFinal",
+    est."idEstudiante",
+    mod."idModalidad",
+    mod."nombreModalidad"
 from "Convenio" con
+join "Modalidad" mod using ("idModalidad")
 join "PTConvenio" ptc using ("idConvenio")
 join "PracticaTomada" pto using ("idPlan", "idAsignatura", "idEstudiante", "idCursacion")
 join "Cursacion" cur using ("idPlan", "idAsignatura", "idEstudiante", "idCursacion")
