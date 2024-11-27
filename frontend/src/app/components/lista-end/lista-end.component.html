@@ -3,6 +3,9 @@
         <div class="bg-sky-700 w-auto px-10 rounded-r-xl py-4">
             <h1 class="text-4xl text-white text-center font-bold">Resultados de Evaluación Nacional Diagnóstica</h1>
         </div>
+        <button class="rounded-full px-4 transform transition hover:scale-105 py-2 bg-sky-700 hover:bg-sky-800" (click)="alternarModal()">
+            <span class="text-white font-semibold">Agregar resultados END</span>
+        </button>  
     </div>
 </div>
 
@@ -24,12 +27,87 @@
     <div class="grid grid-cols-2 px-24 gap-x-20 gap-y-12">
         @for (resultado of resultadosPaginados; track resultado; let i = $index){
             <p-card styleClass="relative bg-sky-600 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-700 hover:shadow-[0_0_0_3px_theme(colors.sky.500)]" 
-            (click)="redirigirHacia(resultado.periodo)">
+            (click)="redirigirHacia(resultado.agnoRendicion)">
             <div class="absolute top-0 left-0 w-full bg-sky-700 rounded-t-lg h-6"></div>
-            <p class="text-4xl font-semibold">Resultados {{resultado.periodo}}</p>
-            <p class="text-xl mt-4 font-normal">Cohorte {{resultado.cohorte}}</p>
+            <p class="text-4xl font-semibold">Resultados {{resultado.agnoRendicion}}</p>
+            <p class="text-xl mt-4 font-normal">Cohorte {{resultado.cohorteAsociado}}</p>
         </p-card>
         }
     </div>    
 </div>
 
+<p-dialog  
+        [(visible)]="visible" 
+        [modal]="true" 
+        [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+        [style]="{ width: '75vw' }" 
+        [draggable]="false" 
+        [resizable]="false">
+        
+        <ng-template pTemplate="headless">
+            <div class="bg-gray-100 border-2 border-sky-700 rounded-md shadow-lg">
+                <form [formGroup]="formularioEND" (ngSubmit)="agregarConvenio()">
+                    <div class="bg-white mt-5 py-5 shadow-lg border-y">
+                        <h1 class="p-4 rounded-r-2xl w-6/12 bg-sky-700 text-white text-4xl font-bold">Registrar convenio</h1>
+                    </div>
+                    <div class="border bg-white rounded-lg py-4 my-5 mx-10 shadow-xl overflow-auto max-h-[60vh]">
+                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Detalles del convenio</h2>    
+                        <div class="mx-10 mb-12 flex items-center"> 
+                            <p-floatLabel class="w-6/12 me-5 pe-6">
+                                <p-calendar  
+                                    view="year" 
+                                    dateFormat="yy"
+                                    formControlName="agnio"
+                                    class="bg-gray-100 focus:outline-none focus:border-sky-700 py-3 border-2 shadow-lg rounded-2xl font-medium" 
+                                    id="inicio"
+                                    [minDate]="inicioMinimo"
+                                    [maxDate]="inicioMaximo"
+                                    />
+                                <label for="inicio">Año</label>
+                            </p-floatLabel>
+                        </div><div class="mx-10 mb-12 flex items-center"> 
+                            <p-floatLabel class="w-6/12 me-5 pe-6">
+                                <p-calendar  
+                                    view="year" 
+                                    dateFormat="yy"
+                                    formControlName="cohorte"
+                                    class="bg-gray-100 focus:outline-none focus:border-sky-700 py-3 border-2 shadow-lg rounded-2xl font-medium" 
+                                    id="inicio"
+                                    [minDate]="inicioMinimo"
+                                    [maxDate]="inicioMaximo"
+                                    />
+                                <label for="inicio">Cohorte</label>
+                            </p-floatLabel>
+                        </div>
+
+                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">PDF del convenio</h2>
+                        <div class="mx-10 mb-12">
+                            <p-fileUpload 
+                                name="demo[]" 
+                                [multiple]="false" 
+                                chooseLabel="Seleccionar archivo"
+                                chooseStyleClass="bg-sky-700 border-sky-700"
+                                removeStyleClass="bg-sky-700 border-sky-700"
+                                showUploadButton="false"
+                                showCancelButton="false"
+                                accept="application/pdf"
+                                maxFileSize="1000000"
+                                (onSelect)="seleccionarArchivo($event)"
+                                (onRemove)="borrarArchivo($event)">
+                            </p-fileUpload>
+                        </div>
+                    </div>
+                    <div class="flex justify-center">
+                        <a class="border-2 ms-1 my-1 bg-sky-700 hover:bg-sky-800 cursor-pointer  text-center text-white w-6/12 py-5 text-2xl font-bold p-2 rounded-l-md" (click)="alternarModal()">
+                            Volver
+                        </a>
+                        <button class="border-2 me-1 my-1 bg-sky-700 hover:bg-sky-800 text-white w-6/12 py-5 text-2xl font-bold p-2 rounded-r-md">
+                            Agregar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </ng-template>
+    </p-dialog>
+
+<p-toast position="top-right"></p-toast>

@@ -27,8 +27,9 @@ export class ConveniosService {
     return this.http.delete(this.apiUrl + "/" + idConvenio)
   }
 
-  public nuevoConvenio(convenioTest:CreateConvenioDTO): Observable<CreateConvenioDTO>{
-    console.log(convenioTest)
-    return this.http.post<CreateConvenioDTO>(this.apiUrl, convenioTest)
+  public nuevoConvenio(files: FormData){
+    // console.log(convenioTest)
+    console.log(files.getAll)
+    return this.http.post<any>(this.apiUrl, files)
   }
 }

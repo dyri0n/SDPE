@@ -29,7 +29,7 @@ export const routes: Routes = [
     {path: 'convenio/:idConvenio', component:ConvenioComponent, canActivate: [authGuard]},
     {path: 'cursos/:idAsignatura', component: CursosComponent, canActivate: [authGuard]},
     {path: 'lista-end', component: ListaEndComponent, canActivate:[authGuard]},
-    {path: 'end', component: ResultadoEndComponent, canActivate: [authGuard]},
+    {path: 'end/:idEND', component: ResultadoEndComponent, canActivate: [authGuard]},
     {path: 'semestres', component: SemestresComponent, canActivate: [authGuard]},
     {path: 'aprobacion/:idAsignatura', component: AprobacionCursoComponent, canActivate: [authGuard]},
     {path: 'fluxograma/:idFluxograma', component: DetalleFluxogramaComponent, canActivate: [authGuard]},

@@ -147,7 +147,7 @@
                                         placeholder="Seleccione una ciudad"
                                         class="bg-gray-100 focus:outline-none focus:border-sky-700 py-3 border-2 shadow-lg rounded-2xl w-full"
                                         id="modalidad"
-                                        optionLabel="nombre"
+                                        optionLabel="nombreModalidad"
                                         optionValue="idModalidad"
                                         />
                                     <label for="modalidad">Modalidad de practica</label>
@@ -173,17 +173,11 @@
                                     formControlName="inicio"
                                     class="bg-gray-100 focus:outline-none focus:border-sky-700 py-3 border-2 shadow-lg rounded-2xl font-medium" 
                                     id="inicio"
-                                    [disabled]="!periodo"
                                     [minDate]="inicioMinimo"
                                     [maxDate]="inicioMaximo"
                                     />
                                 <label for="inicio">Año de inicio</label>
                             </p-floatLabel>
-                            <!--dejar default encendido el checkbos-->
-                            <input type="checkbox" 
-                            class="h-6 w-6" 
-                            (click)="alternarPeriodo()">
-                            <h2 class="text-md p-2 font-semibold">Inicia este periodo</h2>
                         </div>
 
                         <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Imagen del convenio</h2>

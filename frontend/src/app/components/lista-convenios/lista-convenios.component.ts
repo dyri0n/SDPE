@@ -195,15 +195,35 @@ export class ListaConveniosComponent implements OnInit{
       const fechaFinConvenio = new Date(fechaInicioConvenio.getFullYear(), 11, 31)
 
       const nuevoConvenioTest: CreateConvenioDTO= {
-          titulo: this.formularioConvenio.value.nombre,
-          centroPractica: this.formularioConvenio.value.centro,
-          fechaInicioConvenio: fechaInicioConvenio,
-          fechaFinConvenio: fechaFinConvenio,
-          documentoConvenio: this.formularioConvenio.value.terminos,
-          urlFoto: this.formularioConvenio.value.imagen,
-          idModalidad: this.formularioConvenio.value.idModalidad
-        }
+        titulo: this.formularioConvenio.value.nombre,
+        centroPractica: this.formularioConvenio.value.centro,
+        fechaInicioConvenio: fechaInicioConvenio,
+        fechaFinConvenio: fechaFinConvenio,
+        // documentoConvenio: this.formularioConvenio.value.terminos,
+        // urlFoto: this.formularioConvenio.value.imagen,
+        idModalidad: this.formularioConvenio.value.idModalidad
+      }
       
+      const formData = new FormData();
+
+      // Agregar los campos del formulario
+      formData.append('titulo', this.formularioConvenio.get('nombre')?.value);
+      formData.append('centroPractica', this.formularioConvenio.get('centro')?.value);
+      formData.append('idModalidad', this.formularioConvenio.get('idModalidad')?.value);
+      formData.append('FechaInicioConvenio', this.formularioConvenio.get('inicio')?.value);
+      formData.append('nombreModalidad', this.formularioConvenio.get('nombreModalidad')?.value);
+
+      // Agregar los archivos
+      const imagen = this.formularioConvenio.get('imagen')?.value;
+      if (imagen) {
+        formData.append('files', imagen); // "files" debe coincidir con el nombre en el FilesInterceptor
+      }
+
+      const terminos = this.formularioConvenio.get('terminos')?.value;
+      if (terminos) {
+        formData.append('files', terminos); // Agregar el PDF como "files"
+      }
+
       if (this.modalidadNueva && !this.formularioConvenio.value.nombreModalidad) {
         this.messageService.add({
           severity: 'error',
@@ -217,7 +237,7 @@ export class ListaConveniosComponent implements OnInit{
       }
 
       console.log(nuevoConvenioTest, "LOL")
-      this.servicioConvenios.nuevoConvenio(nuevoConvenioTest).subscribe(
+      this.servicioConvenios.nuevoConvenio(formData).subscribe(
         respuesta=>{
           if(respuesta){
             this.alternarModal()

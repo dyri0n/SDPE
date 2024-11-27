@@ -41,11 +41,11 @@ export class ConvenioComponent implements OnInit{
 
   public formularioConvenio: FormGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
-    centro: new FormControl('', [Validators.required]),
+    centro: new FormControl({value: '', disabled: true}, [Validators.required]),
     idModalidad: new FormControl('', [Validators.required]),
-    inicio: new FormControl('', [Validators.required]),
-    imagen: new FormControl(null,  [Validators.required]),
-    terminos: new FormControl(null,  [Validators.required]),
+    inicio: new FormControl({value: '', disabled: true}, [Validators.required]),
+    imagen: new FormControl(null),
+    terminos: new FormControl(null),
     nombreModalidad: new FormControl('')
   })
 
@@ -58,12 +58,14 @@ export class ConvenioComponent implements OnInit{
 
   public visible: boolean = false;
   public modalidadNueva: boolean = false;
-  public periodo: boolean = true;
 
   public idConvenio!: number
   public detalleConvenioTest!: DetalleConvenio
   public cargando: boolean = true;
  
+  public camposDeshabilitados = true;
+
+
   public obtenerDetalleConvenio(){
     this.servicioConvenios.obtenerDetalleConvenios(this.idConvenio).subscribe(convenio =>{
       this.formularioConvenio.patchValue({
@@ -89,6 +91,7 @@ export class ConvenioComponent implements OnInit{
       this.modalidadOriginal = convenio.convenio.idModalidad
       this.detalleConvenioTest.promedioPracticas = parseFloat(this.detalleConvenioTest.promedioPracticas.toFixed(2))
       this.cargando = false
+      console.log(convenio)
       console.log(this.formularioConvenio, 'conv')
       console.log(this.formularioConvenioOriginal, 'oriug')
     })
@@ -104,23 +107,7 @@ export class ConvenioComponent implements OnInit{
     this.visible = !this.visible;
     if(!this.visible){
       this.formularioConvenio.patchValue(this.formularioConvenioOriginal);
-      this.periodo = true;
       this.modalidadNueva = false;
-    }
-  }
-
-  public alternarPeriodo() {
-    this.periodo = !this.periodo;
-    if (!this.periodo) {
-        const año = new Date().getFullYear();
-        
-        this.formularioConvenio.patchValue({
-            inicio: año.toString()
-        });
-    } else {
-        this.formularioConvenio.patchValue({
-            inicio: '' 
-        });
     }
   }
 

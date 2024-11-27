@@ -9,41 +9,7 @@ export class ResultadosENDService {
 
 constructor() { }
 
-public listaResultados: resultadosEnd[]=[
-  {
-    periodo: 2024,
-    cohorte: 2020
-  },
-  {
-    periodo: 2023,
-    cohorte: 2019
-  },
-  {
-    periodo: 2022,
-    cohorte: 2018
-  },
-  {
-    periodo: 2021,
-    cohorte: 2017
-  },
-  {
-    periodo: 2020,
-    cohorte: 2016
-  },
-  {
-    periodo: 2019,
-    cohorte: 2015
-  },
-  {
-    periodo: 2018,
-    cohorte: 2014
-  },
-  {
-    periodo: 2017,
-    cohorte: 2013
-  }
-  
-]
+public listaResultados: resultadosEnd[]=[]
 
 public resultadosPorTemas: resultadoPorTemas[] = [
     {

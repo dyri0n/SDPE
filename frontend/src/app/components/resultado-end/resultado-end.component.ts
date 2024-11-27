@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { ResultadosENDService } from '../../services/resultados-end.service';
+import { EndService } from '../../services/end.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-resultado-end',
@@ -12,14 +14,22 @@ import { ResultadosENDService } from '../../services/resultados-end.service';
 export class ResultadoEndComponent implements OnInit {
 
   constructor(
-    private servicioResultadosEND: ResultadosENDService
+    private route: ActivatedRoute,
+    private servicioResultadosEND: ResultadosENDService,
+    private servicioEND: EndService
   ){}
 
   ngOnInit() {
+    this.idEND= +this.route.snapshot.paramMap.get('idEND')!
+
+    this.obtenerDocumento()
     this.obtenerResultadosPorTemas();
     this.obtenerResultadosPorEstandares();
     this.obtenerResultadosPorPA();
   }
+
+  idEND!:number
+  end:any;
 
   temasData: any;
   estandaresData: any;
@@ -58,6 +68,11 @@ export class ResultadoEndComponent implements OnInit {
     categoryPercentage: 0.7
   }
 
+  public obtenerDocumento(){
+    this.servicioEND.obtenerENDID(this.idEND).subscribe((result:any) =>{
+      this.end = result
+    })
+  }
 
   public promedio(numeros: number[]): number {
     const n = numeros.length;
@@ -240,7 +255,6 @@ export class ResultadoEndComponent implements OnInit {
     let comunicacionEscrita: string[] = []
     
     this.servicioResultadosEND.obtenerResultadosPorPA().subscribe(resultados =>{
-
       resultados.forEach(resultado =>{
         situacionesPedagogicas.push(resultado.PA_SP);
         comunicacionEscrita.push(resultado.PA_CE);
