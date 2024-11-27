@@ -1,4 +1,5 @@
 export interface PracticaEnConvenioDTO {
+  idEstudiante: number;
   nombreCompleto: string;
   tituloPractica: string;
   numeroPractica: number;
