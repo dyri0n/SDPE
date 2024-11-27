@@ -7,6 +7,8 @@ import { AsignaturaSola } from '../../models/asignaturaSola.dto';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { FormsModule } from '@angular/forms';
+import { CursosService } from '../../services/Cursos.service';
+import { AprobacionCursoDTO } from '../../models/Curso.dto';
 
 
 Chart.register(ChartDataLabels);
@@ -22,6 +24,7 @@ export class AprobacionCursoComponent {
   constructor(
     private route: ActivatedRoute,
     private diagnosticosService: DiagnosticosService,
+    private cursosService: CursosService,
     private router: Router
   ) {}
 
@@ -35,14 +38,16 @@ export class AprobacionCursoComponent {
   public idAsignatura: number = 0;
   public idFluxograma: number = 0
   public asignatura?: AsignaturaSola;
-  public cohortesData = [{cohorte: 2021, regular: {aprobacion: (Math.random() * 100).toPrecision(2)}, prosecucion: {aprobacion: (Math.random() * 100).toPrecision(2)}},
-                        {cohorte: 2022, regular: {aprobacion: (Math.random() * 100).toPrecision(2)}, prosecucion: {aprobacion: (Math.random() * 100).toPrecision(2)}},
-                        {cohorte: 2023, regular: {aprobacion: (Math.random() * 100).toPrecision(2)}, prosecucion: {aprobacion: (Math.random() * 100).toPrecision(2)}}]
+  public cohortesData: AprobacionCursoDTO[]=[]
+  public cohortesUnicos: number[]=[]
   public chartData: any
-  public cohorteSeleccionado: number = 2023
+  public cohorteSeleccionado: number | 'todos' = 'todos'
   public regData: any
   public proData: any
-
+  public graficos: any[] = []
+  public anioSeleccionado: number | "todos"="todos"
+  public anios: number[]=[]
+  public cargando: boolean= true
   public options: any = {
     responsive: true,
     plugins: {
@@ -92,39 +97,76 @@ export class AprobacionCursoComponent {
       });
   }
 
-  public cargarDatos(){
-    const seleccionado = this.cohortesData.find(c => c.cohorte === Number(this.cohorteSeleccionado))
-    if (seleccionado) {
+  public cargarDatos() {
+    this.cursosService.aprobacionPorCurso(this.idAsignatura).subscribe((respuesta) => {
+      console.log(respuesta)
+      this.cohortesData = respuesta
+      this.cargando = true
+      setTimeout(() => {
+        this.cargando = false
+      }, 1000)
+      this.cohortesUnicos = [...new Set(respuesta.map((item) => item.cohorte))]
+      this.anios = [...new Set(respuesta.map((item) => item.agnio))]
 
-      const aprobacionReg = parseFloat(seleccionado.regular.aprobacion)
-      const aprobacionPro = parseFloat(seleccionado.prosecucion.aprobacion)
-      
-      const reprobacionReg = (100 - aprobacionReg).toPrecision(2)
-      const reprobacionPro = (100 - aprobacionPro).toPrecision(2)
-
-      this.regData = {
-        labels: ['Aprobación', 'Reprobación'],
-        datasets: [
-          {
-            data: [aprobacionReg, reprobacionReg],
-            backgroundColor: ['rgba(2, 132, 199, 0.8)', 'rgba(225, 29, 72, 0.8)']
-          }
-        ]
+      let cursosFiltrados: AprobacionCursoDTO[] = []
+  
+      if (this.cohorteSeleccionado === 'todos'){
+        if(this.anioSeleccionado === 'todos'){
+          cursosFiltrados= this.cohortesData
+        }else{
+          cursosFiltrados = this.cohortesData.filter(cohorte=>cohorte.agnio===Number(this.anioSeleccionado))
+        }
+      }else{
+        if(this.anioSeleccionado === 'todos'){
+          cursosFiltrados = this.cohortesData.filter((cohortes) => cohortes.cohorte === Number(this.cohorteSeleccionado))
+        }else{
+          cursosFiltrados = this.cohortesData.filter((cohortes) => cohortes.cohorte === Number(this.cohorteSeleccionado) && cohortes.agnio === Number(this.anioSeleccionado))
+        }
       }
-
-      this.proData = {
-        labels: ['Aprobación', 'Reprobación'],
-        datasets: [
-          {
-            data: [aprobacionPro, reprobacionPro],
-            backgroundColor: ['rgba(34, 197, 94, 0.8)', 'rgba(239, 68, 68, 0.8)']
+  
+      if (cursosFiltrados.length > 0) {
+        this.graficos = cursosFiltrados.reduce((acc: any[], curso) => {
+          const index = acc.findIndex(
+            (item) => item.tipoIngreso === curso.tipoIngreso
+          )
+  
+          if (index === -1) {
+            acc.push({
+              tipoIngreso: curso.tipoIngreso,
+              totalAprobacion: curso.aprobacion,
+              totalCursos: 1,
+            })
+          } else {
+            acc[index].totalAprobacion += curso.aprobacion
+            acc[index].totalCursos++
           }
-        ]
+          return acc
+        }, [])
+        .map((item) => {
+          const aprobacionPromedio = Math.round(item.totalAprobacion / item.totalCursos)
+          const reprobacionPromedio = Math.round(100 - aprobacionPromedio)
+  
+          return {
+            tipoIngreso: item.tipoIngreso,
+            data: {
+              labels: ['Aprobación', 'Reprobación'],
+              datasets: [
+                {
+                  data: [aprobacionPromedio, reprobacionPromedio],
+                  backgroundColor: [
+                    'rgba(34, 197, 94, 0.8)',
+                    'rgba(239, 68, 68, 0.8)',
+                  ],
+                },
+              ],
+            },
+          }
+        })
       }
-    }
+    })
   }
 
   public devolverAListarCursos() {
-    this.router.navigate(['/cursos',this.idFluxograma, this.idAsignatura])
+    this.router.navigate(['/fluxograma',this.idFluxograma])
   }
 }

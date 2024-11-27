@@ -3,38 +3,72 @@ import { ChartEvent } from 'chart.js';
 import { DiagnosticosService } from '../../services/diagnosticos.service';
 import { PromedioDiagnostico } from '../../models/diagnosticos.dto';
 import { ChartModule } from 'primeng/chart';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Asignatura } from '../../models/asignaturas.dto';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
   selector: 'app-estadistica-diagnostico',
   standalone: true,
-  imports: [ChartModule],
+  imports: [ChartModule, CommonModule, FormsModule, MultiSelectModule],
   templateUrl: './estadistica-diagnostico.component.html',
   styleUrl: './estadistica-diagnostico.component.css',
 })
 export class EstadisticaDiagnosticoComponent implements OnInit {
   ngOnInit(): void {
     this.idAsignatura = +this.route.snapshot.paramMap.get('idAsignatura')!;
-    this.obtenerNombreAsignatura();
-    this.obtenerPromedios();
+    this.idFluxograma = +this.route.snapshot.paramMap.get('idFluxograma')!
+    this.servicioDiagnosticos.obtenerPromedios().subscribe(diagnosticos=>{
+      this.cargando = true
+      setTimeout(() => {
+        this.cargando = false
+      }, 1000)
+      this.anios = Array.from(new Set(diagnosticos.map(diagnostico => diagnostico.año))).sort().map(año => ({ label: año.toString(), value: año }))
+      this.aniosSeleccionados = [...this.anios]
+      this.obtenerNombreAsignatura();
+      this.obtenerPromedios();
+    })
+    
   }
 
   constructor(
     private servicioDiagnosticos: DiagnosticosService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   public asignatura: string = '';
   public idAsignatura: number = 0;
+  public idFluxograma: number = 0
   public labels: string[] = [];
   public data: any;
-
+  public anios: {label: string; value: number}[] = []
+  public aniosSeleccionados: {label: string; value: number}[] = []
+  public cortePromedios: number= 4
+  public cargando: boolean= true
   public options = {
     responsive: true,
     scales: {
+      x:{
+        title: {
+          display: true,
+          text: 'Años',
+          font: {
+            size: 24
+          }
+        }
+      },
       y: {
         beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Notas',
+          font: {
+            size: 24
+          }
+        }
       },
     },
     pointStyle: 'circle',
@@ -45,7 +79,38 @@ export class EstadisticaDiagnosticoComponent implements OnInit {
       title: {
         display: true,
         text: 'Promedio obtenido en cada evaluacion diagnostico',
+        font: {
+          size: 24
+        }
       },
+      annotation: {
+        annotations: {
+          criticalZone: {
+            type: 'box',
+            xScaleID: 'x',
+            yScaleID: 'y',
+            yMin: 0,
+            yMax: this.cortePromedios,
+            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+          }
+        }
+      },
+      datalabels: {
+        display: true,
+        align: 'top', 
+        font: {
+          weight: 'bold', 
+          size: 12, 
+        },
+        color: '#000', 
+        backgroundColor: '#FFF',
+        borderRadius: 3, 
+        padding: 5, 
+        borderColor: '#000', 
+        borderWidth: 2, 
+      }
     },
 
     onClick: (event: ChartEvent, activeElements: any[]) => {
@@ -72,21 +137,29 @@ export class EstadisticaDiagnosticoComponent implements OnInit {
   }
 
   public obtenerLabel(datos: PromedioDiagnostico[]): string[] {
-    datos.forEach((element) => {
-      this.labels.push(element.año.toString());
-    });
-    return this.labels;
+    const aniosFiltrados = this.aniosSeleccionados.map(c => c.value)
+    const separarAnios = Array.from(new Set(datos.filter(d => aniosFiltrados.includes(d.año)).map(a => a.año)))
+    this.labels = separarAnios.map(anio => anio.toString())
+    return this.labels
   }
 
   public obtenerDataset(datos: PromedioDiagnostico[]): number[] {
-    let data: number[] = [];
-    datos.forEach((element) => {
-      data.push(element.promedio);
-    });
-    return data;
+    const aniosFiltrados = this.aniosSeleccionados.map(c => c.value)
+    const datosFiltrados = datos.filter(d => aniosFiltrados.includes(d.año))
+    return datosFiltrados.map(element => element.promedio)
+  }
+
+  public getRandomColor() {
+    const letters = '0123456789ABCDEF'
+    let color = '#'
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)]
+    }
+    return color
   }
 
   public obtenerPromedios() {
+    this.labels=[]
     this.servicioDiagnosticos.obtenerPromedios().subscribe((diagnosticos) => {
       this.obtenerLabel(diagnosticos);
 
@@ -96,12 +169,16 @@ export class EstadisticaDiagnosticoComponent implements OnInit {
           {
             label: 'Promedio',
             data: this.obtenerDataset(diagnosticos),
-            backgroundColor: 'rgba(52, 211, 153, 1)',
-            borderColor: 'rgba(5, 150, 105, 1)',
+            borderColor: this.getRandomColor(),
             borderWidth: 4,
           },
         ],
       };
     });
+    this.aniosSeleccionados.sort((a,b)=>a.value - b.value)
+  }
+
+  public devolverAlFluxograma() {
+    this.router.navigate(['/fluxograma', this.idFluxograma])
   }
 }

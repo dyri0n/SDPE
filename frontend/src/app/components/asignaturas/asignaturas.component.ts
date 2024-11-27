@@ -3,12 +3,13 @@ import { Router } from '@angular/router';
 import { AsignaturaService } from '../../services/asignatura.service';
 import { ListaAsignatura } from '../../models/listaAsignatura.dto';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-asignaturas',
   templateUrl: './asignaturas.component.html',
   standalone:true,
-  imports: [PaginatorModule],
+  imports: [PaginatorModule, CommonModule],
   styleUrls: ['./asignaturas.component.css']
 })
 export class AsignaturasComponent implements OnInit {
@@ -28,6 +29,7 @@ export class AsignaturasComponent implements OnInit {
   public first: number = 0
   public rows: number = 5
   public totalRecords: number= 0
+  public cargando: boolean=true
 
   public verDetalles(id: number): void {
     this.router.navigate(['/detalle-asignatura', id]);
@@ -58,6 +60,10 @@ export class AsignaturasComponent implements OnInit {
   public obtenerDatos(){
     this.asignaturaService.obtenerAsignaturas().subscribe(asignaturas=>{
       this.asignaturas=asignaturas
+      this.cargando = true
+      setTimeout(() => {
+        this.cargando = false
+      }, 1000)
       this.asignaturasFiltradas=asignaturas
       this.totalRecords=this.asignaturasFiltradas.length
       this.actualizarAsignaturasPaginadas()

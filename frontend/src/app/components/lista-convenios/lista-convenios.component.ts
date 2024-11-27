@@ -236,6 +236,7 @@ export class ListaConveniosComponent implements OnInit{
     }
   }
 
+  //ARREGLAAAAAAAR URGENTE
   public obtenerConveniosTest(){
     this.servicioConvenios.obtenerConveniosTest().subscribe(convenio=>{
       this.conveniosTest=convenio

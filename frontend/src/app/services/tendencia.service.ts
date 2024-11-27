@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { TendenciasCortePracticoDTO } from '../models/asignatura.dto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TendenciaService {
 
-  private apiUrl= 'http://localhost:3000/'
+  private apiUrl= 'http://localhost:3000/asignaturas/corte-practico/tendencias'
   private resumenAsignaturas = [
     { asignatura: 'Asignatura 1', semestre: 'Semestre I', cohorte: 2018, promedio: 3.6, aprobacion: 40 },
     { asignatura: 'Asignatura 1', semestre: 'Semestre I', cohorte: 2019, promedio: 4.0, aprobacion: 60 },
@@ -20,6 +21,10 @@ export class TendenciaService {
 
   public obtenerAsignaturas(): Observable<any[]>{
     return of(this.resumenAsignaturas)
+  }
+
+  public obtenerAsignaturasTest(): Observable<TendenciasCortePracticoDTO[]>{
+    return this.http.get<TendenciasCortePracticoDTO[]>(this.apiUrl + '/')
   }
 
 }

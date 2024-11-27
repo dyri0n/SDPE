@@ -71,9 +71,9 @@ export class DetalleFluxogramaComponent implements OnInit {
     this.detalleFluxograma!.forEach((asignatura) => {
       if (asignatura.idAsignatura === idAsignatura) {
         if (asignatura.caracter === 'PRACTICA') {
-          this.router.navigate(['/estadisticas/', idAsignatura]);
+          this.router.navigate(['/estadisticas/', this.idFluxograma, idAsignatura]);
         } else {
-          this.router.navigate(['/cursos/', this.idFluxograma, idAsignatura]);
+          this.router.navigate(['/aprobacion/', this.idFluxograma, idAsignatura]);
         }
       }
     });

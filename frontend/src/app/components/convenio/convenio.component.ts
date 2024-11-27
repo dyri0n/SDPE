@@ -22,12 +22,11 @@ export class ConvenioComponent implements OnInit{
   ngOnInit() {
     this.idConvenio= +this.route.snapshot.paramMap.get('idConvenio')!
     console.log(this.idConvenio)
-    //this.obtenerDetalleConvenio()
     this.obtenerDetalleConvenioTest()
   }
 
   public idConvenio: number = -1
-  public detalleConvenio!: DetalleConvenio // por ahora lo dejo como convenio pero deberia ser detalleConvenio para traer los datos de practicas.
+  public detalleConvenio!: DetalleConvenio
   public detalleConvenioTest!: DetalleConvenioTest
 
   public obtenerDetalleConvenio(){

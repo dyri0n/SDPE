@@ -4,7 +4,11 @@
     <div class="mb-6">
       <input type="text" placeholder="Buscar práctica..." class="w-full p-3 rounded-lg text-black" (input)="filtrarPracticas($event)"/>
     </div>
-    <div class="w-10/12 mx-auto bg-white border rounded shadow-lg items-center flex justify-center mt-12 mb-12">   
+    <div *ngIf="cargando; else contenido" class="w-full flex justify-center items-center h-96">
+      <div class="spinner-border animate-spin inline-block w-16 h-16 border-4 rounded-full border-t-transparent border-[#0369A1]"></div>
+    </div>
+    <ng-template #contenido>
+      <div class="w-10/12 mx-auto bg-white border rounded shadow-lg items-center flex justify-center mt-12 mb-12">   
         <div class="card flex justify-content-center">
             <p-paginator 
                 (onPageChange)="onPageChange($event)" 
@@ -14,23 +18,32 @@
                 [rowsPerPageOptions]="[5, 10, 30]"
                 [styleClass]="'custom-paginator'"/>
         </div>
-    </div>
-    <div class="space-y-4">
-      <div *ngFor="let practica of practicasPaginadas" class="bg-white rounded-lg shadow-lg p-6 flex justify-between items-center">
-        <!--Falta agregar la modalidad-->
-        <div class="flex-1">
-          <p class="text-lg font-semibold">{{practica.nombreCompleto}}</p>
-          <p class="text-sm text-gray-500">{{practica.tituloPractica}}</p>
-          <p class="text-sm text-gray-500">Fecha de Inicio: {{practica.fechaInicio | date:'dd/MM/yyyy'}}</p>
-          <p class="text-sm text-gray-500">Fecha de Término: {{practica.fechaFin | date:'dd/MM/yyyy'}}</p>
-        </div>
-        <div class="ml-4">
-          <span class="w-32 h-16 text-center bg-[#DC911A] text-white font-bold rounded-md flex flex-col items-center justify-center">
-            <span class="block">Nota Final:</span>
-            <span class="block">{{practica.notaFinal | number:'1.1-1'}}</span>
-          </span>
+      </div>
+      <div class="space-y-4">
+        <div *ngFor="let practica of practicasPaginadas" class="bg-white rounded-lg shadow-lg p-6 flex justify-between items-center">
+          <div class="flex-1">
+            <p class="text-lg font-semibold">{{practica.nombreCompleto}}</p>
+            <p class="text-sm text-gray-500">{{practica.tituloPractica}}</p>
+            <p class="text-sm text-gray-500">Fecha de Inicio: {{practica.fechaInicio | date:'dd/MM/yyyy'}}</p>
+            <p class="text-sm text-gray-500">Fecha de Término: {{practica.fechaFin | date:'dd/MM/yyyy'}}</p>
+          </div>
+          <div class="flex space-x-4 ml-6">
+            <button (click)="verDetallePractica(practica.tituloPractica)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">
+              Ver Detalle
+            </button>
+            
+            <button (click)="verPracticasEstudiante(1)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition">
+              Ver Prácticas del Estudiante
+            </button>
+          </div>
+          <div class="ml-4">
+            <span class="w-32 h-16 text-center bg-[#DC911A] text-white font-bold rounded-md flex flex-col items-center justify-center">
+              <span class="block">Nota Final:</span>
+              <span class="block">{{practica.notaFinal | number:'1.1-1'}}</span>
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+    </ng-template>
   </div>
 </div>

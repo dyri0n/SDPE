@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ListarPracticasPorConvenioDTO, PracticaEnConvenioDTO } from '../../models/practica';
 import { PracticasService } from '../../services/practicas.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 
 @Component({
@@ -16,7 +16,8 @@ export class PracticasConvenioComponent implements OnInit {
 
   constructor(
     private practicasService: PracticasService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -31,6 +32,7 @@ export class PracticasConvenioComponent implements OnInit {
   public first: number = 0
   public rows: number = 5
   public totalRecords: number= 0
+  public cargando: boolean= true
 
   public onPageChange(event: PaginatorState) {
     this.first = event.first ?? 0
@@ -47,6 +49,10 @@ export class PracticasConvenioComponent implements OnInit {
   public cargarDatos(){
     this.practicasService.obtenerPracticasPorConvenio(this.idConvenio).subscribe(respuesta=>{
       this.practicas=respuesta
+      this.cargando = true
+      setTimeout(() => {
+        this.cargando = false
+      }, 1000)
       this.practicasFiltradas=respuesta.practicas
       this.totalRecords=this.practicasFiltradas.length
       this.actualizarPracticasPaginadas()
@@ -63,4 +69,11 @@ export class PracticasConvenioComponent implements OnInit {
     this.actualizarPracticasPaginadas()
   }
 
+  public verDetallePractica(tituloPractica: string): void {
+    this.router.navigate(['/practica-detalle', tituloPractica]);
+  }
+  
+  public verPracticasEstudiante(idEstudiante: number): void {
+    this.router.navigate(['/practicas-estudiante', idEstudiante]);
+  }
 }

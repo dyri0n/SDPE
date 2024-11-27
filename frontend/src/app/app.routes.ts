@@ -32,7 +32,7 @@ export const routes: Routes = [
     {path: 'semestres', component: SemestresComponent, canActivate: [authGuard]},
     {path: 'aprobacion/:idFluxograma/:idAsignatura', component: AprobacionCursoComponent, canActivate: [authGuard]},
     {path: 'fluxograma/:idFluxograma', component: DetalleFluxogramaComponent, canActivate: [authGuard]},
-    {path: 'estadisticas/:idAsignatura', component: EstadisticaDiagnosticoComponent, canActivate: [authGuard]},
+    {path: 'estadisticas/:idFluxograma/:idAsignatura', component: EstadisticaDiagnosticoComponent, canActivate: [authGuard]},
     {path: 'practicas', component: PracticasComponent, canActivate: [authGuard]},
     {path: 'asignaturas', component: AsignaturasComponent, canActivate: [authGuard]},
     {path: 'detalle-asignatura/:idAsignatura', component: DetalleAsignaturaComponent, canActivate: [authGuard]},
