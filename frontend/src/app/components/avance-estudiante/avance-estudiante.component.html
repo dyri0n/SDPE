@@ -55,8 +55,8 @@
       <p-chart
         id="myChart"
         type="line"
-        [data]="this.data"
-        [options]="this.options"
+        [data]="this.informacion_grafico"
+        [options]="this.configuracion_grafico"
         class="w-full p-2 bg-white rounded-md shadow-md"
       />
     </div>
@@ -92,7 +92,7 @@
               </div>
               <div class="pt-3">
                 <div class="tracking-tighter">
-                  Realizado en {{ curso.semestreRealizacion }} semestre
+                  Realizado en {{ curso.semestreRealizacion }}° semestre
                 </div>
                 <div class="tracking-tighter">
                   Intento: {{ curso.numIntento || 1 }}

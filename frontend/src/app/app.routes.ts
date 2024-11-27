@@ -86,11 +86,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'avance-estudiante',
+    path: 'avance-estudiante/:idEstudiante',
     component: AvanceEstudianteComponent,
   },
   {
-    path: 'practicas-estudiante',
+    path: 'practicas-estudiante/:idEstudiante',
     component: PracticasEstudianteComponent,
   },
   {
@@ -98,7 +98,7 @@ export const routes: Routes = [
     component: ListarEstudianteComponent,
   },
   {
-    path: 'menu-estudiante',
+    path: 'menu-estudiante/:idEstudiante/:nombreEstudiante',
     component: MenuEstudianteComponent,
   },
   { path: '**', redirectTo: '/menu' },

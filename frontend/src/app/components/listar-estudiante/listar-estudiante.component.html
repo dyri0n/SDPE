@@ -7,7 +7,6 @@
     <input
       type="text"
       [(ngModel)]="input_estudiante"
-      (ngModelChange)="buscarEstudiante()"
       placeholder="Nombre del estudiante o rut"
       class="w-full p-2 rounded-lg"
     />
@@ -66,14 +65,16 @@
         <div
           *ngFor="let estudiante of this.obtenerEstudiantesPaginados()"
           class="bg-white rounded-lg shadow flex justify-between items-center transition ease-in-out delay-25 hover:-translate-y-1 hover:scale-101 duration-300"
-          (contextmenu)="menuEstudiante.show($event)"
+          (contextmenu)="
+            this.mostrarMenuContextual(menuEstudiante, $event, estudiante)
+          "
         >
           <div class="p-4">
             <div class="text-gray-600 text-sm">
               Nombre completo del estudiante
             </div>
             <div class="text-lg font-semibold">
-              {{ estudiante.nombre_completo }}
+              {{ estudiante.nombreCompleto }}
             </div>
             <div class="text-gray-700">Rut {{ estudiante.rut }}</div>
           </div>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu-estudiante',
@@ -9,24 +9,19 @@ import { Router } from '@angular/router';
   styleUrl: './menu-estudiante.component.css',
 })
 export class MenuEstudianteComponent {
-  // nombre del estudiante seleccinoado en la vista anterior (listarEstudiantes)
+  // nombre del estudiante seleccionado  en la vista anterior (listarEstudiantes)
   nombreEstudiante: string = '';
   // rut del estudiante seleccionado en la vista anterior
   rutEstudiante: string = '';
   // datos pasados por la ruta anterior
   routeData: any;
+  // id del estudiante para hacer llamadas
+  idEstudiante: number = 0;
 
   // solo se inyecta el servicio router para redirigir a los vistas posibles
-  constructor(private router: Router) {}
-
-  ngOnInit() {
-    // antes de cargar el componente se comprueba los valores obtenidos de la ruta
-    this.nombreEstudiante = history.state.nombreCompleto;
-    this.rutEstudiante = history.state.rut;
-    // si no estan se envia a la ruta anterior (listar-estudiantes)
-    if (!this.nombreEstudiante && this.rutEstudiante) {
-      this.router.navigate(['/listar-estudiantes']);
-    }
+  constructor(private router: Router, private route: ActivatedRoute) {
+    // se obtiene los parametros de la ruta
+    this.obtenerParametrosDeLaRuta();
   }
 
   /**
@@ -34,28 +29,31 @@ export class MenuEstudianteComponent {
    * se envia a traves del estado de la ruta el rut del estudiante
    */
   public irAPracticasEstudiante() {
-    const routerDataState = {
-      rut: this.rutEstudiante,
-      nombreCompleto: this.nombreEstudiante,
-    };
-    this.router.navigateByUrl('/practicas-estudiante', {
-      state: routerDataState,
-    });
+    this.router.navigate(['practicas-estudiante', this.idEstudiante]);
   }
   /**
    * Funcion que redirige al usuario a la vista de avance curricular del estudiante,
    * se envia a traves del estado de la ruta el rut del estudiante
    */
   public irAAvanceCurricular() {
-    const routerDataState = {
-      rut: this.rutEstudiante,
-      nombreCompleto: this.nombreEstudiante,
-    };
-    this.router.navigateByUrl('/avance-estudiante', {
-      state: routerDataState,
-    });
+    this.router.navigate(['avance-estudiante', this.idEstudiante]);
   }
+
+  /**
+   * Funcion para devolver a la vista anterior de listar estudiantes
+   */
   public devolverAListarEstudiantes() {
-    this.router.navigateByUrl('/listar-estudiantes');
+    this.router.navigate(['/listar-estudiantes']);
+  }
+
+  /**
+   * Funcion que obtiene los parametros de la ruta definidos en la ruta anterior
+   * En este caso la vista anterior enviaria a la ruta [menuEstudiante/:idEstudiante/:nombreEstudiante]
+   */
+  public obtenerParametrosDeLaRuta() {
+    this.route.params.subscribe((param) => {
+      this.idEstudiante = param['idEstudiante'];
+      this.nombreEstudiante = param['nombreEstudiante'];
+    });
   }
 }
