@@ -163,8 +163,6 @@ export class AsignaturasService {
     // retorna los datos asi como van
     const result = await this.prisma.$queryRawTyped(asignaturasListar());
 
-    console.log(result);
-
     return result.map((v) => {
       return {
         idAsignatura: v.idAsignatura,
@@ -173,9 +171,11 @@ export class AsignaturasService {
         nombreCortoAsignatura: v.nombreCortoAsignatura,
         semestreRealizacion: v.semestreRealizacion,
         areaFormacion: v.areaFormacion,
-        planes: JSON.parse(
-          v.planes as string,
-        ) as AsignaturaListadaDTO['planes'], // no se porque esto funciona pero lo hace
+        planes: v.planes.map((p: any) => ({
+          titulo: p.titulo,
+          codigo: p.codigo,
+          fechaInstauracion: new Date(p.fechaInstauracion),
+        })),
       };
     }) as AsignaturaListadaDTO[];
   }
