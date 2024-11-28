@@ -128,6 +128,15 @@ export class AvanceEstudianteComponent {
     });
   }
 
+  /**
+   * Funcion para establecer los informacion/datos del grafico de linea, se le pasa los datos del estudiante individual (promedio por semestre)
+   * y promedios de su cohorte.
+   *
+   * @param {String[]} semestres_individual     El nombre de cada semestres que el alumno ha cursado
+   * @param {String[]} promedios_individual     Los promedios de cada semestre del estudiante
+   * @param {String[]} promedios_cohorte        Los promedios por cada semestre del cohorte del estudiante
+   * @param {CSSStyleDeclaration} documentStyle Estilo del documento
+   */
   public establecerDatosDelGrafico(
     semestres_individual: String[],
     promedios_individual: String[],
@@ -181,6 +190,13 @@ export class AvanceEstudianteComponent {
     };
   }
 
+  /**
+   * Funcion para establecer configuracion del grafico de lineas, como por ejemplo el color de las lineas tamagno de letras,
+   * y tambien uso de plugins para mostrar los promedios
+   *
+   * @param {string} textColor      color del texto del documento
+   * @param {string} surfaceBorder  color del borde del documento
+   */
   public establecerConfiguracionDelGrafico(
     textColor: string,
     surfaceBorder: string
