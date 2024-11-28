@@ -7,9 +7,9 @@ SELECT
     a."areaFormacion",
     array_agg(
         json_build_object(
-                'titulo',p."titulo",
-                'codigo',p."codigo",
-                'fechaInstauracion', p."fechaInstauracion"
+            'titulo',p."titulo",
+            'codigo',p."codigo",
+            'fechaInstauracion', p."fechaInstauracion"
         )
     ) as "planes"
 FROM "Asignatura" a

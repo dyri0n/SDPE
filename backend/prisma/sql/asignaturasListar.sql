@@ -5,7 +5,7 @@ SELECT
     a."nombreCorto" as "nombreCortoAsignatura",
     a."semestre" as "semestreRealizacion",
     a."areaFormacion",
-    JSON_ARRAYAGG(
+    array_agg(
         json_build_object(
             'titulo', p."titulo",
             'codigo', p."codigo",
