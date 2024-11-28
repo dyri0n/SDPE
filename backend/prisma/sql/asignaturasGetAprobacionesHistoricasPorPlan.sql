@@ -10,10 +10,14 @@
 
 SELECT 
     c."agnio", 
-    (sum(CASE WHEN "notaFinal" >= 4.0 
-            THEN 1 ELSE 0 END)::numeric 
-        / nullif(count(*), 0) 
-        * 100) AS aprobacion
+    (
+      sum(
+        CASE WHEN "notaFinal" >= 4.0 
+          THEN 1 ELSE 0 END
+      )::numeric
+      / nullif(count(*), 0) 
+      * 100
+    ) AS aprobacion
 from "Cursacion" c
 join "Asignatura" a using ("idPlan","idAsignatura")
 join "Plan" p using ("idPlan")

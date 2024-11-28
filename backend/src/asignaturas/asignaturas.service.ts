@@ -5,13 +5,13 @@ import { CursosService } from '../cursos/cursos.service';
 import {
   AprobacionHistoricaGeneralDTO,
   AprobacionHistoricaPorCohorteDTO,
-  AprobacionHistoricaPorTipoIngresoDTO as AprobacionHistoricaPorPlanDTO,
+  AprobacionHistoricaPorPlanDTO as AprobacionHistoricaPorPlanDTO,
   DetalleAsignaturaDTO,
   PromedioHistoricoGeneralDTO,
   PromedioHistoricoPorCohorteDTO,
   PromedioHistoricoPorPlanDTO,
-} from './dto/detalles.dto';
-import { AsignaturaListadaDTO } from './dto/listar.dto';
+  AsignaturaListadaDTO,
+} from './dto';
 import {
   asignaturasListar,
   asignaturasGetPromediosHistoricosGeneral,
@@ -20,6 +20,7 @@ import {
   asignaturasGetAprobacionesHistoricasGeneral,
   asignaturasGetAprobacionesHistoricasPorPlan,
   asignaturasGetAprobacionesHistoricasPorCohorte,
+  asignaturaListarPlanes,
 } from '@prisma/client/sql';
 
 @Injectable()
@@ -34,15 +35,34 @@ export class AsignaturasService {
    * @param codigoAsignatura Código de la asignatura
    * @returns {Asignatura[]} Asignaturas con el mismo código en distintos planes
    */
-  async getAsignatura(codigoAsignatura: string): Promise<Asignatura[]> {
-    return await this.prisma.asignatura.findMany({
-      where: {
-        codigo: codigoAsignatura,
-      },
-      include: {
-        PlanDeEstudio: true,
-      },
-    });
+  async getAsignatura(codigoAsignatura: string): Promise<AsignaturaListadaDTO> {
+    const result = await this.prisma.$queryRawTyped(
+      asignaturaListarPlanes(codigoAsignatura),
+    );
+
+    return result.map((v) => {
+      return {
+        idAsignatura: v.idAsignatura,
+        codigoAsignatura: v.codigoAsignatura,
+        nombreAsignatura: v.nombreAsignatura,
+        nombreCortoAsignatura: v.nombreCortoAsignatura,
+        semestreRealizacion: v.semestreRealizacion,
+        areaFormacion: v.areaFormacion,
+        planes: v.planes.map((p: any) => ({
+          titulo: p.titulo,
+          codigo: p.codigo,
+          fechaInstauracion: new Date(p.fechaInstauracion),
+        })),
+      };
+    })[0] as AsignaturaListadaDTO;
+
+    // return result.map((value) => {
+    //   return {
+    //     codigoPlan: codigoPlan,
+    //     agnio: value.agnio,
+    //     promedio: value.promedio.toNumber(),
+    //   };
+    // }) as PromedioHistoricoPorPlanDTO[];
   }
 
   /**
@@ -146,7 +166,17 @@ export class AsignaturasService {
     console.log(result);
 
     return result.map((v) => {
-      return { ...v };
+      return {
+        idAsignatura: v.idAsignatura,
+        codigoAsignatura: v.codigoAsignatura,
+        nombreAsignatura: v.nombreAsignatura,
+        nombreCortoAsignatura: v.nombreCortoAsignatura,
+        semestreRealizacion: v.semestreRealizacion,
+        areaFormacion: v.areaFormacion,
+        planes: JSON.parse(
+          v.planes as string,
+        ) as AsignaturaListadaDTO['planes'], // no se porque esto funciona pero lo hace
+      };
     }) as AsignaturaListadaDTO[];
   }
 
@@ -274,6 +304,7 @@ export class AsignaturasService {
 
     return result.map((value) => {
       return {
+        codigoPlan: codigoPlan,
         agnio: value.agnio,
         aprobacion: value.aprobacion.toNumber(),
       };
@@ -371,12 +402,16 @@ export class AsignaturasService {
       promedios: {
         general: promedioGeneral,
         cohortes: promedioPorCohortes,
-        promediosPorPlan: promediosHistoricosPorPlan,
+        promediosPorPlan: promediosHistoricosPorPlan.flatMap((value) => {
+          return value;
+        }),
       },
       aprobaciones: {
         general: aprobacionGeneral,
         cohortes: aprobacionPorCohortes,
-        aprobacionesPorPlan: aprobacionHistoricaPorPlan,
+        aprobacionesPorPlan: aprobacionHistoricaPorPlan.flatMap((value) => {
+          return value;
+        }),
       },
     } as DetalleAsignaturaDTO;
   }
