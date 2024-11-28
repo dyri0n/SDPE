@@ -51,23 +51,25 @@ export class AuthService {
       },
     });
 
-    if (!user) throw new NotFoundException('Usuario no encontrado');
+    if (!user) throw new NotFoundException('Usuario no existe');
 
     const passwordsMatch = await argon.verify(
       user.hashedPassword,
       dto.password,
     );
 
-    if (!passwordsMatch) throw new ForbiddenException('Contraseña incorrecta');
+    if (!passwordsMatch)
+      throw new ForbiddenException('Usuario o Contraseña incorrectos');
 
-    return this.signToken(user.id, user.email, user.username);
+    return this.signToken(user.id, user.email, user.username, user.role);
   }
 
-  async signToken(id: number, email: string, username: string) {
+  async signToken(id: number, email: string, username: string, role: string) {
     const payload = {
       sub: id,
       username,
       email,
+      role,
     };
 
     const secret = this.configService.get('JWT_SECRET');
