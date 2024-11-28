@@ -3,8 +3,17 @@ model Usuario {
   username String @unique
   email    String @unique
 
+  role ROLE @default(Docente)
+
   hashedPassword String
 
   nombreCompleto String
 }
-  
+
+enum ROLE {
+  Administrador
+  JC
+  CoordinadorPractica
+  Secretario
+  Docente
+}
