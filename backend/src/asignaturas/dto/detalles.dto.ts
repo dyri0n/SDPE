@@ -1,8 +1,9 @@
-//bloque promedios
-import { Asignatura } from '@prisma/client';
+import { AsignaturaListadaDTO } from './listar.dto';
 
 export const ID_INGRESO_REGULAR = 309;
 export const ID_INGRESO_PROSECUCION = 325;
+
+//bloque promedios
 export interface PromedioHistoricoGeneralDTO {
   agnio: number;
   promedio: number;
@@ -10,6 +11,7 @@ export interface PromedioHistoricoGeneralDTO {
 
 export interface PromedioHistoricoPorPlanDTO {
   codigoPlan: number;
+  plan: string;
   agnio: number;
   promedio: number;
 }
@@ -21,15 +23,19 @@ export interface PromedioHistoricoPorCohorteDTO {
   promedio: number;
 }
 //fin bloque promedios
+
 //bloque aprobacion
 export interface AprobacionHistoricaGeneralDTO {
   agnio: number;
   aprobacion: number;
 }
-export interface AprobacionHistoricaPorTipoIngresoDTO {
+
+export interface AprobacionHistoricaPorPlanDTO {
+  codigoPlan: number;
   agnio: number;
   aprobacion: number;
 }
+
 export interface AprobacionHistoricaPorCohorteDTO {
   agnio: number;
   cohorte: number;
@@ -39,15 +45,15 @@ export interface AprobacionHistoricaPorCohorteDTO {
 //fin bloque aprobacion
 
 export interface DetalleAsignaturaDTO {
-  asignaturas: Asignatura[];
+  asignaturas: AsignaturaListadaDTO;
   promedios: {
     general: PromedioHistoricoGeneralDTO[];
-    promediosPorPlan: PromedioHistoricoPorPlanDTO[][];
+    promediosPorPlan: PromedioHistoricoPorPlanDTO[];
     cohortes: PromedioHistoricoPorCohorteDTO[];
   };
   aprobaciones: {
     general: AprobacionHistoricaGeneralDTO[];
-    aprobacionesPorPlan: AprobacionHistoricaPorTipoIngresoDTO[][];
+    aprobacionesPorPlan: AprobacionHistoricaPorPlanDTO[];
     cohortes: AprobacionHistoricaPorCohorteDTO[];
   };
 }
