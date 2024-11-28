@@ -37,13 +37,37 @@ async function main() {
 
   moreLog(planesInsertados);
 
+  // LINEAS ASIGNATURAS
+
+  console.time('LINEA_ASIGNATURA SEEDING');
+  console.info('El seeding de las lineas de asignaturas está comenzando');
+
+  const lineasQueries: LineaAsignatura[] = [];
+  for (const linea of constants.LINEA_ASIGNATURA) {
+    lineasQueries.push({
+      idLinea: linea.idLinea,
+      titulo: linea.titulo,
+    });
+  }
+
+  const lineasAsignaturas = await prisma.lineaAsignatura.createManyAndReturn({
+    data: lineasQueries,
+  });
+
+  moreLog(lineasAsignaturas);
+
+  console.timeEnd('LINEA_ASIGNATURA SEEDING');
+  console.info('El seeding de lineas de asignaturas termino');
+
   // ASIGNATURAS
 
   const asignaturasQueries = [];
   for (const plan of planesInsertados) {
-    for (const [i, asignatura] of constants.ASIGNATURAS.entries()) {
+    console.log(`PLAN: ${plan.titulo}`);
+
+    for (const asignatura of constants.ASIGNATURAS) {
       asignatura.idPlan = plan.idPlan;
-      asignatura.posicion = i + 1;
+      console.log(`${asignatura.idAsignatura}: ${asignatura.nombreCorto}`);
 
       asignaturasQueries.push({
         ...asignatura,
@@ -69,7 +93,12 @@ async function main() {
   const asignaturas = await prisma.asignatura.findMany();
   const estudiantes = await prisma.estudiante.findMany();
 
-  for (const plan of planes) {
+  for (const [i, plan] of planes.entries()) {
+    // Calcular el rango para los estudiantes
+    const inicio = Math.floor((i / planes.length) * estudiantes.length);
+    const fin = Math.floor(((i + 1) / planes.length) * estudiantes.length);
+    const estudiantesPorPlan = estudiantes.slice(inicio, fin);
+
     const asignaturasPorPlan = asignaturas.filter((asignatura) => {
       if (asignatura.idPlan == plan.idPlan) return asignatura;
     });
@@ -80,7 +109,7 @@ async function main() {
       }),
     );
 
-    for (const estudiante of estudiantes) {
+    for (const estudiante of estudiantesPorPlan) {
       // Porcentaje de asignaturas del plan cursadas
       // const nroAsignaturasCursadas: number = Math.floor(
       //   Math.random() * asignaturasPorPlan.length,
@@ -296,27 +325,7 @@ async function main() {
   console.timeEnd('PRACTICA SEEDING');
   console.info('El seeding de prácticas terminó');
 
-  // LINEAS ASIGNATURAS
-
-  console.time('LINEA_ASIGNATURA SEEDING');
-  console.info('El seeding de las lineas de asignaturas está comenzando');
-
-  const lineasQueries: LineaAsignatura[] = [];
-  for (const linea of constants.LINEA_ASIGNATURA) {
-    lineasQueries.push({
-      idLinea: linea.idLinea,
-      titulo: linea.titulo,
-    });
-  }
-
-  const lineasAsignaturas = await prisma.lineaAsignatura.createManyAndReturn({
-    data: lineasQueries,
-  });
-
-  moreLog(lineasAsignaturas);
-
-  console.timeEnd('LINEA_ASIGNATURA SEEDING');
-  console.info('El seeding de lineas de asignaturas termino');
+  // usuarios
 
   console.time('Crear Usuarios');
 
