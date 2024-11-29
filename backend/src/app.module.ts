@@ -14,7 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { LineaAsignaturaModule } from './linea-asignatura/linea-asignatura.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import * as path from 'path';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -31,7 +31,7 @@ import * as path from 'path';
     LineaAsignaturaModule,
     MulterModule.register({ dest: './documents/convenios' }),
     ServeStaticModule.forRoot({
-      rootPath: path.join(__dirname, '..', 'documents'),
+      rootPath: join(process.cwd(), 'documents'),
       serveRoot: '/documents',
     }),
   ],
