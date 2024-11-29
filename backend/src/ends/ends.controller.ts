@@ -71,7 +71,7 @@ export class EndsController {
   @UseInterceptors(
     FileInterceptor('files', {
       storage: diskStorage({
-        destination: './dist/documents/end',
+        destination: './documents/end',
         filename: (req, file, callback) => {
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);
