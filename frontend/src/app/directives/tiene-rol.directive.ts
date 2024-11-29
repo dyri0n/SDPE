@@ -6,7 +6,7 @@ import { UsuariosService } from '../services/usuarios.service';
   standalone: true,
 })
 export class TieneRolDirective {
-  @Input() set tieneRol(role: string) {
+  @Input() set tieneRol(role: string[]) {
     // logica basica de rol
     // si tiene rol muestra el componente al que envuelve la directiva
     if (this.usuarioService.tieneRol(role)) {

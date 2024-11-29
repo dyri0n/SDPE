@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   CanActivateFn,
+  Router,
   RouterStateSnapshot,
 } from '@angular/router';
 import { LoginService } from '../services/login.service';
@@ -28,12 +29,15 @@ export const hasRoleGuard: CanActivateFn = (
   state: RouterStateSnapshot
 ) => {
   const servicioUsuario = inject(UsuariosService);
+  const servicioRouter = inject(Router);
 
   const rolesQuePermiteLaVista = route.data['roles'] as Array<string>;
 
-  if (rolesQuePermiteLaVista.length == 0) {
-    return true;
+  const tieneRol: boolean = servicioUsuario.tieneRol(rolesQuePermiteLaVista);
+  if (tieneRol) {
+    return tieneRol;
+  } else {
+    servicioRouter.navigate(['home']);
+    return tieneRol;
   }
-
-  return servicioUsuario.tieneRol(rolesQuePermiteLaVista);
 };

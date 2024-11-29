@@ -8,14 +8,16 @@ export interface RespuestaLogin {
   message?: string;
   access_token?: string;
 }
-
+// enumerable con los nombre de los roles traidos del backend
 export const enum Roles {
-  JefaCarrera = 'JefaCarrera',
-  Docente = 'Docente',
-  Secretaria = 'Secretaria',
+  JEFA_CARRERA = 'JC',
+  DOCENTE = 'Docente',
+  SECRETARIO = 'Secretario',
+  COORDINADOR = 'CoordinadorPractica',
+  ADMINISTRADOR = 'Administrador',
 }
 
 export interface DecodedJWT {
-  rol: string;
+  role: string;
   username: string;
 }
