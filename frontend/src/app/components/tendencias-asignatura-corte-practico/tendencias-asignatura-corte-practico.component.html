@@ -1,19 +1,27 @@
 <div class="container mx-auto p-4 space-y-8">
   <div class="card bg-[#0369A1] shadow-lg rounded-lg p-4">
-    <h2 class="text-xl font-bold mb-4 text-white bg-[#21A4DC] p-2 rounded text-center">Gráfico de líneas</h2>
+    <h2 class="text-xl font-bold mb-4 text-white bg-[#21A4DC] p-2 rounded text-center">Promedios generales de los cohortes por asignatura</h2>
     <div class="bg-[#21A4DC] p-3 rounded space-y-3">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <label>
           <span class="text-lg text-white font-medium">Seleccionar Cohortes:</span>
           <br>
-          <p-multiSelect 
+          <!--<p-multiSelect 
             [options]="cohortesGraficoLineasTest" 
             [(ngModel)]="cohortesSeleccionadoGraficoLineasTest"
             (onChange)="cargarDatos()"
             optionLabel="label"
             filter="false"
             placeholder="Seleccionar Cohortes"
-            [showToggleAll]="true"/>
+            [showToggleAll]="true"/>-->
+          <p-multiSelect 
+            [options]="cohortesGraficoLineasTest" 
+            [(ngModel)]="cohortesSeleccionadoGraficoLineasTest"
+            (onChange)="cargarDatosNuevo()"
+            optionLabel="label"
+            filter="false"
+            placeholder="Seleccionar Cohortes"
+            [showToggleAll]="true"/> 
         </label>
       </div>
       <div *ngIf="cargando; else contenido" class="w-full flex justify-center items-center h-96">
@@ -33,14 +41,16 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <label>
           <span class="text-lg text-white font-medium">Seleccionar semestre:</span>
-            <select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="semestreSeleccionadoTest" (change)="cargarDatos()">
+            <select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="semestreSeleccionadoTest" (change)="cargarDatosNuevo()">
+            <!--<select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="semestreSeleccionadoTest" (change)="cargarDatos()">-->
               <option value="">Todos los semestres</option>
               <option *ngFor="let semestre of semestresTest" [value]="semestre">{{semestre}}</option>
             </select>
         </label>
         <label>
           <span class="text-lg text-white font-medium">Seleccionar cohortes:</span>
-            <select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="cohorteSeleccionadoGraficoBarrasTest" (change)="cargarDatos()">
+            <!--<select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="cohorteSeleccionadoGraficoBarrasTest" (change)="cargarDatos()">-->
+            <select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="cohorteSeleccionadoGraficoBarrasTest" (change)="cargarDatosNuevo()">
               <option *ngFor="let cohorte of cohortesTest" [value]="cohorte">{{cohorte}}</option>
             </select>
         </label>
@@ -62,7 +72,8 @@
       <div class="mb-4 ">
         <label>
           <span class="text-lg text-white font-medium">Filtrar por cohorte:</span>
-            <select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="cohorteSeleccionado" (change)="cargarDatos()">
+            <!--<select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="cohorteSeleccionado" (change)="cargarDatos()">-->
+            <select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="cohorteSeleccionado" (change)="cargarDatosNuevo()">
               <option value="">Todos los Cohortes</option>
               <option *ngFor="let cohorte of cohortesTest" [value]="cohorte">{{cohorte}}</option>
             </select>

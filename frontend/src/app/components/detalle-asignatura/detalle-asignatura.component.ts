@@ -228,102 +228,71 @@ export class DetalleAsignaturaComponent implements OnInit {
     }, 1000);
   
     if (this.anioSeleccionado) {
-      // Filtros por año seleccionado en promedios generales
-      const promedioAnio = this.detalleAsignaturaNuevo.promedios.general.filter(
-        (promedio) => promedio.agnio === Number(this.anioSeleccionado)
-      );
+      const promedioAnio = this.detalleAsignaturaNuevo.promedios.general.filter((promedio) => promedio.agnio === Number(this.anioSeleccionado))
       if (promedioAnio.length > 0) {
-        this.promedioGeneral = parseFloat(promedioAnio[0].promedio.toFixed(2));
+        this.promedioGeneral = parseFloat(promedioAnio[0].promedio.toFixed(2))
       }
   
-      // Filtros por año seleccionado en aprobaciones generales
-      const aprobacionAnio = this.detalleAsignaturaNuevo.aprobaciones.general.filter(
-        (aprobacion) => aprobacion.agnio === Number(this.anioSeleccionado)
-      );
+      const aprobacionAnio = this.detalleAsignaturaNuevo.aprobaciones.general.filter((aprobacion) => aprobacion.agnio === Number(this.anioSeleccionado))
       if (aprobacionAnio.length > 0) {
-        this.aprobacionGeneral = parseFloat(aprobacionAnio[0].aprobacion.toFixed(2));
+        this.aprobacionGeneral = parseFloat(aprobacionAnio[0].aprobacion.toFixed(2))
       }
   
-      // Filtrar promedios por plan para el año seleccionado
-      this.promediosPorPlan = this.detalleAsignaturaNuevo.promedios.promediosPorPlan
-        .filter((plan) => plan.agnio === Number(this.anioSeleccionado))
-        .map((plan) => ({
+      this.promediosPorPlan = this.detalleAsignaturaNuevo.promedios.promediosPorPlan.filter((plan) => plan.agnio === Number(this.anioSeleccionado)).map((plan) => ({
           codigoPlan: plan.codigoPlan,
           promedio: parseFloat(
             (
-              this.detalleAsignaturaNuevo.promedios.promediosPorPlan
-                .filter((p) => p.codigoPlan === plan.codigoPlan && p.agnio === Number(this.anioSeleccionado))
-                .reduce((acc, p) => acc + p.promedio, 0) /
-              this.detalleAsignaturaNuevo.promedios.promediosPorPlan.filter(
-                (p) => p.codigoPlan === plan.codigoPlan && p.agnio === Number(this.anioSeleccionado)
-              ).length
+              this.detalleAsignaturaNuevo.promedios.promediosPorPlan.filter((p) => p.codigoPlan === plan.codigoPlan && p.agnio === Number(this.anioSeleccionado)).reduce((acc, p) => acc + p.promedio, 0) /
+              this.detalleAsignaturaNuevo.promedios.promediosPorPlan.filter((p) => p.codigoPlan === plan.codigoPlan && p.agnio === Number(this.anioSeleccionado)).length
             ).toFixed(2)
           ),
-        }));
+        }))
   
-      // Filtrar aprobaciones por plan para el año seleccionado
-      this.aprobacionesPorPlan = this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan
-        .filter((plan) => plan.agnio === Number(this.anioSeleccionado))
-        .map((plan) => ({
+      this.aprobacionesPorPlan = this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan.filter((plan) => plan.agnio === Number(this.anioSeleccionado)).map((plan) => ({
           codigoPlan: plan.codigoPlan,
           aprobacion: parseFloat(
             (
-              this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan
-                .filter((a) => a.codigoPlan === plan.codigoPlan && a.agnio === Number(this.anioSeleccionado))
-                .reduce((acc, a) => acc + a.aprobacion, 0) /
-              this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan.filter(
-                (a) => a.codigoPlan === plan.codigoPlan && a.agnio === Number(this.anioSeleccionado)
-              ).length
+              this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan.filter((a) => a.codigoPlan === plan.codigoPlan && a.agnio === Number(this.anioSeleccionado)).reduce((acc, a) => acc + a.aprobacion, 0) /
+              this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan.filter((a) => a.codigoPlan === plan.codigoPlan && a.agnio === Number(this.anioSeleccionado)).length
             ).toFixed(2)
           ),
         }));
     } else {
-      // Si no se selecciona un año, calculamos los promedios y aprobaciones generales sin filtro
       this.promedioGeneral = parseFloat(
         (
-          this.detalleAsignaturaNuevo.promedios.general
-            .map((promedio) => promedio.promedio)
-            .reduce((acc, promedio) => acc + promedio, 0) /
+          this.detalleAsignaturaNuevo.promedios.general.map((promedio) => promedio.promedio).reduce((acc, promedio) => acc + promedio, 0) /
           this.detalleAsignaturaNuevo.promedios.general.length
         ).toFixed(2)
-      );
+      )
   
       this.aprobacionGeneral = parseFloat(
         (
-          this.detalleAsignaturaNuevo.aprobaciones.general
-            .map((aprobacion) => aprobacion.aprobacion)
-            .reduce((acc, aprobacion) => acc + aprobacion, 0) /
+          this.detalleAsignaturaNuevo.aprobaciones.general.map((aprobacion) => aprobacion.aprobacion).reduce((acc, aprobacion) => acc + aprobacion, 0) /
           this.detalleAsignaturaNuevo.aprobaciones.general.length
         ).toFixed(2)
-      );
+      )
   
-      // Si no hay filtro de año, mostramos todos los planes sin filtrar
       this.promediosPorPlan = this.detalleAsignaturaNuevo.promedios.promediosPorPlan.map((plan) => ({
         codigoPlan: plan.codigoPlan,
         promedio: parseFloat(
           (
-            this.detalleAsignaturaNuevo.promedios.promediosPorPlan
-              .filter((p) => p.codigoPlan === plan.codigoPlan)
-              .reduce((acc, p) => acc + p.promedio, 0) /
+            this.detalleAsignaturaNuevo.promedios.promediosPorPlan.filter((p) => p.codigoPlan === plan.codigoPlan).reduce((acc, p) => acc + p.promedio, 0) /
             this.detalleAsignaturaNuevo.promedios.promediosPorPlan.filter((p) => p.codigoPlan === plan.codigoPlan).length
           ).toFixed(2)
         ),
-      }));
+      }))
   
       this.aprobacionesPorPlan = this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan.map((plan) => ({
         codigoPlan: plan.codigoPlan,
         aprobacion: parseFloat(
           (
-            this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan
-              .filter((a) => a.codigoPlan === plan.codigoPlan)
-              .reduce((acc, a) => acc + a.aprobacion, 0) /
+            this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan.filter((a) => a.codigoPlan === plan.codigoPlan).reduce((acc, a) => acc + a.aprobacion, 0) /
             this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan.filter((p) => p.codigoPlan === plan.codigoPlan).length
           ).toFixed(2)
         ),
-      }));
+      }))
     }
   
-    // Opciones de gráfico
     this.chartOptions = {
       responsive: true,
       plugins: {
@@ -393,10 +362,10 @@ export class DetalleAsignaturaComponent implements OnInit {
         },
       },
       backgroundColor: '#ffffff',
-    };
+    }
   
-    this.chartData = this.filtrarGraficoBarra();
-    this.cohortesSeleccionadosGraficoBarras.sort((a, b) => a.value - b.value);
+    this.chartData = this.filtrarGraficoBarraNuevo()
+    this.cohortesSeleccionadosGraficoBarras.sort((a, b) => a.value - b.value)
   }
 
   public filtrarGraficoBarra() {
@@ -421,6 +390,39 @@ export class DetalleAsignaturaComponent implements OnInit {
         backgroundColor: this.getRandomColor(),
         data: cohortesFiltrados.map(cohorte => {
           const datosCohorte = this.detalleAsignatura.aprobaciones.cohortes.filter(c => c.cohorte === cohorte && c.tipoIngreso === tipoIngreso)
+          return parseFloat((datosCohorte.reduce((acc, c) => acc + c.aprobacion, 0) / datosCohorte.length || 0).toFixed(2))
+        }),
+      })
+    })
+
+    datasets.map(a=>a.data.sort())
+    labels.sort()
+  
+    return {labels, datasets}
+  }
+
+  public filtrarGraficoBarraNuevo() {
+    const cohortesFiltrados = this.cohortesSeleccionadosGraficoBarras.map(c => c.value)
+    const tipoIngresos = Array.from(new Set(this.detalleAsignaturaNuevo.promedios.cohortes.map(c => c.plan)))
+    const labels = cohortesFiltrados.map((cohorte) => this.detalleAsignaturaNuevo.aprobaciones.cohortes.find((a) => a.cohorte === cohorte)?.cohorte.toString() || '')
+  
+    const datasets = [
+      {
+        label: 'General',
+        backgroundColor: this.getRandomColor(),
+        data: cohortesFiltrados.map(cohorte => {
+          const datosCohorte = this.detalleAsignaturaNuevo.aprobaciones.cohortes.filter(c => c.cohorte === cohorte)
+          return parseFloat((datosCohorte.reduce((acc, c) => acc + c.aprobacion, 0) / datosCohorte.length || 0).toFixed(2))
+        }),
+      },
+    ]
+  
+    tipoIngresos.forEach((plan, index) => {
+      datasets.push({
+        label: plan,
+        backgroundColor: this.getRandomColor(),
+        data: cohortesFiltrados.map(cohorte => {
+          const datosCohorte = this.detalleAsignaturaNuevo.aprobaciones.cohortes.filter(c => c.cohorte === cohorte && c.plan === plan)
           return parseFloat((datosCohorte.reduce((acc, c) => acc + c.aprobacion, 0) / datosCohorte.length || 0).toFixed(2))
         }),
       })

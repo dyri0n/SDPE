@@ -82,10 +82,18 @@
       <label>
         <span class="text-lg text-white font-medium">Seleccionar Cohortes:</span>
         <br>
-        <p-multiSelect 
+        <!--<p-multiSelect 
         [options]="cohortesGraficoBarras" 
         [(ngModel)]="cohortesSeleccionadosGraficoBarras"
         (onChange)="cargarDatos()"
+        optionLabel="label"
+        filter="false"
+        placeholder="Seleccionar Cohortes"
+        [showToggleAll]="true"/>-->
+        <p-multiSelect 
+        [options]="cohortesGraficoBarras" 
+        [(ngModel)]="cohortesSeleccionadosGraficoBarras"
+        (onChange)="cargarDatosNuevo()"
         optionLabel="label"
         filter="false"
         placeholder="Seleccionar Cohortes"

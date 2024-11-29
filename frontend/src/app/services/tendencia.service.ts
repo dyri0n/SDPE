@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { TendenciasCortePracticoDTO } from '../models/asignatura.dto';
+import { AsignaturaDetalleDTO, ReporteAsignaturaDTO, TendenciasCortePracticoDTO } from '../models/asignatura.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,11 @@ export class TendenciaService {
   }
 
   public obtenerAsignaturasTest(): Observable<TendenciasCortePracticoDTO[]>{
-    return this.http.get<TendenciasCortePracticoDTO[]>(this.apiUrl + '/')
+    return this.http.get<TendenciasCortePracticoDTO[]>(this.apiUrl)
+  }
+
+  public obtenerAsignaturasTestNuevo  (): Observable<ReporteAsignaturaDTO[]>{
+    return this.http.get<ReporteAsignaturaDTO[]>(this.apiUrl)
   }
 
 }
