@@ -9,7 +9,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
-    "prisma:gen": "prisma generate && prisma generate --sql && psql postgresql://testdb_owner:80qaoYpKvcgs@ep-fragrant-wave-a4xf8ris.us-east-1.aws.neon.tech/testdb?sslmode=require -f prisma/sql/prismaSincronizaLosAutoIncrementales.sql",
+    "prisma:gen": "prisma generate && prisma generate --sql",
     "prisma:dev": "prisma migrate dev",
     "prisma:pull": "prisma db pull",
     "prisma:push:dev": "npm run prisma:gen && npm run prisma:dev",
