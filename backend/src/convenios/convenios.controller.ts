@@ -48,7 +48,7 @@ export class ConveniosController {
   @UseInterceptors(
     FilesInterceptor('files', 2, {
       storage: diskStorage({
-        destination: './dist/documents/convenios',
+        destination: './documents/convenios',
         filename: (req, file, callback) => {
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);
