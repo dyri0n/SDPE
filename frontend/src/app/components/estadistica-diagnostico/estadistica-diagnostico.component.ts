@@ -8,6 +8,7 @@ import { Asignatura } from '../../models/asignaturas.dto';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { AsignaturaDetalleDTO, AsignaturaFluxogramaNuevo } from '../../models/asignatura.dto';
 
 @Component({
   selector: 'app-estadistica-diagnostico',
@@ -18,7 +19,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 })
 export class EstadisticaDiagnosticoComponent implements OnInit {
   ngOnInit(): void {
-    this.idAsignatura = +this.route.snapshot.paramMap.get('idAsignatura')!;
+    this.cursoAsignatura = this.route.snapshot.paramMap.get('codigoAsignatura')!;
     this.idFluxograma = +this.route.snapshot.paramMap.get('idFluxograma')!
     this.servicioDiagnosticos.obtenerPromedios().subscribe(diagnosticos=>{
       this.cargando = true
@@ -27,7 +28,8 @@ export class EstadisticaDiagnosticoComponent implements OnInit {
       }, 1000)
       this.anios = Array.from(new Set(diagnosticos.map(diagnostico => diagnostico.año))).sort().map(año => ({ label: año.toString(), value: año }))
       this.aniosSeleccionados = [...this.anios]
-      this.obtenerNombreAsignatura();
+      //this.obtenerNombreAsignatura();
+      this.obtenerNombreAsignaturaNuevo();
       this.obtenerPromedios();
     })
     
@@ -40,7 +42,9 @@ export class EstadisticaDiagnosticoComponent implements OnInit {
   ) {}
 
   public asignatura: string = '';
+  public asignaturaNueva?: AsignaturaDetalleDTO
   public idAsignatura: number = 0;
+  public cursoAsignatura: string= ''
   public idFluxograma: number = 0
   public labels: string[] = [];
   public data: any;
@@ -133,6 +137,14 @@ export class EstadisticaDiagnosticoComponent implements OnInit {
       .obtenerNombreAsignatura(this.idAsignatura)
       .subscribe((asignatura) => {
         this.asignatura = asignatura.nombre;
+      });
+  }
+
+  public obtenerNombreAsignaturaNuevo() {
+    this.servicioDiagnosticos
+      .obtenerNombreAsignaturaNuevo(this.cursoAsignatura)
+      .subscribe((asignatura) => {
+        this.asignaturaNueva = asignatura;
       });
   }
 

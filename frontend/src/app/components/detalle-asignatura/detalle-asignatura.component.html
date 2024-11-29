@@ -8,7 +8,8 @@
     </h2>
     <label>
       <span class="text-lg text-white font-medium">Seleccionar años:</span>
-        <select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="anioSeleccionado" (change)="cargarDatos()">
+        <!--<select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="anioSeleccionado" (change)="cargarDatos()">-->
+        <select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="anioSeleccionado" (change)="cargarDatosNuevo()">  
           <option value="">Todos los años</option>
           <option *ngFor="let anio of anios" [value]="anio">{{anio}}</option>
         </select>
@@ -16,7 +17,7 @@
     <div *ngIf="cargando; else contenido" class="w-full flex justify-center items-center h-96">
       <div class="spinner-border animate-spin inline-block w-16 h-16 border-4 rounded-full border-t-transparent border-[#21A4DC]"></div>
     </div>
-    <ng-template #contenido>
+    <!--<ng-template #contenido>
       <div class="grid grid-cols-2 gap-4 md:grid-cols-3 mt-12">
         <div class="bg-white p-4 rounded-md shadow-md text-center">
           <p class="text-gray-600">Promedio</p>
@@ -42,6 +43,34 @@
           <p class="text-gray-600">Porcentaje Aprobación Prosecución de Estudios</p>
           <p class="text-3xl font-bold">{{aprobacionProsecucion}}%</p>
         </div>
+      </div>
+    </ng-template>-->
+    <ng-template #contenido>
+      <div class="grid grid-cols-2 gap-4 md:grid-cols-3 mt-12">
+        <div class="bg-white p-4 rounded-md shadow-md text-center">
+          <p class="text-gray-600">Promedio General</p>
+          <p class="text-3xl font-bold">{{ promedioGeneral }}</p>
+        </div>
+        <div class="bg-white p-4 rounded-md shadow-md text-center">
+          <p class="text-gray-600">Porcentaje Aprobación General</p>
+          <p class="text-3xl font-bold">{{ aprobacionGeneral }}%</p>
+        </div>
+    
+        <!-- Promedios por Plan -->
+        <ng-container *ngFor="let promedio of promediosPorPlan">
+          <div class="bg-white p-4 rounded-md shadow-md text-center">
+            <p class="text-gray-600">Promedio Plan {{ promedio.codigoPlan }}</p>
+            <p class="text-3xl font-bold">{{ promedio.promedio }}</p>
+          </div>
+        </ng-container>
+    
+        <!-- Aprobaciones por Plan -->
+        <ng-container *ngFor="let aprobacion of aprobacionesPorPlan">
+          <div class="bg-white p-4 rounded-md shadow-md text-center">
+            <p class="text-gray-600">Aprobación Plan {{ aprobacion.codigoPlan }}</p>
+            <p class="text-3xl font-bold">{{ aprobacion.aprobacion }}%</p>
+          </div>
+        </ng-container>
       </div>
     </ng-template>
   </div>

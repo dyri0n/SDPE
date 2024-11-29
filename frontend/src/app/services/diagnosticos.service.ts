@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Asignatura } from '../models/asignaturas.dto';
 import { AsignaturaSola } from '../models/asignaturaSola.dto';
+import { AsignaturaDetalleDTO, AsignaturaFluxogramaNuevo } from '../models/asignatura.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -40,5 +41,11 @@ export class DiagnosticosService {
     idAsignatura: number
   ): Observable<AsignaturaSola> {
     return this.http.get<AsignaturaSola>(this.apiUrl + '/' + idAsignatura);
+  }
+
+  public obtenerNombreAsignaturaNuevo(
+    codigoAsignatura: string
+  ): Observable<AsignaturaDetalleDTO> {
+    return this.http.get<AsignaturaDetalleDTO>(this.apiUrl + '/' + codigoAsignatura);
   }
 }

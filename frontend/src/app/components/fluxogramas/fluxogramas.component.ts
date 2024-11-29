@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Fluxograma } from '../../models/Fluxograma.model';
+import { Fluxograma, FluxogramaNuevo } from '../../models/Fluxograma.model';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FluxogramaService } from '../../services/fluxograma.service';
@@ -24,13 +24,18 @@ export class FluxogramasComponent implements OnInit {
     this.cargarFluxogramas();
   }
 
-  fluxogramas: Fluxograma[] = [];
+  public fluxogramas: Fluxograma[] = [];
+  public fluxogramasNuevo: FluxogramaNuevo[] = [];
   public cargando = true
   public timeout: any
 
   public cargarFluxogramas(): void {
     this.fluxogramaService.obtenerFluxogramas().subscribe((fluxogramas) => {
       this.fluxogramas = fluxogramas
+    });
+    this.fluxogramaService.obtenerFluxogramasNuevo().subscribe((fluxogramas) => {
+      this.fluxogramasNuevo = fluxogramas
+      console.log(this.fluxogramasNuevo)
     });
     this.timeout = setTimeout(() => {this.cargando = false}, 1000)
   }

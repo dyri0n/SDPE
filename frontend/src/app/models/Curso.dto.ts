@@ -13,4 +13,12 @@ export interface AprobacionCursoDTO{
     tipoIngreso: string;
     aprobacion: number;
 }
+
+export interface AprobacionCursoDTONuevo{
+    agnio: number;
+    cohorte: number;
+    plan: string;
+    aprobacion: number;
+}
+  
   

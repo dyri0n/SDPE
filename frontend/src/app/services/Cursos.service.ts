@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { AprobacionCursoDTO, CursoDTO } from '../models/Curso.dto';
+import { AprobacionCursoDTO, AprobacionCursoDTONuevo, CursoDTO } from '../models/Curso.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -20,5 +20,9 @@ export class CursosService {
 
   public aprobacionPorCurso(idCurso: number): Observable<AprobacionCursoDTO[]>{
     return this.http.get<AprobacionCursoDTO[]>(this.apiUrl + '/' + idCurso)
+  }
+
+  public aprobacionPorCursoNuevo(codigoAsignatura: string): Observable<AprobacionCursoDTONuevo[]>{
+    return this.http.get<AprobacionCursoDTONuevo[]>(this.apiUrl + '/' + codigoAsignatura)
   }
 }

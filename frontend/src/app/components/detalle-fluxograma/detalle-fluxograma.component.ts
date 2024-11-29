@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FluxogramaService } from '../../services/fluxograma.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AsignaturaFluxograma } from '../../models/asignatura.dto';
-import { Fluxograma } from '../../models/Fluxograma.model';
+import { AsignaturaFluxograma, AsignaturaFluxogramaNuevo } from '../../models/asignatura.dto';
+import { Fluxograma, FluxogramaNuevo } from '../../models/Fluxograma.model';
 
 @Component({
   selector: 'app-detalle-fluxograma',
@@ -25,8 +25,10 @@ export class DetalleFluxogramaComponent implements OnInit {
   }
 
   detalleFluxograma?: AsignaturaFluxograma[];
+  detalleFluxogramaNuevo?: AsignaturaFluxogramaNuevo[];
   public idFluxograma: number = 0;
   fluxograma?: Fluxograma;
+  fluxogramaNuevo?: FluxogramaNuevo;
 
   semestres: string[] = [];
 
@@ -62,18 +64,20 @@ export class DetalleFluxogramaComponent implements OnInit {
     return asignatura.caracter === 'PRACTICA';
   }
 
+  public esCortePracticoNuevo(caracter: string): boolean {
+    return caracter === 'PRACTICA';
+  }
+
   public detalleAsignatura(
     idAsignatura: number,
-    nombreAsignatura: string,
-    previas: { idAsignaturaTributada: number }[],
-    tributa: { idAsignaturaRequerida: number }[]
+    codigoAsignatura: string
   ) {
     this.detalleFluxograma!.forEach((asignatura) => {
       if (asignatura.idAsignatura === idAsignatura) {
         if (asignatura.caracter === 'PRACTICA') {
-          this.router.navigate(['/estadisticas/', this.idFluxograma, idAsignatura]);
+          this.router.navigate(['/estadisticas/', this.idFluxograma, codigoAsignatura]);
         } else {
-          this.router.navigate(['/aprobacion/', this.idFluxograma, idAsignatura]);
+          this.router.navigate(['/aprobacion/', this.idFluxograma, codigoAsignatura]);
         }
       }
     });
@@ -111,9 +115,26 @@ export class DetalleFluxogramaComponent implements OnInit {
         this.semestres = this.obtenerSemestres(semestres);
       });
     this.servicioFluxograma
+      .obtenerDetalleFluxogramaNuevo(this.idFluxograma)
+      .subscribe((detalleFluxograma) => {
+        let semestres = 0;
+        this.detalleFluxogramaNuevo = detalleFluxograma;
+        detalleFluxograma.forEach((asignatura) => {
+          if (asignatura.semestre > semestres) {
+            semestres = asignatura.semestre;
+          }
+        });
+        this.semestres = this.obtenerSemestres(semestres);
+      });
+    this.servicioFluxograma
       .obtenerFluxogramaPorID(this.idFluxograma)
       .subscribe((fluxograma) => {
         this.fluxograma = fluxograma;
+      });
+      this.servicioFluxograma
+      .obtenerFluxogramaPorIDNuevo(this.idFluxograma)
+      .subscribe((fluxograma) => {
+        this.fluxogramaNuevo = fluxograma;
       });
   }
 
