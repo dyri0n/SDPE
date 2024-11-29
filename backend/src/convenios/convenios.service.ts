@@ -14,6 +14,7 @@ import {
 import { ListarConvenioDTO } from '../practicas/dto/listar.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { UpdateConvenioDTO, CreateConvenioDTO } from './dto';
+import * as fs from 'fs';
 
 @Injectable()
 export class ConveniosService {
@@ -195,6 +196,7 @@ export class ConveniosService {
     pdfPath: string,
     imagePath: string,
   ) {
+    const pathsArchivos: string[] = [pdfPath, imagePath];
     try {
       const nuevoConvenio = await this.prisma.convenio.create({
         data: {
@@ -218,6 +220,17 @@ export class ConveniosService {
         // unique constraint
         if (error.code === 'P2002') {
           console.error(error);
+          try {
+            //console.log(pathsArchivos);
+            pathsArchivos.forEach((path) => {
+              if (fs.existsSync(path)) {
+                fs.unlinkSync(path); //si el nuevo convenio no es válido se borra
+              }
+            });
+          } catch (unlinkError) {
+            console.error(`Error al eliminar el archivo`, unlinkError);
+          }
+          //lanza la excepción de duplicados
           throw new ForbiddenException('Información Duplicada');
         }
       } else {
@@ -238,6 +251,7 @@ export class ConveniosService {
     pdfPath: string,
     imagePath: string,
   ) {
+    const pathsArchivos: string[] = [pdfPath, imagePath];
     try {
       const nuevoConvenio = await this.prisma.convenio.create({
         data: {
@@ -261,6 +275,16 @@ export class ConveniosService {
         // unique constraint
         if (error.code === 'P2002') {
           console.error(error);
+          try {
+            //console.log(pathsArchivos);
+            pathsArchivos.forEach((path) => {
+              if (fs.existsSync(path)) {
+                fs.unlinkSync(path); //si el nuevo convenio no es válido se borra
+              }
+            });
+          } catch (unlinkError) {
+            console.error(`Error al eliminar el archivo`, unlinkError);
+          }
           throw new ForbiddenException('Información Duplicada');
         }
       } else {

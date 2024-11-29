@@ -29,7 +29,7 @@ import * as path from 'path';
     EstudiantesModule,
     AuthModule,
     LineaAsignaturaModule,
-    MulterModule.register({ dest: './dist/documents/convenios' }),
+    MulterModule.register({ dest: './documents/convenios' }),
     ServeStaticModule.forRoot({
       rootPath: path.join(__dirname, '..', 'documents'),
       serveRoot: '/documents',
