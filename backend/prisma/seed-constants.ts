@@ -9,36 +9,166 @@ import {
   Usuario,
 } from '@prisma/client';
 
-export const ESTUDIANTES: Estudiante[] = [
-  {
-    idEstudiante: 1,
-    rut: '21.111.111-1',
-    nombreCompleto: 'Valentina Andrea Rojas Morales',
-    nombreSocial: 'Valentina Andrea Rojas Morales',
-    agnioIngreso: 2019,
-  },
-  {
-    idEstudiante: 2,
-    rut: '22.222.222-2',
-    nombreCompleto: 'Matías Joaquín Contreras López',
-    nombreSocial: 'Matías Joaquín Contreras López',
-    agnioIngreso: 2020,
-  },
-  {
-    idEstudiante: 3,
-    rut: '23.333.333-3',
-    nombreCompleto: 'Francisca Antonia Silva Torres',
-    nombreSocial: 'Francisca Antonia Silva Torres',
-    agnioIngreso: 2019,
-  },
-  {
-    idEstudiante: 4,
-    rut: '24.444.444-4',
-    nombreCompleto: 'Carlos Alberto Fuentes Castillo',
-    nombreSocial: 'Martina Fuentes Castillo',
-    agnioIngreso: 2020,
-  },
+const nombres = [
+  'Valentina',
+  'Andrea',
+  'Camila',
+  'Sebastián',
+  'Diego',
+  'Joaquín',
+  'Antonia',
+  'Isabella',
+  'Martín',
+  'Mateo',
+  'Emilia',
+  'Benjamín',
+  'Renata',
+  'Lucas',
+  'Tomás',
+  'Catalina',
+  'Matías',
+  'Sofía',
+  'Maximiliano',
+  'Josefa',
+  'Emilio',
+  'Florencia',
+  'Javier',
+  'Valeria',
+  'Juan Pablo',
+  'Ignacia',
+  'Francisco',
+  'María José',
+  'Agustín',
+  'Antonella',
+  'Gabriel',
+  'Daniela',
+  'Pablo',
+  'Isidora',
+  'Martín',
+  'Mía',
+  'Matías',
+  'Antonia',
+  'Bastian',
+  'Valentina',
+  'Diego',
+  'Amalia',
+  'Felipe',
+  'Catalina',
+  'Tomás',
+  'Renata',
+  'Lucas',
+  'Josefina',
+  'Maximiliano',
+  'Emilia',
 ];
+
+const apellidos = [
+  'Rojas',
+  'Morales',
+  'Soto',
+  'Pérez',
+  'González',
+  'Muñoz',
+  'Silva',
+  'Torres',
+  'López',
+  'Díaz',
+  'Castro',
+  'Ramírez',
+  'Bravo',
+  'Herrera',
+  'Gómez',
+  'Álvarez',
+  'Flores',
+  'Vargas',
+  'Espinoza',
+  'Araya',
+  'Ruiz',
+  'Sepúlveda',
+  'Fernández',
+  'Riquelme',
+  'Orellana',
+  'Pérez',
+  'González',
+  'Muñoz',
+  'Martínez',
+  'Castro',
+  'Morales',
+  'Rodríguez',
+  'López',
+  'Navarro',
+  'Suárez',
+  'González',
+  'Martínez',
+  'Pérez',
+  'Torres',
+  'Aravena',
+  'Soto',
+  'Mendoza',
+  'Bravo',
+  'Gómez',
+  'Araya',
+  'González',
+  'Ramírez',
+  'Herrera',
+  'Silva',
+  'Torres',
+];
+
+// Arreglo de años desde 2012 hasta 2024
+const años = Array.from({ length: 13 }, (_, index) => 2012 + index);
+
+// Función para generar estudiantes aleatorios con dos nombres y dos apellidos
+export function generarEstudiantes(cantidad): Estudiante[] {
+  const estudiantes = [];
+
+  for (let i = 1; i <= cantidad; i++) {
+    const nombre1 = nombres[Math.floor(Math.random() * nombres.length)];
+    const nombre2 = nombres[Math.floor(Math.random() * nombres.length)];
+
+    const apellido1 = apellidos[Math.floor(Math.random() * apellidos.length)];
+    const apellido2 = apellidos[Math.floor(Math.random() * apellidos.length)];
+
+    const nro_rut = 10_000_000 + i;
+    const nro_rut_formateado = formatearNumeroConSeparador(nro_rut, '.');
+
+    const digito_verificador = i % 11 == 10 ? 0 : i % 11 == 0 ? 'k' : i % 11;
+
+    const rut = `${nro_rut_formateado}-${digito_verificador}`;
+
+    // const rut = `21.${i}${i}${i}.${i}${i}${i}-1`;
+
+    const añoIngreso = años[Math.floor(Math.random() * años.length)];
+    const nombreCompleto = `${nombre1} ${nombre2} ${apellido1} ${apellido2}`;
+
+    const estudiante = {
+      idEstudiante: i,
+      rut: rut,
+      nombreCompleto: nombreCompleto,
+      nombreSocial: nombreCompleto,
+      agnioIngreso: añoIngreso,
+    } as Estudiante;
+
+    estudiantes.push(estudiante);
+  }
+  return estudiantes;
+}
+
+function formatearNumeroConSeparador(numero, separador) {
+  // Convertir el número a string
+  const numeroString = numero.toString();
+
+  // Separar parte entera de parte decimal (si existe)
+  const partes = numeroString.split('.');
+  let parteEntera = partes[0];
+  const parteDecimal = partes.length > 1 ? '.' + partes[1] : '';
+
+  // Aplicar separadores de miles
+  parteEntera = parteEntera.replace(/\B(?=(\d{3})+(?!\d))/g, separador);
+
+  // Concatenar parte entera y parte decimal
+  return parteEntera + parteDecimal;
+}
 
 export const ASIGNATURAS: Asignatura[] = [
   // TODO NO ESTAN LOS CARACTERES BIEN PUESTOS, REVISAR DONDE SACARLOS

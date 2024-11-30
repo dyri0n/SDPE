@@ -24,7 +24,7 @@ async function main() {
 
   const estudiantesInsertados: Estudiante[] =
     await prisma.estudiante.createManyAndReturn({
-      data: constants.ESTUDIANTES,
+      data: constants.generarEstudiantes(1000),
     });
 
   moreLog(estudiantesInsertados);
@@ -139,11 +139,11 @@ async function main() {
 
           cursacionesQueries.push({
             idCursacion: cursacionId,
-            agnio: 2024,
+            agnio: estudiante.agnioIngreso + (cursacionId % 6),
             notaFinal: nota,
             grupo: Math.random() > 0.5 ? 'A' : 'B',
             numIntento: intentoActual,
-            semestreRelativo: Math.random() * 10,
+            semestreRelativo: Math.ceil(Math.random() * 2),
 
             idPlan: asignaturaCursada.idPlan,
             idAsignatura: asignaturaCursada.idAsignatura,
