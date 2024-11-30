@@ -175,8 +175,8 @@ export class ConveniosService {
         data: {
           titulo: update.titulo,
           centroPractica: update.centroPractica,
-          fechaInicioConvenio: new Date(update.fechaInicioConvenio),
-          fechaFinConvenio: new Date(update.fechaFinConvenio),
+          fechaInicioConvenio: update.fechaInicioConvenio,
+          fechaFinConvenio: update.fechaFinConvenio,
           documentoConvenio: documentoConvenio ?? update.documentoConvenio,
           urlFoto: urlFoto ?? update.urlFoto,
           Modalidad: datosModalidad,

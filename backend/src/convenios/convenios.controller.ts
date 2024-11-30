@@ -52,8 +52,8 @@ export class ConveniosController {
   ) {
     const pdfFile = files.find((file) => file.mimetype === 'application/pdf');
     const imageFile = files.find((file) => file.mimetype.startsWith('image/'));
-    const pdfPath = pdfFile.path;
-    const imagePath = imageFile.path;
+    const pdfPath = pdfFile?.path;
+    const imagePath = imageFile?.path;
 
     return this.convenioService.updateConvenio(
       idConvenio,
