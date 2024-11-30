@@ -156,27 +156,46 @@ export class ConveniosService {
 
   // TODO
   //Usado para actualizar la información de un convenio
-  async updateConvenio(idConvenio: number, update: UpdateConvenioDTO) {
+  async updateConvenio(
+    idConvenio: number,
+    update: UpdateConvenioDTO,
+    urlFoto: string,
+    documentoConvenio: string,
+  ) {
+    const pathsArchivos: string[] = [urlFoto, documentoConvenio];
     try {
+      //usa == en lugar de === porque no sé si viene como string o numero
+      const datosModalidad =
+        update.idModalidad == 0
+          ? { create: { nombreModalidad: update.nombreModalidad } }
+          : { connect: { idModalidad: update.idModalidad } };
+
       return await this.prisma.convenio.update({
-        where: { idConvenio: idConvenio },
+        where: { idConvenio },
         data: {
           titulo: update.titulo,
           centroPractica: update.centroPractica,
           fechaInicioConvenio: new Date(update.fechaInicioConvenio),
           fechaFinConvenio: new Date(update.fechaFinConvenio),
-          documentoConvenio: update.documentoConvenio,
-          urlFoto: update.urlFoto,
-          Modalidad: {
-            connect: {
-              idModalidad: update.idModalidad,
-            },
-          },
+          documentoConvenio: documentoConvenio ?? update.documentoConvenio,
+          urlFoto: urlFoto ?? update.urlFoto,
+          Modalidad: datosModalidad,
         },
       });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         console.error(error);
+        //en caso de ocurrir errores con el update, se borran los paths del interceptor
+        try {
+          //console.log(pathsArchivos);
+          pathsArchivos.forEach((path) => {
+            if (fs.existsSync(path)) {
+              fs.unlinkSync(path);
+            }
+          });
+        } catch (unlinkError) {
+          console.error(`Error al eliminar el archivo`, unlinkError);
+        }
         throw new BadRequestException('Error en los datos de la query');
       } else {
         throw error;
@@ -191,13 +210,18 @@ export class ConveniosService {
    * @param imagePath Ruta de la imagen subida (o la imagen por defecto)
    * @returns {Convenio} El convenio creado
    */
-  async createConvenioConTituloModalidad(
+  async createConvenio(
     create: CreateConvenioDTO,
     pdfPath: string,
     imagePath: string,
   ) {
     const pathsArchivos: string[] = [pdfPath, imagePath];
     try {
+      //usa == en lugar de === porque no sé si viene como string o numero
+      const datosModalidad =
+        create.idModalidad == 0
+          ? { create: { nombreModalidad: create.nombreModalidad } }
+          : { connect: { idModalidad: create.idModalidad } };
       const nuevoConvenio = await this.prisma.convenio.create({
         data: {
           titulo: create.titulo,
@@ -206,11 +230,7 @@ export class ConveniosService {
           fechaFinConvenio: create.fechaFinConvenio,
           documentoConvenio: pdfPath,
           urlFoto: imagePath,
-          Modalidad: {
-            create: {
-              nombreModalidad: create.nombreModalidad,
-            },
-          },
+          Modalidad: datosModalidad,
         },
       });
 
@@ -224,7 +244,7 @@ export class ConveniosService {
             //console.log(pathsArchivos);
             pathsArchivos.forEach((path) => {
               if (fs.existsSync(path)) {
-                fs.unlinkSync(path); //si el nuevo convenio no es válido se borra
+                fs.unlinkSync(path); //si el nuevo convenio no es válido se borran sus archivos
               }
             });
           } catch (unlinkError) {
@@ -238,7 +258,7 @@ export class ConveniosService {
       }
     }
   }
-
+  /*
   /**
    * Usado para crear un convenio referenciando una modalidad ya creada
    * @param create DTO para crear el convenio junto al identificador de modalidad
@@ -246,6 +266,7 @@ export class ConveniosService {
    * @param imagePath Ruta de la imagen subida (o la imagen por defecto)
    * @returns {Convenio} El convenio creado
    */
+  /*
   async createConvenioConRefModalidad(
     create: CreateConvenioDTO,
     pdfPath: string,
@@ -292,6 +313,7 @@ export class ConveniosService {
       }
     }
   }
+  */
 
   /**
    * Crea una modalidad nueva
