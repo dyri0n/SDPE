@@ -1,54 +1,56 @@
 import { Component } from '@angular/core';
 import { AlumnoService } from '../../services/alumno.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { DetallesPracticaDTO } from '../../models/practica';
 import { AccordionModule } from 'primeng/accordion';
 import { InfoPracticaDTO } from '../../models/practica';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SkeletonModule } from 'primeng/skeleton';
 @Component({
   selector: 'app-practicas-estudiante',
   standalone: true,
-  imports: [CommonModule, AccordionModule],
+  imports: [CommonModule, AccordionModule, SkeletonModule],
   templateUrl: './practicas-estudiante.component.html',
   styleUrl: './practicas-estudiante.component.css',
 })
 export class PracticasEstudianteComponent {
   // Fixme : Cambiar por id pasada por la vista anterior
-  id_estudiante: number = 1;
+  id_estudiante: number = 0;
   practicas_estudiante: DetallesPracticaDTO = new DetallesPracticaDTO();
-  tiposPracticas: Practicass[] = [];
+  tiposPracticas: Practicas[] = [];
   nombreEstudiante: String = '';
   rutEstudiante: String = '';
+  cargando: boolean = true;
 
   constructor(
     private readonly alumnoService: AlumnoService,
-    private router: Router
-  ) {}
+    private route: ActivatedRoute,
+    private location: Location
+  ) {
+    // Se obtienen los parametros de la ruta
+    this.obtenerParametrosDeLaRuta();
+  }
 
   // Antes que se carge el componente
   ngOnInit() {
-    // antes de cargar el componente se comprueba los valores obtenidos de la ruta
-    this.nombreEstudiante = history.state.nombreCompleto;
-    this.rutEstudiante = history.state.rut;
-    // si no estan se envia a la ruta ante-anterior (listar-estudiantes)
-    if (!this.nombreEstudiante && this.rutEstudiante) {
-      this.router.navigate(['/listar-estudiantes']);
-    }
-
     this.alumnoService
-      .getPracticasAlumno(this.rutEstudiante)
+      .getPracticasAlumno(this.id_estudiante.toString())
       .subscribe((request) => {
         this.practicas_estudiante = request;
       });
+
+    setTimeout(() => {
+      this.cargando = false;
+    }, 1000);
 
     this.tiposPracticas = this.getMatrizDePracticas();
     console.log(this.tiposPracticas);
   }
 
   public getMatrizDePracticas() {
-    let tipoPractica: Practicass[] = [];
+    let tipoPractica: Practicas[] = [];
     this.practicas_estudiante.practicas.forEach((practica) => {
-      let practicasTipo: Practicass = {
+      let practicasTipo: Practicas = {
         practicas: [],
         tipoPractica: practica.posicionRelativa,
       };
@@ -63,15 +65,20 @@ export class PracticasEstudianteComponent {
   }
 
   public devolverAMenuEstudiante() {
-    const routerDataState = {
-      rut: this.rutEstudiante,
-      nombreCompleto: this.nombreEstudiante,
-    };
+    this.location.back();
+  }
 
-    this.router.navigateByUrl('/menu-estudiante', { state: routerDataState });
+  /**
+   * Funcion que obtiene los parametros enviados de la vista anterior
+   * La vista anterior enviar la siguiente ruta [practicas-estudiantes/:idEstudiante]
+   */
+  public obtenerParametrosDeLaRuta() {
+    this.route.params.subscribe((param) => {
+      this.id_estudiante = param['idEstudiante'];
+    });
   }
 }
-interface Practicass {
+interface Practicas {
   tipoPractica: number;
   practicas: InfoPracticaDTO[];
 }

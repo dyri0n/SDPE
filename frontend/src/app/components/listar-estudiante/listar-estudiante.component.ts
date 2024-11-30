@@ -54,6 +54,8 @@ export class ListarEstudianteComponent {
   paginaActual: number = 1;
   // opciones del menu contextual
   opcionMenuContextual: MenuItem[] | undefined;
+  // el estudiante seleccinoado por el menu contextual
+  estudiante_seleccionado_cm: Estudiante = new Estudiante();
 
   // se inyecta el servicio estudiante y router para redigirir a las otras vistas
   constructor(
@@ -72,12 +74,12 @@ export class ListarEstudianteComponent {
     setTimeout(() => {
       this.cargando = false;
       this.mostrarTodosLosEstudiantes();
-    }, 2000);
+    }, 1000);
 
     // se inicializa las opciones del menu contextual
     this.opcionMenuContextual = [
-      { label: 'Practicas', command: () => {} },
-      { label: 'Avance individual' },
+      { label: 'Practicas', command: () => this.irAPracticasDelEstudiante() },
+      { label: 'Avance individual', command: () => this.irAvanceEstudiante() },
     ];
   }
 
@@ -102,17 +104,16 @@ export class ListarEstudianteComponent {
    *
    * @return {Estudiante[]} retorna el arreglo con lo estudiantes filtrados
    */
-  public buscarEstudiante(): Estudiante[] {
+  public buscarEstudiante(estudiantes: Estudiante[]): Estudiante[] {
     if (!this.input_estudiante) {
-      return this.estudiantesFiltrados;
+      return estudiantes;
     }
     const textoBusqueda = this.input_estudiante.toLowerCase();
-
     // Filtra estudiantes por nombre o rut
-    return this.estudiantesFiltrados.filter(
-      (estudiante) =>
-        estudiante.nombre_completo.toLowerCase().includes(textoBusqueda) ||
-        estudiante.rut.includes(textoBusqueda)
+    return estudiantes.filter(
+      (est) =>
+        est.nombreCompleto?.toLowerCase().includes(textoBusqueda) ||
+        est.rut.toLowerCase().includes(textoBusqueda)
     );
   }
 
@@ -135,11 +136,9 @@ export class ListarEstudianteComponent {
    * @param {Estudiante} estudianteSeleccionado El estudiante seleccionado para ver su menu
    */
   public irAMenuEstudiante(estudianteSeleccionado: Estudiante) {
-    const routerDataState = {
-      rut: estudianteSeleccionado.rut,
-      nombreCompleto: estudianteSeleccionado.nombre_completo,
-    };
-    this.router.navigateByUrl('/menu-estudiante', { state: routerDataState });
+    const idEstudiante = estudianteSeleccionado.idEstudiante;
+    const nombreEstudiante = estudianteSeleccionado.nombreCompleto;
+    this.router.navigate(['/menu-estudiante', idEstudiante, nombreEstudiante]);
   }
 
   /**
@@ -155,14 +154,18 @@ export class ListarEstudianteComponent {
   }
 
   /**
-   * funcion para obtener a los alumnos distribuido por la variable estudiantesPorPagina
+   * Funcion para obtener a los alumnos distribuido por la variable estudiantesPorPagina
    *
    * @returns {Estudiante []} Retorna una arreglo de estudiantes
    */
   public obtenerEstudiantesPaginados(): Estudiante[] {
     const indiceInicial = (this.paginaActual - 1) * this.estudiantesPorPagina;
     const indiceFinal = indiceInicial + this.estudiantesPorPagina;
-    return this.estudiantesFiltrados.slice(indiceInicial, indiceFinal);
+    const estudiantesPaginados = this.estudiantesFiltrados.slice(
+      indiceInicial,
+      indiceFinal
+    );
+    return this.buscarEstudiante(estudiantesPaginados);
   }
 
   /**
@@ -172,5 +175,47 @@ export class ListarEstudianteComponent {
    */
   public obtenerCantidadTotalEstudiantes(): number {
     return this.estudiantesFiltrados.length;
+  }
+
+  /**
+   * Redirige al usuario directo a la vista de practicas de un estudiante,
+   *  a traves del menu contextual
+   */
+  public irAPracticasDelEstudiante() {
+    this.router.navigate([
+      'practicas-estudiante',
+      this.estudiante_seleccionado_cm.idEstudiante,
+    ]);
+  }
+
+  /**
+   * Redirige al usuario directo a la vista de avance del estudiante,
+   * a traves del menu contextual
+   */
+  public irAvanceEstudiante() {
+    this.router.navigate([
+      'avance-estudiante',
+      this.estudiante_seleccionado_cm.idEstudiante,
+    ]);
+  }
+
+  /**
+   * Funcion para manejar el evento de seleccionar el div de estudiante con el
+   * boton derecho, lo que hace es mostrar el menu contextual y luego define el estudiante
+   * que fue seleccionado
+   *
+   * @param componentMenu menu para mostrar
+   * @param {MouseEvent} evento Click derecho en el estudiante
+   * @param {Estuadiante} estudianteSeleccionado  El estudiante seleccionado
+   */
+  public mostrarMenuContextual(
+    componentMenu: any,
+    evento: MouseEvent,
+    estudianteSeleccionado: Estudiante
+  ) {
+    evento.preventDefault();
+
+    componentMenu.show(evento);
+    this.estudiante_seleccionado_cm = estudianteSeleccionado;
   }
 }

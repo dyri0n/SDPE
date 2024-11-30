@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
@@ -8,7 +8,7 @@ import { CursoRealizado } from '../../models/curso_realizado';
 import { ScrollerModule } from 'primeng/scroller';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Chart } from 'chart.js';
 
@@ -34,43 +34,44 @@ export class AvanceEstudianteComponent {
    * Se llama al servicio AlumnoService para que pueda inyectar el servicio con la
    * informacion recibida del backend.
    *
-   * Se debe obtener el @param alumnoId para poder acceder a esta vista
+   * Se debe obtener el @param idEstudiante para poder acceder a esta vista
    */
 
+  // se define la estructura de dato que almacena la informacion de avance del estudiante
   avanceEstudiante: AlumnoAvance = new AlumnoAvance();
+  // se almacenan los cursos que se busca en el input de la vista
   cursosBuscados: CursoRealizado[] = [];
+  // variable que almacena la busqueda del input de buscar cursos
   entradaBuscador: string = '';
-  data: any;
-  options: any;
-  nombreEstudiante: string = '';
-  rutEstudiante: string = '';
+  // informacion que muestra el grafico de linea
+  informacion_grafico: any;
+  // opciones del grafico de lineas
+  configuracion_grafico: any;
+  // id del estudiante obtenido de la ruta
+  idEstudiante: number = 0;
 
   constructor(
     private readonly alumnoService: AlumnoService,
-    private router: Router
-  ) {}
+    private route: ActivatedRoute,
+    private location: Location
+  ) {
+    this.obtenerParametrosDeLaRuta();
+  }
 
   ngOnInit() {
-    // antes de cargar el componente se comprueba los valores obtenidos de la ruta
-    this.nombreEstudiante = history.state.nombreCompleto;
-    this.rutEstudiante = history.state.rut;
-    // si no estan se envia a la ruta anterior (listar-estudiantes)
-    if (!this.nombreEstudiante && this.rutEstudiante) {
-      this.router.navigate(['/listar-estudiantes']);
-    }
     // Se obtienen los datos del servicio
-    this.alumnoService.getAvanceEstudiante(this.rutEstudiante).subscribe(
-      (avance) => {
-        this.avanceEstudiante = avance;
-        console.log(this.avanceEstudiante);
+    this.alumnoService
+      .getAvanceEstudiante(this.idEstudiante.toString())
+      .subscribe(
+        (avance) => {
+          this.avanceEstudiante = avance;
 
-        this.setData();
-        console.log('data => ', this.data);
-      },
-      (error) => {
-        console.error('Error al obtener los datos del estudiante', error);
-      }
-    );
+          this.establecerGrafico();
+        },
+        (error) => {
+          console.error('Error al obtener los datos del estudiante', error);
+        }
+      );
   }
 
   public filtrarCursos() {
@@ -85,11 +86,10 @@ export class AvanceEstudianteComponent {
     );
   }
 
-  public setData() {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
-    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
-    console.log('AVANCE ESTUDIANTE', this.avanceEstudiante);
+  public establecerGrafico() {
+    const estiloDelDocumento = getComputedStyle(document.documentElement);
+    const colorTexto = estiloDelDocumento.getPropertyValue('--text-color');
+    const colorBorde = estiloDelDocumento.getPropertyValue('--surface-border');
 
     let semestres_individual: String[] =
       this.avanceEstudiante.avanceIndividual.map(
@@ -104,7 +104,37 @@ export class AvanceEstudianteComponent {
       (sem) => sem.promedio.toFixed(1)
     );
 
-    this.data = {
+    this.establecerDatosDelGrafico(
+      semestres_individual,
+      promedios_individual,
+      promedios_cohorte,
+      estiloDelDocumento
+    );
+
+    this.establecerConfiguracionDelGrafico(colorTexto, colorBorde);
+  }
+
+  public devolverAMenuEstudiante() {
+    this.location.back();
+  }
+
+  /**
+   * Funcion que obtiene los parametros de la ruta anterior
+   * En este caso la vista anterior enviaria a la ruta [avance-estudiante/:idEstudiante]
+   */
+  public obtenerParametrosDeLaRuta() {
+    this.route.params.subscribe((param) => {
+      this.idEstudiante = param['idEstudiante'];
+    });
+  }
+
+  public establecerDatosDelGrafico(
+    semestres_individual: String[],
+    promedios_individual: String[],
+    promedios_cohorte: String[],
+    documentStyle: CSSStyleDeclaration
+  ) {
+    this.informacion_grafico = {
       labels: semestres_individual,
       datasets: [
         {
@@ -149,8 +179,13 @@ export class AvanceEstudianteComponent {
         },
       ],
     };
+  }
 
-    this.options = {
+  public establecerConfiguracionDelGrafico(
+    textColor: string,
+    surfaceBorder: string
+  ) {
+    this.configuracion_grafico = {
       maintainAspectRatio: false,
       aspectRatio: 0.6,
       plugins: {
@@ -207,7 +242,7 @@ export class AvanceEstudianteComponent {
           ticks: {
             color: textColor,
             font: {
-              size: 18,
+              size: 16,
             },
           },
           grid: {
@@ -226,14 +261,5 @@ export class AvanceEstudianteComponent {
         },
       },
     };
-  }
-
-  public devolverAMenuEstudiante() {
-    const routerDataState = {
-      rut: this.rutEstudiante,
-      nombreCompleto: this.nombreEstudiante,
-    };
-
-    this.router.navigateByUrl('/menu-estudiante', { state: routerDataState });
   }
 }
