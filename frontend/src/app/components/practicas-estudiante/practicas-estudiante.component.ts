@@ -6,10 +6,11 @@ import { AccordionModule } from 'primeng/accordion';
 import { InfoPracticaDTO } from '../../models/practica';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
+import { PaginatorModule } from 'primeng/paginator';
 @Component({
   selector: 'app-practicas-estudiante',
   standalone: true,
-  imports: [CommonModule, AccordionModule, SkeletonModule],
+  imports: [CommonModule, AccordionModule, SkeletonModule, PaginatorModule],
   templateUrl: './practicas-estudiante.component.html',
   styleUrl: './practicas-estudiante.component.css',
 })
@@ -21,6 +22,10 @@ export class PracticasEstudianteComponent {
   nombreEstudiante: String = '';
   rutEstudiante: String = '';
   cargando: boolean = true;
+
+  practicasPorPagina: number = 3;
+  practicasTotales: number = 0;
+  paginaActual: number = 1;
 
   constructor(
     private readonly alumnoService: AlumnoService,
@@ -76,6 +81,23 @@ export class PracticasEstudianteComponent {
     this.route.params.subscribe((param) => {
       this.id_estudiante = param['idEstudiante'];
     });
+  }
+
+  public onCambioDePagina(evento: any) {
+    this.paginaActual = evento.page + 1;
+    this.practicasPorPagina = evento.rows;
+  }
+
+  public obtenerPracticasPaginadas(): InfoPracticaDTO[] {
+    const indiceInicial = (this.paginaActual - 1) * this.practicasPorPagina;
+    const indiceFinal = indiceInicial + this.practicasPorPagina;
+    const practicasPaginadas: InfoPracticaDTO[] =
+      this.practicas_estudiante.practicas.slice(indiceInicial, indiceFinal);
+    return practicasPaginadas;
+  }
+
+  public obtenerCantidadTotalPracticas() {
+    return this.practicas_estudiante.practicas.length;
   }
 }
 interface Practicas {

@@ -16,6 +16,6 @@ export class UsuariosService {
     const jwtToken = sessionStorage.getItem('token') + '';
     const decoded_token: DecodedJWT = jwtDecode(jwtToken);
 
-    return roles.some((role) => decoded_token.rol == role);
+    return roles.some((role) => decoded_token.role == role);
   }
 }

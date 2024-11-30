@@ -1,13 +1,13 @@
 import { Estudiante } from './estudiante';
 
 export interface InfoPracticaDTO {
-  titulo: string;
-  centroPractica: string;
-  nombreModalidad: string;
+  nombrePractica: string;
+  convenios: string[];
+  modadidades: string[];
+  centrosDePractica: string[];
   notaFinal: number;
   posicionRelativa: number;
   numIntento: number;
-  tipoPractica: String;
 }
 
 export class DetallesPracticaDTO {
