@@ -2,7 +2,8 @@
   <div class="bg-[#DC911A] p-6 text-white text-xl font-semibold">
     <p class="font-sans text-3xl">Estudiantes de la carrera</p>
   </div>
-  <div class="bg-[#0369A1] px-20 py-6 flex-1">
+
+  <div class="bg-[#0369A1] px-16 py-6 flex-1">
     <p class="px-1 text-white">Buscar estudiante</p>
     <input
       type="text"
@@ -10,28 +11,39 @@
       placeholder="Nombre del estudiante o rut"
       class="w-full p-2 rounded-lg"
     />
-    <div class="flex justify-center space-x-4 mt-4">
-      <div class="flex space-x-2">
-        <div *ngFor="let cohorte of this.estudiantes_por_cohorte">
-          <button
-            class="bg-[#DC911A] text-white px-6 py-2 rounded-md font-semibold"
-            (click)="filtrarPorCohorte(cohorte.cohorte)"
-          >
-            Cohorte {{ cohorte.cohorte }}
-          </button>
-        </div>
+
+    <div class="flex flex-wrap justify-start mt-4 gap-4">
+      <div *ngFor="let cohorte of estudiantes_por_cohorte">
+        <button
+          class="bg-[#DC911A] text-white px-6 py-2 rounded-md font-semibold"
+          (click)="filtrarPorCohorte(cohorte.cohorte)"
+        >
+          Cohorte {{ cohorte.cohorte }}
+        </button>
       </div>
+
       <div>
         <button
-          class="bg-[#DC911A] text-white py-2 px-6 rounded-md font-semibold"
+          class="bg-[#DC911A] text-white py-2 px-2 rounded-md font-semibold"
           (click)="mostrarTodosLosEstudiantes()"
         >
           Todos los estudiantes
         </button>
       </div>
     </div>
+    <div class="w-full bg-white shadow-lg z-10 rounded-xl mt-4">
+      <p-paginator
+        [rows]="estudiantesPorPagina"
+        [totalRecords]="obtenerCantidadTotalEstudiantes()"
+        [pageLinkSize]="5"
+        [first]="paginaActual - 1 * estudiantesPorPagina"
+        (onPageChange)="onCambioDePagina($event)"
+      >
+      </p-paginator>
+    </div>
+
     <div
-      class="space-y-4 mt-4 flex-1 overflow-y-auto"
+      class="space-y-4 mt-4 flex-1 overflow-y-auto py-4"
       style="max-height: calc(100vh - 200px)"
     >
       <ng-container *ngIf="cargando; else studentList">
@@ -39,19 +51,19 @@
           *ngFor="let i of [1, 2, 3, 4, 5, 6]"
           class="bg-white rounded-lg shadow p-4 flex justify-between items-center"
         >
-          <div class="p-3">
+          <div class="p-3 flex-1">
             <p-skeleton
-              width="300px"
+              width="30%"
               height="30px"
               styleClass="mb-2"
             ></p-skeleton>
             <p-skeleton
-              width="150px"
+              width="20%"
               height="30px"
               styleClass="mb-2"
             ></p-skeleton>
           </div>
-          <div class="text-center">
+          <div class="text-center flex-shrink-0">
             <p-skeleton
               width="100px"
               height="100px"
@@ -63,13 +75,13 @@
 
       <ng-template #studentList>
         <div
-          *ngFor="let estudiante of this.obtenerEstudiantesPaginados()"
-          class="bg-white rounded-lg shadow flex justify-between items-center transition ease-in-out delay-25 hover:-translate-y-1 hover:scale-101 duration-300"
+          *ngFor="let estudiante of obtenerEstudiantesPaginados()"
+          class="bg-white rounded-lg shadow flex flex-col sm:flex-row justify-between items-center transition ease-in-out delay-25 hover:-translate-y-1 hover:scale-101 duration-300"
           (contextmenu)="
-            this.mostrarMenuContextual(menuEstudiante, $event, estudiante)
+            mostrarMenuContextual(menuEstudiante, $event, estudiante)
           "
         >
-          <div class="p-4">
+          <div class="p-4 flex-1">
             <div class="text-gray-600 text-sm">
               Nombre completo del estudiante
             </div>
@@ -101,15 +113,5 @@
         ></p-contextMenu>
       </ng-template>
     </div>
-  </div>
-  <div class="w-full bg-white shadow-lg z-10 rounded-xl">
-    <p-paginator
-      [rows]="estudiantesPorPagina"
-      [totalRecords]="obtenerCantidadTotalEstudiantes()"
-      [pageLinkSize]="5"
-      [first]="paginaActual - 1 * estudiantesPorPagina"
-      (onPageChange)="onCambioDePagina($event)"
-    >
-    </p-paginator>
   </div>
 </div>

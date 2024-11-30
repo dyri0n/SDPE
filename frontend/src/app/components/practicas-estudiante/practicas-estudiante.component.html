@@ -2,17 +2,28 @@
   <div class="pt-4 flex-grow">
     <div
       (click)="devolverAMenuEstudiante()"
-      class="p-4 bg-slate-400 mb-4 mx-4 size-fit rounded-2xl cursor-pointer"
+      class="p-2 bg-slate-400 mb-2 mx-2 size-fit rounded-2xl cursor-pointer"
     >
-      <p class="font-bold text-white"><- Volver a menu del estudiante</p>
+      <p class="font-bold text-white"><- Volver a menú del estudiante</p>
     </div>
 
-    <div class="pr-20">
+    <div class="pr-4 sm:pr-20">
       <div class="bg-[#0369A1] py-4 rounded-e-3xl">
-        <p class="px-10 text-cyan-50">Nombre estudiante</p>
-        <p class="text-cyan-50 text-4xl px-10">
-          {{ practicas_estudiante.estudiante.nombreCompleto }}
-        </p>
+        <p class="px-6 text-cyan-50">Nombre estudiante</p>
+        <ng-container *ngIf="cargando; else nombre_estudiante">
+          <div class="px-6">
+            <p-skeleton
+              width="40%"
+              height="3rem"
+              class="bg-[#A0C4FF] animate-pulse"
+            ></p-skeleton>
+          </div>
+        </ng-container>
+        <ng-template #nombre_estudiante>
+          <p class="text-cyan-50 text-xl sm:text-4xl px-6">
+            {{ practicas_estudiante.estudiante.nombreCompleto }}
+          </p>
+        </ng-template>
       </div>
     </div>
 
@@ -30,60 +41,128 @@
 
     <div class="bg-[#0369A1] flex-grow text-cyan-50 pb-8">
       <div class="h-3/4">
-        <div class="mx-20">
-          <p class="pt-5 font-semibold text-3xl">Practicas realizadas</p>
+        <div class="mx-4 sm:mx-20">
+          <p class="pt-5 font-semibold text-xl sm:text-3xl">
+            Prácticas realizadas
+          </p>
         </div>
-        <div *ngFor="let practica of this.obtenerPracticasPaginadas()">
+
+        <ng-container *ngIf="cargando; else listaPracticas">
           <div
-            class="py-2 transition ease-in-out hover:-translate-x-1 hover:scale-140"
+            *ngFor="let i of [1, 2, 3, 4, 5, 6]"
+            class="rounded-lg shadow flex justify-between items-center"
           >
-            <div class="bg-[#1377AD] mx-20 rounded-t-lg p-4">
-              <p class="font-semibold text-2xl">
-                Practica {{ practica.posicionRelativa }}
-              </p>
-            </div>
-            <div
-              class="bg-[#048AD3] mx-20 rounded-b-2xl flex-row grid grid-cols-2 gap-4 shadow-md"
-            >
-              <div class="rounded-b-xl w-full">
-                <div class="px-4 justify-between">
+            <div class="py-4 flex-1">
+              <div class="bg-[#1377AD] mx-4 sm:mx-20 rounded-t-lg p-4">
+                <p-skeleton
+                  height="2rem"
+                  width="30%"
+                  class="bg-[#A0C4FF] animate-pulse"
+                ></p-skeleton>
+              </div>
+              <div
+                class="bg-[#048AD3] mx-4 sm:mx-20 rounded-b-2xl flex flex-col sm:flex-row gap-4 shadow-md"
+              >
+                <div class="rounded-b-xl w-full p-4">
                   <div class="py-2">
-                    <p class="text-cyan-100">Centro de practica</p>
+                    <p class="text-cyan-100">Centro de práctica</p>
+                    <div>
+                      <p-skeleton
+                        width="45%"
+                        height="3rem"
+                        class="bg-[#A0C4FF] animate-pulse"
+                      ></p-skeleton>
+                    </div>
+                  </div>
+                  <div class="py-2">
+                    <p class="text-cyan-100">Modalidad</p>
+                    <div>
+                      <p-skeleton
+                        width="40%"
+                        height="3rem"
+                        class="bg-[#A0C4FF] animate-pulse"
+                      ></p-skeleton>
+                    </div>
+                  </div>
+                  <div class="py-2">
+                    <p class="text-cyan-100">Título práctica</p>
+                    <div>
+                      <p-skeleton
+                        width="30%"
+                        height="2.5rem"
+                        class="bg-[#A0C4FF] animate-pulse"
+                      ></p-skeleton>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="justify-self-end mx-5 my-2 flex items-center justify-center"
+                >
+                  <div
+                    class="bg-[#DC911A] shadow-lg text-2xl w-40 h-40 flex items-center justify-center rounded-xl"
+                  >
+                    <p-skeleton width="10%" height="10%" class="bg-slate-600">
+                    </p-skeleton>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #listaPracticas>
+          <div *ngFor="let practica of this.obtenerPracticasPaginadas()">
+            <div class="py-4 transition ease-in-out hover:scale-100">
+              <div class="bg-[#1377AD] mx-4 sm:mx-20 rounded-t-lg p-4">
+                <p class="font-semibold text-xl sm:text-2xl">
+                  Práctica {{ practica.posicionRelativa }}
+                </p>
+              </div>
+              <div
+                class="bg-[#048AD3] mx-4 sm:mx-20 rounded-b-2xl flex flex-col sm:flex-row gap-4 shadow-md"
+              >
+                <div class="rounded-b-xl w-full p-4">
+                  <div class="py-2">
+                    <p class="text-cyan-100">Centro de práctica</p>
                     <div
                       *ngFor="let centroPractica of practica.centrosDePractica"
                     >
-                      <p class="text-2xl">{{ centroPractica }}</p>
+                      <p class="text-xl">{{ centroPractica }}</p>
                     </div>
                   </div>
                   <div class="py-2">
                     <p class="text-cyan-100">Modalidad</p>
                     <div *ngFor="let modalidad of practica.modadidades">
-                      <p class="text-2xl">{{ modalidad }}</p>
+                      <p class="text-xl">{{ modalidad }}</p>
                     </div>
                   </div>
                   <div class="py-2">
-                    <p class="text-cyan-100">Título practica</p>
-                    <p class="text-xl">{{ practica.nombrePractica }}</p>
+                    <p class="text-cyan-100">Título práctica</p>
+                    <p class="text-lg">{{ practica.nombrePractica }}</p>
                   </div>
                   <div class="py-2">
-                    <p class="text-xl font-bold">
+                    <p class="text-lg font-bold">
                       Intento {{ practica.numIntento }}
                     </p>
                   </div>
                 </div>
-              </div>
-              <div class="justify-self-end content-center mx-5 justify-center">
                 <div
-                  class="bg-[#DC911A] m-6 shadow-lg text-2xl w-40 h-40 flex items-center justify-center rounded-xl"
+                  class="justify-self-end mx-5 my-2 flex items-center justify-center"
                 >
-                  <p class="text-shadow text-5xl font-semibold text-green-100">
-                    {{ practica.notaFinal.toFixed(1) }}
-                  </p>
+                  <div
+                    class="bg-[#DC911A] shadow-lg text-2xl w-40 h-40 flex items-center justify-center rounded-xl"
+                  >
+                    <p
+                      class="text-shadow text-5xl font-semibold text-green-100"
+                    >
+                      {{ practica.notaFinal.toFixed(1) }}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </ng-template>
       </div>
       <div class="h-12"></div>
     </div>

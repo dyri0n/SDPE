@@ -7,6 +7,7 @@ import { InfoPracticaDTO } from '../../models/practica';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
 import { PaginatorModule } from 'primeng/paginator';
+import { finalize } from 'rxjs';
 @Component({
   selector: 'app-practicas-estudiante',
   standalone: true,
@@ -15,10 +16,8 @@ import { PaginatorModule } from 'primeng/paginator';
   styleUrl: './practicas-estudiante.component.css',
 })
 export class PracticasEstudianteComponent {
-  // Fixme : Cambiar por id pasada por la vista anterior
   id_estudiante: number = 0;
   practicas_estudiante: DetallesPracticaDTO = new DetallesPracticaDTO();
-  tiposPracticas: Practicas[] = [];
   nombreEstudiante: String = '';
   rutEstudiante: String = '';
   cargando: boolean = true;
@@ -40,33 +39,14 @@ export class PracticasEstudianteComponent {
   ngOnInit() {
     this.alumnoService
       .getPracticasAlumno(this.id_estudiante.toString())
+      .pipe(
+        finalize(() => {
+          this.cargando = false;
+        })
+      )
       .subscribe((request) => {
         this.practicas_estudiante = request;
       });
-
-    setTimeout(() => {
-      this.cargando = false;
-    }, 1000);
-
-    this.tiposPracticas = this.getMatrizDePracticas();
-    console.log(this.tiposPracticas);
-  }
-
-  public getMatrizDePracticas() {
-    let tipoPractica: Practicas[] = [];
-    this.practicas_estudiante.practicas.forEach((practica) => {
-      let practicasTipo: Practicas = {
-        practicas: [],
-        tipoPractica: practica.posicionRelativa,
-      };
-      this.practicas_estudiante.practicas.forEach((p) => {
-        if (p.posicionRelativa === practicasTipo.tipoPractica) {
-          practicasTipo.practicas.push(p);
-        }
-      });
-      tipoPractica.push(practicasTipo);
-    });
-    return tipoPractica;
   }
 
   public devolverAMenuEstudiante() {

@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Chart } from 'chart.js';
+import { finalize } from 'rxjs';
 
 Chart.register(ChartDataLabels);
 @Component({
@@ -49,6 +50,8 @@ export class AvanceEstudianteComponent {
   configuracion_grafico: any;
   // id del estudiante obtenido de la ruta
   idEstudiante: number = 0;
+  // variable booleana que representa la carga del componente mientras llama a los datos del backend
+  cargando: boolean = true;
 
   constructor(
     private readonly alumnoService: AlumnoService,
@@ -62,6 +65,11 @@ export class AvanceEstudianteComponent {
     // Se obtienen los datos del servicio
     this.alumnoService
       .getAvanceEstudiante(this.idEstudiante.toString())
+      .pipe(
+        finalize(() => {
+          this.cargando = false;
+        })
+      )
       .subscribe(
         (avance) => {
           this.avanceEstudiante = avance;

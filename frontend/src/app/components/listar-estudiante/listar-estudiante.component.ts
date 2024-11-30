@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { PaginatorModule } from 'primeng/paginator';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { MenuItem } from 'primeng/api';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-listar-estudiante',
@@ -65,16 +66,18 @@ export class ListarEstudianteComponent {
 
   ngOnInit() {
     // La primera vez que se carga la vista va a traer todos los datos, para luego filtrar por cohorte.
-    this.estudianteService.getEstudiantes().subscribe((responseEstudiantes) => {
-      this.estudiantes_por_cohorte =
-        responseEstudiantes as CohorteEstudiantes[];
-    });
-
-    // timeout para probar la animacion de carga de los componentes estudiantes
-    setTimeout(() => {
-      this.cargando = false;
-      this.mostrarTodosLosEstudiantes();
-    }, 1000);
+    this.estudianteService
+      .getEstudiantes()
+      .pipe(
+        finalize(() => {
+          this.cargando = false;
+        })
+      )
+      .subscribe((respuestaEstudiantes) => {
+        this.estudiantes_por_cohorte =
+          respuestaEstudiantes as CohorteEstudiantes[];
+        this.mostrarTodosLosEstudiantes();
+      });
 
     // se inicializa las opciones del menu contextual
     this.opcionMenuContextual = [
