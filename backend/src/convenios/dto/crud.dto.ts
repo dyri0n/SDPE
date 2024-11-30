@@ -35,6 +35,10 @@ export class UpdateConvenioDTO {
   @IsOptional()
   @IsNumber()
   idModalidad?: number;
+
+  @IsOptional()
+  @IsString()
+  nombreModalidad: string;
 }
 
 export class CreateConvenioDTO {

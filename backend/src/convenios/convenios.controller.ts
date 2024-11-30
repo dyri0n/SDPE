@@ -32,11 +32,35 @@ export class ConveniosController {
   }
 
   @Patch(':idConvenio')
+  @UseInterceptors(
+    FilesInterceptor('files', 2, {
+      storage: diskStorage({
+        destination: './documents/convenios',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const extension = file.originalname.split('.').pop();
+          callback(null, `${file.fieldname}-${uniqueSuffix}.${extension}`);
+        },
+      }),
+    }),
+  )
   async update(
     @Param('idConvenio', ParseIntPipe) idConvenio: number,
     @Body() updateDTO: UpdateConvenioDTO,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
-    return this.convenioService.updateConvenio(idConvenio, updateDTO);
+    const pdfFile = files.find((file) => file.mimetype === 'application/pdf');
+    const imageFile = files.find((file) => file.mimetype.startsWith('image/'));
+    const pdfPath = pdfFile.path;
+    const imagePath = imageFile.path;
+
+    return this.convenioService.updateConvenio(
+      idConvenio,
+      updateDTO,
+      imagePath,
+      pdfPath,
+    );
   }
 
   @Delete(':idConvenio')
@@ -74,20 +98,6 @@ export class ConveniosController {
       ? imageFile.path
       : 'documents/convenios/default_convenio.jpg';
 
-    if (createDTO.idModalidad) {
-      return this.convenioService.createConvenioConRefModalidad(
-        createDTO,
-        pdfPath,
-        imagePath,
-      );
-    } else if (createDTO.nombreModalidad) {
-      return this.convenioService.createConvenioConTituloModalidad(
-        createDTO,
-        pdfPath,
-        imagePath,
-      );
-    } else {
-      throw new BadRequestException('Los datos no sirven arreglalos');
-    }
+    return this.convenioService.createConvenio(createDTO, pdfPath, imagePath);
   }
 }
