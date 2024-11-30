@@ -89,4 +89,11 @@ export class AsignaturasController {
   ) {
     return this.asigService.getAprobacionHistoricaPorCohorte(codigoAsignatura);
   }
+
+  @Get('promedios/general/:codigoAsignatura')
+  public async getPromediosHistoricos(
+    @Param('codigoAsignatura') codigoAsignatura: string,
+  ) {
+    return this.asigService.getPromediosHistoricosGeneral(codigoAsignatura);
+  }
 }

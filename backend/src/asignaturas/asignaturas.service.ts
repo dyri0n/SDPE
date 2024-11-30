@@ -189,7 +189,7 @@ export class AsignaturasService {
    * @param codigoAsignatura Código de la Asignatura
    * @returns {PromedioHistoricoGeneralDTO[]}
    */
-  private async getPromediosHistoricosGeneral(
+  async getPromediosHistoricosGeneral(
     codigoAsignatura: string,
   ): Promise<PromedioHistoricoGeneralDTO[]> {
     const result = await this.prisma.$queryRawTyped(
@@ -210,7 +210,7 @@ export class AsignaturasService {
    * @param codigoPlan Código del plan
    * @returns {PromedioHistoricoPorPlanDTO[]}
    */
-  private async getPromediosHistoricosPorPlan(
+  async getPromediosHistoricosPorPlan(
     codigoAsignatura: string,
     codigoPlan: number,
   ): Promise<PromedioHistoricoPorPlanDTO[]> {
@@ -246,7 +246,7 @@ export class AsignaturasService {
    * @param codigoAsignatura Código de la asignatura
    * @returns {PromedioHistoricoPorCohorteDTO[]}
    */
-  private async getPromediosHistoricosPorCohorte(
+  async getPromediosHistoricosPorCohorte(
     codigoAsignatura: string,
   ): Promise<PromedioHistoricoPorCohorteDTO[]> {
     const result = await this.prisma.$queryRawTyped(
@@ -273,7 +273,7 @@ export class AsignaturasService {
    * @param codigoAsignatura Código de la Asignatura
    * @returns {AprobacionHistoricaGeneralDTO[]} Arreglo de años junto a su aprobación general
    */
-  private async getAprobacionHistoricaGeneral(
+  async getAprobacionHistoricaGeneral(
     codigoAsignatura: string,
   ): Promise<AprobacionHistoricaGeneralDTO[]> {
     const result = await this.prisma.$queryRawTyped(
@@ -294,7 +294,7 @@ export class AsignaturasService {
    * @param codigoPlan Código del plan
    * @returns {AprobacionHistoricaPorPlanDTO[]}
    */
-  private async getAprobacionHistoricaPorPlan(
+  async getAprobacionHistoricaPorPlan(
     codigoAsignatura: string,
     codigoPlan: number,
   ): Promise<AprobacionHistoricaPorPlanDTO[]> {
