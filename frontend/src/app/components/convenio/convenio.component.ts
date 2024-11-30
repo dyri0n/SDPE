@@ -39,6 +39,9 @@ export class ConvenioComponent implements OnInit{
     this.obtenerModalidades()
   }
 
+  public ruta: string = 'http://localhost:3000/'
+  public foto: string = ''
+
   public formularioConvenio: FormGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
     centro: new FormControl({value: '', disabled: true}, [Validators.required]),
@@ -68,6 +71,8 @@ export class ConvenioComponent implements OnInit{
 
   public obtenerDetalleConvenio(){
     this.servicioConvenios.obtenerDetalleConvenios(this.idConvenio).subscribe(convenio =>{
+      this.foto = this.ruta + convenio.convenio.urlFoto
+      console.log(this.foto)
       this.formularioConvenio.patchValue({
         nombre: convenio.convenio.titulo,
         centro: convenio.convenio.centroPractica,
@@ -76,6 +81,8 @@ export class ConvenioComponent implements OnInit{
         imagen: convenio.convenio.urlFoto,
         terminos: convenio.convenio.documentoConvenio
       })
+
+      this.ruta = this.ruta + convenio.convenio.documentoConvenio
 
       this.formularioConvenioOriginal = new FormGroup({
         nombre: new FormControl(convenio.convenio.titulo),
@@ -102,6 +109,15 @@ export class ConvenioComponent implements OnInit{
       this.modalidades = resultado.modalidades
     })
   }
+
+  descargarArchivo() {
+    const link = document.createElement('a'); // Crea un nuevo enlace
+    link.href = this.ruta; // Asigna la ruta del archivo
+    link.target = '_blank'; // Asegura que no se cambie de página
+    link.download = 'Resultados_END.pdf'; // Nombre del archivo descargado
+    link.click(); // Simula el clic para iniciar la descarga
+  }
+
 
   public alternarModal() {
     this.visible = !this.visible;
@@ -181,6 +197,26 @@ export class ConvenioComponent implements OnInit{
           idModalidad: this.formularioConvenio.value.idModalidad
         }
       
+      const formData = new FormData();
+
+      // Agregar los campos del formulario
+      formData.append('titulo', this.formularioConvenio.get('nombre')?.value);
+      formData.append('centroPractica', this.formularioConvenio.get('centro')?.value);
+      formData.append('idModalidad', this.formularioConvenio.get('idModalidad')?.value);
+      formData.append('FechaInicioConvenio', this.formularioConvenio.get('inicio')?.value);
+      formData.append('nombreModalidad', this.formularioConvenio.get('nombreModalidad')?.value);
+
+      // Agregar los archivos
+      const imagen = this.formularioConvenio.get('imagen')?.value;
+      if (imagen) {
+        formData.append('files', imagen); // "files" debe coincidir con el nombre en el FilesInterceptor
+      }
+
+      const terminos = this.formularioConvenio.get('terminos')?.value;
+      if (terminos) {
+        formData.append('files', terminos); // Agregar el PDF como "files"
+      }
+
       if (this.modalidadNueva && !this.formularioConvenio.value.nombreModalidad) {
         this.messageService.add({
           severity: 'error',
@@ -194,13 +230,14 @@ export class ConvenioComponent implements OnInit{
       }
 
       console.log(actualizarConvenio, "LOL")
-      this.servicioConvenios.actualizarConvenio(this.idConvenio ,actualizarConvenio).subscribe(
+      this.servicioConvenios.actualizarConvenio(this.idConvenio ,formData).subscribe(
         respuesta=>{
           if(respuesta){
             this.alternarModal()
             this.messageService.add({severity: 'success', summary: 'Guardado', detail: 'El convenio se editó correctamente'});
           }
-          window.location.reload()
+          this.cargando = true
+          this.obtenerDetalleConvenio()
         },
         error => {
           const mensaje = error.error.message

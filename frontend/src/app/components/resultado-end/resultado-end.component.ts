@@ -3,6 +3,7 @@ import { ChartModule } from 'primeng/chart';
 import { ResultadosENDService } from '../../services/resultados-end.service';
 import { EndService } from '../../services/end.service';
 import { ActivatedRoute } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-resultado-end',
@@ -16,7 +17,8 @@ export class ResultadoEndComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private servicioResultadosEND: ResultadosENDService,
-    private servicioEND: EndService
+    private servicioEND: EndService,
+    private sanitizer: DomSanitizer
   ){}
 
   ngOnInit() {
@@ -27,6 +29,9 @@ export class ResultadoEndComponent implements OnInit {
     this.obtenerResultadosPorEstandares();
     this.obtenerResultadosPorPA();
   }
+
+  public ruta!: SafeResourceUrl;
+  public rutaBase: string = 'http://localhost:3000/'
 
   idEND!:number
   end:any;
@@ -71,6 +76,11 @@ export class ResultadoEndComponent implements OnInit {
   public obtenerDocumento(){
     this.servicioEND.obtenerENDID(this.idEND).subscribe((result:any) =>{
       this.end = result
+      const fullRuta = this.rutaBase + result.rutaDocumento;
+      console.log(fullRuta);
+      this.ruta = this.sanitizer.bypassSecurityTrustResourceUrl(fullRuta);
+      console.log(result)
+      console.log(this.ruta)
     })
   }
 

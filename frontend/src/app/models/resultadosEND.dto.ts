@@ -20,6 +20,7 @@ export interface resultadoPorPA {
 }
 
 export interface resultadosEnd {
+  idDato: number,
   agnoRendicion: number;
   cohorteAsociado: number;
 }

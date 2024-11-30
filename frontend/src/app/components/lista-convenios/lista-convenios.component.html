@@ -45,7 +45,7 @@
         @for (convenio of conveniosPaginados; track convenio; let i = $index) {
             <div class="rounded-md bg-white flex flex-col md:flex-row shadow-lg overflow-hidden transform transition hover:scale-105 hover:shadow-2xl">
                 <div class="w-2/12 border-r-2 border-sky-700">
-                    <img [src]="convenio.imagen ? convenio.imagen : 'assets/imageDefault.jpg'" 
+                    <img [src]="convenio.imagen ? 'http://localhost:3000/'+ convenio.imagen : 'assets/imageDefault.jpg'" 
                         class="h-60 w-full object-cover">
                 </div>
 

@@ -19,7 +19,7 @@ export class ConveniosService {
     return this.http.get<DetalleConvenio>(this.apiUrl + "/" + idConvenio)
   }
 
-  public actualizarConvenio(idConvenio: number, datos: ActualizarConvenio): Observable<Convenio>{
+  public actualizarConvenio(idConvenio: number, datos: FormData): Observable<Convenio>{
     return this.http.patch<Convenio>(this.apiUrl + "/" + idConvenio, datos)
   }
 

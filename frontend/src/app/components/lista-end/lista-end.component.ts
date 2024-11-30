@@ -88,6 +88,7 @@ export class ListaEndComponent implements OnInit {
             this.alternarModal()
             this.messageService.add({severity: 'success', summary: 'Guardado', detail: 'El convenio se guardó correctamente'});
           }
+          this.obtenerListado()
         },
         error => {
           const mensaje = error.error.message
@@ -168,9 +169,8 @@ export class ListaEndComponent implements OnInit {
     this.actualizarResultadosPaginados();
   }
   
-  public redirigirHacia(route: number) {
-    // this.router.navigateByUrl(`/${route}`);
-    this.router.navigate(['end'])
+  public redirigirHacia(idDato: number) {
+    this.router.navigateByUrl(`end/${idDato}`);
   }
 
   public alternarModal() {

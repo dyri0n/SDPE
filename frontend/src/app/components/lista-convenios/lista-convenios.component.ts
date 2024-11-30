@@ -37,6 +37,7 @@ export class ListaConveniosComponent implements OnInit{
     this.obtenerConvenios()
   }
 
+  public ruta: string = 'http://localhost:3000/'
   public cargando: boolean = true
   public visible: boolean = false;
   public periodo: boolean = true;

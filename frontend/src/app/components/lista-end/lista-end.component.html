@@ -27,7 +27,7 @@
     <div class="grid grid-cols-2 px-24 gap-x-20 gap-y-12">
         @for (resultado of resultadosPaginados; track resultado; let i = $index){
             <p-card styleClass="relative bg-sky-600 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-700 hover:shadow-[0_0_0_3px_theme(colors.sky.500)]" 
-            (click)="redirigirHacia(resultado.agnoRendicion)">
+            (click)="redirigirHacia(resultado.idDato)">
             <div class="absolute top-0 left-0 w-full bg-sky-700 rounded-t-lg h-6"></div>
             <p class="text-4xl font-semibold">Resultados {{resultado.agnoRendicion}}</p>
             <p class="text-xl mt-4 font-normal">Cohorte {{resultado.cohorteAsociado}}</p>
@@ -48,10 +48,10 @@
             <div class="bg-gray-100 border-2 border-sky-700 rounded-md shadow-lg">
                 <form [formGroup]="formularioEND" (ngSubmit)="agregarConvenio()">
                     <div class="bg-white mt-5 py-5 shadow-lg border-y">
-                        <h1 class="p-4 rounded-r-2xl w-6/12 bg-sky-700 text-white text-4xl font-bold">Registrar convenio</h1>
+                        <h1 class="p-4 rounded-r-2xl w-6/12 bg-sky-700 text-white text-4xl font-bold">Registrar resultados END</h1>
                     </div>
                     <div class="border bg-white rounded-lg py-4 my-5 mx-10 shadow-xl overflow-auto max-h-[60vh]">
-                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Detalles del convenio</h2>    
+                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Detalles de los resultados END</h2>    
                         <div class="mx-10 mb-12 flex items-center"> 
                             <p-floatLabel class="w-6/12 me-5 pe-6">
                                 <p-calendar  
