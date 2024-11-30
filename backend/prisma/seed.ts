@@ -139,11 +139,11 @@ async function main() {
 
           cursacionesQueries.push({
             idCursacion: cursacionId,
-            agnio: estudiante.agnioIngreso + (cursacionId % 6),
+            agnio: estudiante.agnioIngreso + (cursacionId % 12),
             notaFinal: nota,
             grupo: Math.random() > 0.5 ? 'A' : 'B',
             numIntento: intentoActual,
-            semestreRelativo: Math.ceil(Math.random() * 2),
+            semestreRelativo: cursacionId % 6,
 
             idPlan: asignaturaCursada.idPlan,
             idAsignatura: asignaturaCursada.idAsignatura,
