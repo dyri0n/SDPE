@@ -17,6 +17,9 @@ export class PracticasEstudianteComponent {
   id_estudiante: number = 1;
   practicas_estudiante: DetallesPracticaDTO = new DetallesPracticaDTO();
   tiposPracticas: Practicass[] = [];
+  nombreEstudiante: String = '';
+  rutEstudiante: String = '';
+
   constructor(
     private readonly alumnoService: AlumnoService,
     private router: Router
@@ -24,8 +27,16 @@ export class PracticasEstudianteComponent {
 
   // Antes que se carge el componente
   ngOnInit() {
+    // antes de cargar el componente se comprueba los valores obtenidos de la ruta
+    this.nombreEstudiante = history.state.nombreCompleto;
+    this.rutEstudiante = history.state.rut;
+    // si no estan se envia a la ruta ante-anterior (listar-estudiantes)
+    if (!this.nombreEstudiante && this.rutEstudiante) {
+      this.router.navigate(['/listar-estudiantes']);
+    }
+
     this.alumnoService
-      .getPracticasAlumno(this.id_estudiante)
+      .getPracticasAlumno(this.rutEstudiante)
       .subscribe((request) => {
         this.practicas_estudiante = request;
       });
@@ -34,11 +45,7 @@ export class PracticasEstudianteComponent {
     console.log(this.tiposPracticas);
   }
 
-  public verDetallesPractica(titulo: string) {
-    this.router.navigate(['/practica-detalle', titulo])
-  }
-
-  getMatrizDePracticas() {
+  public getMatrizDePracticas() {
     let tipoPractica: Practicass[] = [];
     this.practicas_estudiante.practicas.forEach((practica) => {
       let practicasTipo: Practicass = {
@@ -53,6 +60,15 @@ export class PracticasEstudianteComponent {
       tipoPractica.push(practicasTipo);
     });
     return tipoPractica;
+  }
+
+  public devolverAMenuEstudiante() {
+    const routerDataState = {
+      rut: this.rutEstudiante,
+      nombreCompleto: this.nombreEstudiante,
+    };
+
+    this.router.navigateByUrl('/menu-estudiante', { state: routerDataState });
   }
 }
 interface Practicass {
