@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConveniosService } from '../../services/convenios.service';
-import { ActualizarConvenio, DetalleConvenio, Modalidad } from '../../models/convenios.dto';
+import { ActualizarConvenio, Convenio, ConvenioLista, DetalleConvenio, Modalidad } from '../../models/convenios.dto';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -26,20 +26,19 @@ export class ConvenioComponent implements OnInit{
   
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private servicioConvenios: ConveniosService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ){}
 
   ngOnInit() {
     this.idConvenio= +this.route.snapshot.paramMap.get('idConvenio')!
-    console.log(this.idConvenio)
-    //this.obtenerDetalleConvenio()
     this.obtenerDetalleConvenio()
     this.obtenerModalidades()
   }
 
   public ruta: string = 'http://localhost:3000/'
+  public documento: string = ''
   public foto: string = ''
 
   public formularioConvenio: FormGroup = new FormGroup({
@@ -52,7 +51,8 @@ export class ConvenioComponent implements OnInit{
     nombreModalidad: new FormControl('')
   })
 
-  public formularioConvenioOriginal!: FormGroup
+  //CMBIAR ANY A ALGUN DTO PARA CONVENIO
+  public formularioConvenioOriginal!: any
   
   public inicioMinimo: Date = new Date(2017, 0, 1);;
   public inicioMaximo: Date = new Date();;
@@ -72,7 +72,6 @@ export class ConvenioComponent implements OnInit{
   public obtenerDetalleConvenio(){
     this.servicioConvenios.obtenerDetalleConvenios(this.idConvenio).subscribe(convenio =>{
       this.foto = this.ruta + convenio.convenio.urlFoto
-      console.log(this.foto)
       this.formularioConvenio.patchValue({
         nombre: convenio.convenio.titulo,
         centro: convenio.convenio.centroPractica,
@@ -82,16 +81,7 @@ export class ConvenioComponent implements OnInit{
         terminos: convenio.convenio.documentoConvenio
       })
 
-      this.ruta = this.ruta + convenio.convenio.documentoConvenio
-
-      this.formularioConvenioOriginal = new FormGroup({
-        nombre: new FormControl(convenio.convenio.titulo),
-        centro: new FormControl(convenio.convenio.centroPractica),
-        idModalidad: new FormControl(convenio.convenio.idModalidad),
-        inicio: new FormControl(new Date(convenio.convenio.fechaInicioConvenio).getFullYear().toString(),),
-        imagen: new FormControl(convenio.convenio.urlFoto),
-        terminos: new FormControl(convenio.convenio.documentoConvenio),
-      });
+      this.documento = this.ruta + convenio.convenio.documentoConvenio
 
       this.formularioConvenioOriginal = {...this.formularioConvenio.value}
       this.detalleConvenioTest = convenio
@@ -99,8 +89,6 @@ export class ConvenioComponent implements OnInit{
       this.detalleConvenioTest.promedioPracticas = parseFloat(this.detalleConvenioTest.promedioPracticas.toFixed(2))
       this.cargando = false
       console.log(convenio)
-      console.log(this.formularioConvenio, 'conv')
-      console.log(this.formularioConvenioOriginal, 'oriug')
     })
   }
 
@@ -110,11 +98,11 @@ export class ConvenioComponent implements OnInit{
     })
   }
 
-  descargarArchivo() {
-    const link = document.createElement('a'); // Crea un nuevo enlace
-    link.href = this.ruta; // Asigna la ruta del archivo
+  public descargarArchivo() {
+    const link = document.createElement('a'); 
+    link.href = this.documento; // Asigna la ruta del archivo
     link.target = '_blank'; // Asegura que no se cambie de página
-    link.download = 'Resultados_END.pdf'; // Nombre del archivo descargado
+    link.download = `ResultadosEND${this.formularioConvenio.get('inicio')?.value}`; // Nombre del archivo descargado
     link.click(); // Simula el clic para iniciar la descarga
   }
 
@@ -173,81 +161,86 @@ export class ConvenioComponent implements OnInit{
 
   public editarConvenio(){
     if(this.formularioConvenio.valid){
-      const inicioFormulario= this.formularioConvenio.value.inicio
-      let fechaInicioConvenio: Date
-      if(typeof inicioFormulario === 'string'){
-        fechaInicioConvenio = new Date()
-      }else if(inicioFormulario instanceof Date){
-        const nuevoAño = inicioFormulario.getFullYear()
-        const fechaActual = new Date()
-        fechaInicioConvenio = new Date(nuevoAño, fechaActual.getMonth(), fechaActual.getDate())
-      }else{
-        fechaInicioConvenio = new Date()
-      }
-
-      const fechaFinConvenio = new Date(fechaInicioConvenio.getFullYear(), 11, 31)
-
-      const actualizarConvenio: ActualizarConvenio = {
-          titulo: this.formularioConvenio.value.nombre,
-          centroPractica: this.formularioConvenio.value.centro,
-          fechaInicioConvenio: fechaInicioConvenio,
-          fechaFinConvenio: fechaFinConvenio,
-          documentoConvenio: this.formularioConvenio.value.terminos.name,
-          urlFoto: this.formularioConvenio.value.imagen.name,
-          idModalidad: this.formularioConvenio.value.idModalidad
+      if(JSON.stringify(this.formularioConvenio.value) !== JSON.stringify(this.formularioConvenioOriginal)){
+        const inicioFormulario= this.formularioConvenio.value.inicio
+        let fechaInicioConvenio: Date
+        if(typeof inicioFormulario === 'string'){
+          fechaInicioConvenio = new Date()
+        }else if(inicioFormulario instanceof Date){
+          const nuevoAño = inicioFormulario.getFullYear()
+          const fechaActual = new Date()
+          fechaInicioConvenio = new Date(nuevoAño, fechaActual.getMonth(), fechaActual.getDate())
+        }else{
+          fechaInicioConvenio = new Date()
         }
-      
-      const formData = new FormData();
+                
+        const formData = new FormData();
 
-      // Agregar los campos del formulario
-      formData.append('titulo', this.formularioConvenio.get('nombre')?.value);
-      formData.append('centroPractica', this.formularioConvenio.get('centro')?.value);
-      formData.append('idModalidad', this.formularioConvenio.get('idModalidad')?.value);
-      formData.append('FechaInicioConvenio', this.formularioConvenio.get('inicio')?.value);
-      formData.append('nombreModalidad', this.formularioConvenio.get('nombreModalidad')?.value);
+        // Agregar los campos del formulario
+        formData.append('titulo', this.formularioConvenio.get('nombre')?.value);
+        formData.append('centroPractica', this.formularioConvenio.get('centro')?.value);
+        formData.append('idModalidad', this.formularioConvenio.get('idModalidad')?.value);
+        formData.append('FechaInicioConvenio', this.formularioConvenio.get('inicio')?.value);
 
-      // Agregar los archivos
-      const imagen = this.formularioConvenio.get('imagen')?.value;
-      if (imagen) {
-        formData.append('files', imagen); // "files" debe coincidir con el nombre en el FilesInterceptor
-      }
+        // Agregar los archivos
+        const imagen = this.formularioConvenio.get('imagen')?.value;
+        if (imagen && imagen != this.formularioConvenioOriginal.imagen) {
+          formData.append('files', imagen); 
+          formData.append('urlFoto', '')
+        } else{
+          formData.append('files', ''); 
+          formData.append('urlFoto', this.formularioConvenioOriginal.imagen)
+        }
 
-      const terminos = this.formularioConvenio.get('terminos')?.value;
-      if (terminos) {
-        formData.append('files', terminos); // Agregar el PDF como "files"
-      }
+        const terminos = this.formularioConvenio.get('terminos')?.value;
+        if (terminos && terminos != this.formularioConvenioOriginal.terminos) {
+          formData.append('files', terminos); 
+          formData.append('documentoConvenio', '')
+        } else (
+          formData.append('documentoConvenio', this.formularioConvenioOriginal.terminos)
+        )
 
-      if (this.modalidadNueva && !this.formularioConvenio.value.nombreModalidad) {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Debe ingresar un nombre de modalidad.'
-        });
-        return;
-           
-      } else {
-        actualizarConvenio.nombreModalidad = this.formularioConvenio.value.nombreModalidad   
-      }
-
-      console.log(actualizarConvenio, "LOL")
-      this.servicioConvenios.actualizarConvenio(this.idConvenio ,formData).subscribe(
-        respuesta=>{
-          if(respuesta){
-            this.alternarModal()
-            this.messageService.add({severity: 'success', summary: 'Guardado', detail: 'El convenio se editó correctamente'});
-          }
-          this.cargando = true
-          this.obtenerDetalleConvenio()
-        },
-        error => {
-          const mensaje = error.error.message
+        if (this.modalidadNueva && !this.formularioConvenio.value.nombreModalidad) {
           this.messageService.add({
             severity: 'error',
-            summary: 'Error al guardar',
-            detail: mensaje,
+            summary: 'Error',
+            detail: 'Debe ingresar un nombre de modalidad.'
           });
+          return;
+            
+        } else {
+          formData.append('nombreModalidad', this.formularioConvenio.get('nombreModalidad')?.value);
         }
-      )
+
+        // formData.forEach((value, key) => {
+        //   console.log(`${key}:`, value);
+        // });
+        this.servicioConvenios.actualizarConvenio(this.idConvenio ,formData).subscribe(
+          respuesta=>{
+            if(respuesta){
+              this.alternarModal()
+              this.messageService.add({severity: 'success', summary: 'Guardado', detail: 'El convenio se editó correctamente'});
+            }
+            this.cargando = true
+            this.obtenerDetalleConvenio()
+            this.obtenerModalidades()
+          },
+          error => {
+            const mensaje = error.error.message
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error al guardar',
+              detail: mensaje,
+            });
+          }
+        )
+      } else {
+        this.messageService.add({
+          severity: 'error', 
+          summary: 'Error', 
+          detail: 'No se han realizado cambios en el convenio.'
+        });
+      }
     } else {
       this.messageService.add({
         severity: 'error', 
@@ -255,6 +248,10 @@ export class ConvenioComponent implements OnInit{
         detail: 'Formulario incompleto. Por favor llene todos los campos requeridos.'
       });
     }
+  }
+
+  public volverAlListado(){
+    this.router.navigate(['convenios'])
   }
 
 }

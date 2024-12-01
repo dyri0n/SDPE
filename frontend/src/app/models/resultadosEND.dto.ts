@@ -1,26 +1,12 @@
-export interface resultadoPorTemas {
-  nombreAlumno: string;
-  programa: string;
-  puntaje: number;
-  porcentajeTemas: number[]
-  }
-
-export interface resultadoPorEstandares {
-  nombreAlumno: string;
-  programa: string;
-  puntaje: number;
-  porcentajeEstandares: number[]
+export interface ResultadosEnd {
+  idDato: number;
+  agnoRendicion: Date;
+  cohorteAsociado: Date;
+  rutaDocumento: string;
+  fechaSubida: Date;
 }
 
-export interface resultadoPorPA {
-  nombreAlumno: string;
-  programa: string;
-  PA_SP: string
-  PA_CE: string
-}
-
-export interface resultadosEnd {
-  idDato: number,
-  agnoRendicion: number;
-  cohorteAsociado: number;
+export interface NuevoEND{
+  agnoRendicion: string;
+  cohorteAsociado: string;
 }

@@ -39,8 +39,8 @@ export interface CreateConvenioDTO {
   centroPractica: string;
   fechaInicioConvenio: Date;
   fechaFinConvenio?: Date;
-  documentoConvenio?: string; //titulo del documento
-  urlFoto?: string;  //titulo foto
+  documentoConvenio?: string; 
+  urlFoto?: string;  
   idModalidad: number;
   nombreModalidad?: string
 }
@@ -60,7 +60,3 @@ export interface ActualizarConvenio{
   idModalidad?: number;
   nombreModalidad?: string;
 }
-
-
-// imange y link pdf estan como File o string porque en si se guardan files 
-// con el componente en el registrar convenio para las pruebas yo solo ocupe strings

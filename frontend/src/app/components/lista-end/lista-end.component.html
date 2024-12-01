@@ -1,4 +1,12 @@
-<div class="bg-white border-y mt-10 py-5 shadow-lg">
+<div class="w-full my-5 ms-10">
+    <button (click)="volverAlMenu()" class="justify-center px-3 py-2 bg-gray-200 hover:bg-gray-300 hover:text-white text-gray-700 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400">
+        <p class="flex items-center">
+            <i class="pi pi-arrow-left text-xl me-2"></i> Volver al Menú
+        </p>
+    </button>
+</div>
+
+<div class="bg-white border-y py-5 shadow-lg">
     <div class="flex items-center justify-between w-11/12">
         <div class="bg-sky-700 w-auto px-10 rounded-r-xl py-4">
             <h1 class="text-4xl text-white text-center font-bold">Resultados de Evaluación Nacional Diagnóstica</h1>
@@ -60,8 +68,9 @@
                                     formControlName="agnio"
                                     class="bg-gray-100 focus:outline-none focus:border-sky-700 py-3 border-2 shadow-lg rounded-2xl font-medium" 
                                     id="inicio"
-                                    [minDate]="inicioMinimo"
-                                    [maxDate]="inicioMaximo"
+                                    [minDate]="inicioMinimoAgnio"
+                                    [maxDate]="inicioMaximoAgnio"
+                                    (onSelect)="escogerAgnio($event)"
                                     />
                                 <label for="inicio">Año</label>
                             </p-floatLabel>
@@ -73,14 +82,15 @@
                                     formControlName="cohorte"
                                     class="bg-gray-100 focus:outline-none focus:border-sky-700 py-3 border-2 shadow-lg rounded-2xl font-medium" 
                                     id="inicio"
-                                    [minDate]="inicioMinimo"
-                                    [maxDate]="inicioMaximo"
+                                    [minDate]="inicioMinimoCohorte"
+                                    [maxDate]="inicioMaximoCohorte"
+                                    (onSelect)="escogerCohorte($event)"
                                     />
                                 <label for="inicio">Cohorte</label>
                             </p-floatLabel>
                         </div>
 
-                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">PDF del convenio</h2>
+                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Documento PDF de los resultados END</h2>
                         <div class="mx-10 mb-12">
                             <p-fileUpload 
                                 name="demo[]" 
@@ -91,7 +101,7 @@
                                 showUploadButton="false"
                                 showCancelButton="false"
                                 accept="application/pdf"
-                                maxFileSize="1000000"
+                                maxFileSize="5000000"
                                 (onSelect)="seleccionarArchivo($event)"
                                 (onRemove)="borrarArchivo($event)">
                             </p-fileUpload>
@@ -108,6 +118,6 @@
                 </form>
             </div>
         </ng-template>
-    </p-dialog>
+</p-dialog>
 
 <p-toast position="top-right"></p-toast>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConveniosService } from '../../services/convenios.service';
-import { ConvenioLista, Convenios, CreateConvenioDTO, Modalidad} from '../../models/convenios.dto';
+import { ConvenioLista, Convenios, Modalidad} from '../../models/convenios.dto';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
@@ -95,7 +95,6 @@ export class ListaConveniosComponent implements OnInit{
         nombreModalidad: ''
       });
     }
-    console.log(this.formularioConvenio.value)
   }
 
   public seleccionarArchivo(event: any, tipo: string) {
@@ -181,30 +180,6 @@ export class ListaConveniosComponent implements OnInit{
 
   public agregarConvenio(){
     if(this.formularioConvenio.valid){
-      const inicioFormulario= this.formularioConvenio.value.inicio
-      let fechaInicioConvenio: Date
-      if(typeof inicioFormulario === 'string'){
-        fechaInicioConvenio = new Date()
-      }else if(inicioFormulario instanceof Date){
-        const nuevoAño = inicioFormulario.getFullYear()
-        const fechaActual = new Date()
-        fechaInicioConvenio = new Date(nuevoAño, fechaActual.getMonth(), fechaActual.getDate())
-      }else{
-        fechaInicioConvenio = new Date()
-      }
-
-      const fechaFinConvenio = new Date(fechaInicioConvenio.getFullYear(), 11, 31)
-
-      const nuevoConvenioTest: CreateConvenioDTO= {
-        titulo: this.formularioConvenio.value.nombre,
-        centroPractica: this.formularioConvenio.value.centro,
-        fechaInicioConvenio: fechaInicioConvenio,
-        fechaFinConvenio: fechaFinConvenio,
-        // documentoConvenio: this.formularioConvenio.value.terminos,
-        // urlFoto: this.formularioConvenio.value.imagen,
-        idModalidad: this.formularioConvenio.value.idModalidad
-      }
-      
       const formData = new FormData();
 
       // Agregar los campos del formulario
@@ -212,7 +187,6 @@ export class ListaConveniosComponent implements OnInit{
       formData.append('centroPractica', this.formularioConvenio.get('centro')?.value);
       formData.append('idModalidad', this.formularioConvenio.get('idModalidad')?.value);
       formData.append('FechaInicioConvenio', this.formularioConvenio.get('inicio')?.value);
-      formData.append('nombreModalidad', this.formularioConvenio.get('nombreModalidad')?.value);
 
       // Agregar los archivos
       const imagen = this.formularioConvenio.get('imagen')?.value;
@@ -234,10 +208,9 @@ export class ListaConveniosComponent implements OnInit{
         return;
            
       } else {
-        nuevoConvenioTest.nombreModalidad = this.formularioConvenio.value.nombreModalidad   
+        formData.append('nombreModalidad', this.formularioConvenio.get('nombreModalidad')?.value);
       }
 
-      console.log(nuevoConvenioTest, "LOL")
       this.servicioConvenios.nuevoConvenio(formData).subscribe(
         respuesta=>{
           if(respuesta){
@@ -284,5 +257,16 @@ export class ListaConveniosComponent implements OnInit{
     this.totalRecords=this.conveniosFiltrados.length
     this.first=0
     this.actualizarConveniosPaginados()
+  }
+
+  public obtenerImagen(url: string ): string {
+    if (url?.includes('default_convenio')) {
+      return 'assets/imageDefault.jpg';
+    }
+    return this.ruta + url;
+  }
+
+  public volverAlMenu(){
+    this.router.navigate(['menu'])
   }
 }

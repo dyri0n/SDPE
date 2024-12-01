@@ -5,7 +5,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AsignaturaService } from '../../services/asignatura.service';
-import { AsignaturaLinea, Linea } from '../../models/lineaAsignatura.dto';
+import { AsignaturaLinea, Linea, LineaActualizar } from '../../models/lineaAsignatura.dto';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
@@ -30,8 +30,13 @@ export class GestionarLineasComponent implements OnInit {
   lineas: Linea[] = [];     
   asignaturasBackup: AsignaturaLinea[] = [];
   lineasBackup: Linea[] = [];     
+
+  asignaturasEliminadas: AsignaturaLinea[] = []
+
   hayCambios: boolean = false;
   display: boolean = false;
+
+
 
   idPlan!: number;
 
@@ -80,60 +85,62 @@ export class GestionarLineasComponent implements OnInit {
     if (index !== -1) {
       linea.asignaturas.splice(index, 1);
       this.asignaturas.push(asignatura);
+      this.asignaturasEliminadas.push(asignatura)
       this.detectarCambios(); 
     }
   }
 
   public cargarDatos(): void {
-    //obtener las asignaturas de
-    this.servicioAsignatura.obtenerListadoAsignaturas(this.idPlan).subscribe((asignaturasData) => {
-      // buscar las asignaturas "SIN LINEA"
-      this.asignaturas = asignaturasData["SIN LINEA"].map((asignatura: any) => ({
-        titulo: asignatura.titulo,
-        codigo: asignatura.codigo,
-        nombre: asignatura.nombre,
-        areaFormacion: asignatura.areaFormacion,
-        idAsignatura: asignatura.idAsignatura,
+    this.servicioAsignatura.obtenerLineas().subscribe((lineas) => {
+      // Guardar las líneas obtenidas
+      this.lineas = lineas.map((linea:any) => ({
+        id: linea.idLinea,
+        nombre: linea.titulo,
+        asignaturas: [] as any[], // Inicialmente vacío
       }));
-  
-
-      this.asignaturasBackup = JSON.parse(JSON.stringify(this.asignaturas));
-
-      const lineasData = Object.keys(asignaturasData).filter(linea => linea !== "SIN LINEA");
-  
-      this.servicioAsignatura.obtenerLineasPlan(this.idPlan).subscribe((lineasResponse) => {
-        const lineasConId = lineasResponse.lineasAsignatura;
-  
-        this.lineas = lineasData.map((lineaNombre) => {
-          const asignaturas = asignaturasData[lineaNombre].map((asignatura: AsignaturaLinea) => ({
+    
+      // Obtener las asignaturas
+      this.servicioAsignatura.obtenerListadoAsignaturas(this.idPlan).subscribe((asignaturasData) => {
+        // Procesar las asignaturas SIN LINEA
+        this.asignaturas = asignaturasData["SIN LINEA"]?.map((asignatura: any) => ({
+          titulo: asignatura.titulo,
+          codigo: asignatura.codigo,
+          nombre: asignatura.nombre,
+          areaFormacion: asignatura.areaFormacion,
+          idAsignatura: asignatura.idAsignatura,
+        })) || [];
+    
+        // Asociar las asignaturas con las líneas correspondientes
+        Object.keys(asignaturasData).forEach((lineaNombre) => {
+          if (lineaNombre === "SIN LINEA") return; // Ya procesamos SIN LINEA
+    
+          const asignaturas = asignaturasData[lineaNombre]?.map((asignatura: any) => ({
             titulo: asignatura.titulo,
             codigo: asignatura.codigo,
             nombre: asignatura.nombre,
             areaFormacion: asignatura.areaFormacion,
             idAsignatura: asignatura.idAsignatura,
-          }));
-  
-          // se busca la id de la linea correspondiente
-          const lineaId = lineasConId.find(linea => linea.titulo === lineaNombre)?.idLinea;
-  
-          // devovler linea con id
-          return {
-            id: lineaId,
-            nombre: lineaNombre,
-            asignaturas: asignaturas,
-          };
+          })) || [];
+    
+          // Buscar la línea correspondiente por su nombre
+          const lineaExistente = this.lineas.find(linea => linea.nombre === lineaNombre);
+          if (lineaExistente) {
+            lineaExistente.asignaturas.push(...asignaturas);
+          }
         });
-  
+    
+        // Respaldar datos
         this.lineasBackup = JSON.parse(JSON.stringify(this.lineas));
-
-        console.log(this.asignaturas)
-        console.log(this.lineas)
-        this.cargando = false
+        this.asignaturasBackup = JSON.parse(JSON.stringify(this.asignaturas));
+    
+        console.log("Asignaturas SIN LINEA:", this.asignaturas);
+        console.log("Líneas con asignaturas:", this.lineas);
+        this.cargando = false;
       });
     });
   }
 
-  public drop(event: CdkDragDrop<any[]>, linea?: Linea): void {
+  public soltar(event: CdkDragDrop<any[]>, linea?: Linea): void {
     if (linea) {
       const asignatura = event.previousContainer.data[event.previousIndex];
       if (event.previousContainer === event.container) {
@@ -181,11 +188,32 @@ export class GestionarLineasComponent implements OnInit {
   public cancelarCambios(): void {
     this.asignaturas = JSON.parse(JSON.stringify(this.asignaturasBackup));
     this.lineas = JSON.parse(JSON.stringify(this.lineasBackup));
+    this.asignaturasEliminadas = []
     this.detectarCambios();
   }
 
   public confirmarCambios(): void {
-    this.servicioAsignatura.guardarCambios(this.lineas).subscribe({
+
+    const asignaturas: LineaActualizar[] = [
+      ...this.lineas.flatMap(linea =>
+        linea.asignaturas.map(asignatura => ({
+          codigoAsignatura: asignatura.codigo!,
+          tituloLineaRelacionada: linea.nombre
+        }))
+      ),
+      ...this.asignaturasEliminadas.map(asignatura => ({
+        codigoAsignatura: asignatura.codigo!,
+        tituloLineaRelacionada: '' // Título vacío como se requiere
+      }))
+    ];
+
+
+    const lineaNueva: any ={
+      lineasNuevas: asignaturas
+    }
+
+
+    this.servicioAsignatura.guardarCambios(this.idPlan,lineaNueva).subscribe({
     next: (response) => {
       this.lineasBackup = JSON.parse(JSON.stringify(this.lineas));
       this.asignaturasBackup = JSON.parse(JSON.stringify(this.asignaturas));
@@ -195,7 +223,7 @@ export class GestionarLineasComponent implements OnInit {
         summary: 'Guardado',
         detail: 'Cambios guardados con éxito',
       });
-      console.log("xd",response)
+      console.log("RESPUESTA BACK",response)
     },
     error: (error: any) => {
       this.messageService.add({

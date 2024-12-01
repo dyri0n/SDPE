@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { resultadoPorEstandares, resultadoPorPA, resultadoPorTemas, resultadosEnd } from '../models/resultadosEND.dto';
 
 @Injectable({
   providedIn: 'root'

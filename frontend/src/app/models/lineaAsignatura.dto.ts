@@ -4,6 +4,11 @@ export interface Linea {
   asignaturas: AsignaturaLinea[];
 }
   
+export interface LineaActualizar {
+  codigoAsignatura: string;
+  tituloLineaRelacionada?: string;
+}
+
 export interface AsignaturaLinea {
   titulo?: string;
   codigo?: string;

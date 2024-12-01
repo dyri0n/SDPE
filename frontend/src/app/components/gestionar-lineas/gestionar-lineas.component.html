@@ -1,31 +1,34 @@
-<div class="bg-white border-y mt-10 py-3 shadow-lg">
+<div  class="w-full my-5 ms-10">
+    <button (click)="volverFLuxograma()" class="justify-center px-3 py-2 bg-gray-200 hover:bg-gray-300 hover:text-white text-gray-700 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400">
+        <p class="flex items-center">
+            <i class="pi pi-arrow-left text-xl me-2"></i> Volver al Fluxograma
+        </p>
+    </button>
+</div>
+
+<div class="bg-white border-y py-3 shadow-lg">
     <div class="flex items-center justify-between w-11/12">
         <div class="bg-sky-700 w-auto px-10 rounded-r-xl py-4">
             <h1 class="text-4xl text-white text-center font-bold">Gestionar líneas</h1>
         </div>
     </div>
-  </div>
+</div>
   
   @if(cargando){
 
-    <div class="w-full flex justify-center items-center" style="height: calc(100vh - 320px);">
+    <div class="w-full flex justify-center items-center" style="height: calc(100vh - 100px);">
         <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="none" animationDuration=".5s"/>
     </div>
 
   } @else {
-    <div cdkDropListGroup class="flex bg-white space-x-32 w-11/12 mx-auto justify-center shadow-lg mt-8 rounded-md relative">
-     
-        <button (click)="volverFLuxograma()" class="absolute top-10 left-20 z-10 justify-center w-12 h-12 bg-gray-200 hover:bg-gray-300 hover:text-white text-gray-700 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 flex items-center justify-center">
-            <i class="pi pi-arrow-left text-2xl"></i>
-        </button>
-        
+    <div cdkDropListGroup class="flex bg-white space-x-32 w-11/12 mx-auto justify-center shadow-lg my-8 rounded-md relative">
         <!-- lista de asignaturas disponibles -->
-        <div class="w-3/12 p-5 bg-sky-600 rounded-md my-8 flex flex-col" style="height: calc(100vh - 320px);">
-            <h2 class="text-xl text-center bg-white rounded-md p-3 font-semibold mb-4 text-sky-700 border-2 border-gray-300">Asignaturas Disponibles</h2>
+        <div class="w-3/12 p-5 bg-sky-600 rounded-md my-8 flex flex-col" style="height: calc(100vh - 100px);">
+            <h2 class="text-xl text-center bg-white rounded-md p-3 font-semibold mb-6 text-sky-700 border-2 border-gray-300">Asignaturas Disponibles</h2>
             <div class="w-full mb-3 flex justify-between items-center">
                 <input type="text" class="px-3 py-1 w-full h-fit rounded-xl font-normal font-bold border border-sky-500 focus:outline-none focus:ring focus:ring-sky-500" placeholder="Buscar asignatura" [(ngModel)]="searchTermAsignaturas">
             </div>
-            <div cdkDropList [cdkDropListData]="asignaturasFiltradas" class="border border-gray-300 min-h-[60px] bg-white rounded-md p-3 space-y-3 overflow-y-auto" (cdkDropListDropped)="drop($event)" cdkDropListSortingDisabled style="flex-grow: 1;">
+            <div cdkDropList [cdkDropListData]="asignaturasFiltradas" class="border border-gray-300 min-h-[60px] bg-white rounded-md p-3 space-y-3 overflow-y-auto" (cdkDropListDropped)="soltar($event)" cdkDropListSortingDisabled style="flex-grow: 1;">
                 @for (asignatura of asignaturasFiltradas; track asignatura; let i = $index) {
                     <div class="bg-white border border-gray-300 py-4 text-center text-base font-medium rounded cursor-pointer hover:bg-sky-200 hover:border-sky-200" cdkDrag>
                         {{ asignatura.nombre }}
@@ -35,8 +38,8 @@
         </div>
       
         <!-- lineas de asignaturas -->
-        <div class="w-3/6 p-5 bg-sky-600 rounded-md my-8 flex flex-col" style="height: calc(100vh - 320px);">
-            <h2 class="text-xl text-center bg-white rounded-md p-3 font-semibold mb-4 text-sky-700 border-2 border-gray-300">Líneas de Asignaturas</h2>
+        <div class="w-3/6 p-5 bg-sky-600 rounded-md my-8 flex flex-col" style="height: calc(100vh - 100px);">
+            <h2 class="text-xl text-center bg-white rounded-md p-3 font-semibold mb-6 text-sky-700 border-2 border-gray-300">Líneas de Asignaturas</h2>
       
             <div class="w-full mb-3 flex justify-start">
                 <input type="text" class="px-3 py-1 w-full h-fit rounded-xl font-normal font-bold border border-sky-500 focus:outline-none focus:ring focus:ring-sky-500" placeholder="Buscar en línea de asignaturas" [(ngModel)]="searchTermLineas">
@@ -49,11 +52,11 @@
                 </div>
             }
       
-            <div class="flex-1 overflow-y-auto mb-5 px-3">
+            <div class="flex-1 overflow-y-auto mb-5 pe-3">
                 @for (linea of lineasFiltradas; track linea; let i = $index) {
                     <div class="mb-5 h-fit">
-                        <h3 class="text-base bg-gray-300 rounded-t-md border-4 border-gray-300 p-3 font-medium text-sky-700 font-semibold">{{ linea.nombre }}</h3>
-                        <div cdkDropList [cdkDropListData]="linea.asignaturas" class="border-x-4 border-b-0 border-gray-300 h-[200px] overflow-y-auto bg-white p-3 space-y-3" (cdkDropListDropped)="drop($event, linea)">
+                        <h3 class="text-base bg-gray-300 rounded-t-md border-4 border-gray-300 p-3 font-medium text-sky-700 font-semibold">Línea de {{ linea.nombre }}</h3>
+                        <div cdkDropList [cdkDropListData]="linea.asignaturas" class="border-x-4 border-b-0 border-gray-300 h-[200px] overflow-y-auto bg-white p-3 space-y-3" (cdkDropListDropped)="soltar($event, linea)">
                             @for (asignatura of linea.asignaturas; track asignatura; let j = $index) {
                                 <div class="bg-white border border-gray-300 p-2 rounded relative cursor-pointer hover:bg-sky-200 hover:border-sky-200 flex items-center justify-between" cdkDrag>
                                     <span class="text-gray-700 font-medium">{{ asignatura.nombre }}</span>
@@ -65,13 +68,17 @@
                                 </div>
                             }
                         </div>
+                        
                         <div class="border-4 border-t-0 border-gray-300 bg-white text-center rounded-b-md">
+
+                        @if (linea.asignaturas.length == 0){
                             <p class="bg-orange-100 mx-1 mb-1 rounded-md py-2 text-amber-500 text-xl flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="h-8 w-8 mx-2 text-amber-500">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0-3.75 3.75M21 12H3" />
                                 </svg>
                                 Arrastre asignaturas para agregarlas
                             </p>
+                        }
                         </div>
                     </div>
                 }
@@ -92,11 +99,17 @@
                             <div class="bg-white mt-5 py-5 shadow-lg border-y">
                                 <h1 class="p-4 rounded-r-2xl w-fit px-10 bg-sky-700 text-white text-4xl font-bold">Agregar Línea</h1>
                             </div>
-                            <div class="flex flex-col justify-center border bg-white rounded-lg py-3 my-4 mx-8 shadow-xl overflow-auto h-[20vh]">
+                            <div class="border bg-white rounded-lg py-3 my-4 mx-8 shadow-xl overflow-auto h-[30vh]">
                                 <h2 class="mx-8 my-4 text-xl p-2 font-bold">Nueva línea</h2>
                                 <div class="mx-8 mb-10 flex justify-between">
                                     <p-floatLabel class="w-full me-5">
                                         <input id="nombre" formControlName="nombre" type="text" class="bg-gray-100 focus:outline-none focus:border-sky-700 w-full px-2 py-1 border-2 shadow-lg rounded-2xl font-medium" pInputText/>
+                                        <label for="Nombre del convenio">Nombre</label>
+                                    </p-floatLabel>
+                                </div>
+                                <div class="mx-8 mb-10 flex justify-between">
+                                    <p-floatLabel class="w-full me-5">
+                                        <input id="nombre" formControlName="nombre" type="color" class="bg-gray-100 focus:outline-none focus:border-sky-700 w-full px-2 py-1 border-2 shadow-lg rounded-2xl font-medium" pInputText/>
                                         <label for="Nombre del convenio">Nombre</label>
                                     </p-floatLabel>
                                 </div>

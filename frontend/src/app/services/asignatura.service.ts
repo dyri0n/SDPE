@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ListaAsignatura } from '../models/listaAsignatura.dto';
-import { AsignaturaLinea, Linea, LineaPlan, LineasAsignaturas } from '../models/lineaAsignatura.dto';
+import { AsignaturaLinea, Linea, LineaActualizar, LineaPlan, LineasAsignaturas } from '../models/lineaAsignatura.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +23,8 @@ export class AsignaturaService {
     return this.http.get<Linea[]>(`${this.apiAsignaturas}/lineas`);
   }
 
-  public guardarCambios(lineas: Linea[]){
-    console.log("lol", lineas)
-    return this.http.post<Linea>(`${this.apiAsignaturas}/guardarCambios`, lineas);
+  public guardarCambios(idPlan:number, lineas: Linea[]){
+    return this.http.post<Linea>(`${this.apiLinea}/planes/${idPlan}/asignaturas`, lineas);
   }
 
   // LINEAS
@@ -40,5 +39,4 @@ export class AsignaturaService {
   public obtenerLineasPlan(idPlan: number) {
     return this.http.get<LineaPlan>(`${this.apiLinea}/planes/${idPlan}`);
   }
-
 }

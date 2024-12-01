@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
-import { ResultadosENDService } from '../../services/resultados-end.service';
-import { resultadosEnd } from '../../models/resultadosEND.dto';
+import { NuevoEND, ResultadosEnd } from '../../models/resultadosEND.dto';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
@@ -34,16 +33,19 @@ export class ListaEndComponent implements OnInit {
     this.obtenerListado()
   }
 
-  listaResultados: resultadosEnd[] = [] 
-  public resultadosFiltrados: resultadosEnd[] = []
-  public resultadosPaginados: resultadosEnd[] = []
+  listaResultados: ResultadosEnd[] = [] 
+  public resultadosFiltrados: ResultadosEnd[] = []
+  public resultadosPaginados: ResultadosEnd[] = []
   public first: number = 0
   public rows: number = 6
   public totalRecords: number= 0
 
   public visible: boolean = false;
-  public inicioMinimo: Date = new Date(2017, 0, 1);;
-  public inicioMaximo: Date = new Date();;
+  public inicioMinimoAgnio: Date = new Date(2021, 0, 1);
+  public inicioMinimoCohorte: Date = new Date(2017, 0, 1);
+  public inicioMaximoAgnio: Date = new Date();
+  public inicioMaximoCohorte: Date = new Date(this.inicioMaximoAgnio.getFullYear() - 4, this.inicioMaximoAgnio.getMonth(), this.inicioMaximoAgnio.getDate());
+
 
   public formularioEND: FormGroup = new FormGroup({
     agnio: new FormControl('', [Validators.required]),
@@ -61,7 +63,7 @@ export class ListaEndComponent implements OnInit {
 
   public borrarArchivo(event: any) {
     this.formularioEND.patchValue({
-      terminos: null
+      documento: null
     });
   }
 
@@ -69,19 +71,18 @@ export class ListaEndComponent implements OnInit {
     if(this.formularioEND.valid){
 
       //CAMBIAR ANY
-      const nuevoEND: any= {
-        agnio: this.formularioEND.value.agnio.getFullYear(),
-        cohorte: this.formularioEND.value.cohorte.getFullYear(),
+      const nuevoEND: NuevoEND= {
+        agnoRendicion: this.formularioEND.value.agnio.getFullYear(),
+        cohorteAsociado: this.formularioEND.value.cohorte.getFullYear(),
       }
       
       const formData = new FormData();
 
       // Agregar los campos del formulario
-      formData.append('agnoRendicion', nuevoEND.agnio);
-      formData.append('cohorteAsociado', nuevoEND.cohorte);
+      formData.append('agnoRendicion', nuevoEND.agnoRendicion);
+      formData.append('cohorteAsociado', nuevoEND.cohorteAsociado);
       formData.append('files', this.formularioEND.value.documento);
 
-      console.log(nuevoEND, "LOL");
       this.servicioEnd.nuevoEND(formData).subscribe(
         respuesta=>{
           if(respuesta){
@@ -178,6 +179,22 @@ export class ListaEndComponent implements OnInit {
     if(!this.visible){
       this.formularioEND.reset()
     }
+  }
+
+  public escogerAgnio(event: Date): void {
+    const agnio = event.getFullYear();
+    const cohorte = new Date(agnio - 4, 0, 1); // Crea un objeto Date para el 1 de enero del año correspondiente
+    this.formularioEND.get('cohorte')?.setValue(cohorte);
+  }
+  
+  public escogerCohorte(event: Date): void {
+    const cohorte = event.getFullYear();
+    const agnio = new Date(cohorte + 4, 0, 1); // Crea un objeto Date para el 1 de enero del año correspondiente
+    this.formularioEND.get('agnio')?.setValue(agnio);
+  }
+
+  public volverAlMenu(){
+    this.router.navigate(['menu'])
   }
 
 }

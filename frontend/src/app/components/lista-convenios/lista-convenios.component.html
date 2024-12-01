@@ -1,4 +1,12 @@
-<div class="bg-white border-y mt-10 py-5 shadow-lg">
+<div class="w-full my-5 ms-10">
+    <button (click)="volverAlMenu()" class="justify-center px-3 py-2 bg-gray-200 hover:bg-gray-300 hover:text-white text-gray-700 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400">
+        <p class="flex items-center">
+            <i class="pi pi-arrow-left text-xl me-2"></i> Volver al Menú
+        </p>
+    </button>
+</div>
+
+<div class="bg-white border-y py-5 shadow-lg">
     <div class="flex items-center justify-between w-11/12">
         <div class="bg-sky-700 w-3/12 rounded-r-2xl py-4">
             <h1 class="text-4xl text-white text-center font-bold">Convenios</h1>
@@ -30,6 +38,7 @@
     </div>
 
     <div class="w-10/12 mx-auto bg-white border rounded shadow-lg items-center flex justify-center mt-8">
+        
         <div class="card flex justify-content-center">
             <p-paginator 
                 (onPageChange)="onPageChange($event)" 
@@ -45,7 +54,7 @@
         @for (convenio of conveniosPaginados; track convenio; let i = $index) {
             <div class="rounded-md bg-white flex flex-col md:flex-row shadow-lg overflow-hidden transform transition hover:scale-105 hover:shadow-2xl">
                 <div class="w-2/12 border-r-2 border-sky-700">
-                    <img [src]="convenio.imagen ? 'http://localhost:3000/'+ convenio.imagen : 'assets/imageDefault.jpg'" 
+                    <img [src]="obtenerImagen(convenio.imagen)" 
                         class="h-60 w-full object-cover">
                 </div>
 
@@ -161,7 +170,7 @@
                                 showUploadButton="false"
                                 showCancelButton="false"
                                 accept="image/*"
-                                maxFileSize="1000000"
+                                maxFileSize="5000000"
                                 (onSelect)="seleccionarArchivo($event, 'imagen')"
                                 (onRemove)="borrarArchivo($event, 'imagen')">
                             </p-fileUpload>
@@ -177,7 +186,7 @@
                                 showUploadButton="false"
                                 showCancelButton="false"
                                 accept="application/pdf" 
-                                maxFileSize="1000000"
+                                maxFileSize="5000000"
                                 (onSelect)="seleccionarArchivo($event, 'terminos')"
                                 (onRemove)="borrarArchivo($event, 'terminos')">
                             </p-fileUpload>
