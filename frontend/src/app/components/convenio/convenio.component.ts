@@ -256,6 +256,12 @@ export class ConvenioComponent implements OnInit{
 
   public verPracticas(){
     this.router.navigate(['/practicas-convenio', this.idConvenio])
+  }
 
+  public obtenerImagen(url: string ): string {
+    if (url?.includes('default_convenio')) {
+      return 'assets/imageDefault.jpg';
+    }
+    return this.ruta + url;
   }
 }

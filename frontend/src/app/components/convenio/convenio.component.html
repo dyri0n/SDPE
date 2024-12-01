@@ -16,7 +16,7 @@
         <div class="bg-sky-700 w-10/12 rounded-r-2xl py-10">
             <div class="flex items-center mx-32">
                 <div class="w-4/12 h-64">
-                    <img [src]="(detalleConvenioTest.convenio && detalleConvenioTest.convenio.urlFoto) ? foto : '../../assets/imageDefault.jpg'" class="h-full w-full object-cover rounded-lg select-none">
+                    <img [src]="obtenerImagen(detalleConvenioTest.convenio.urlFoto!)" class="h-full w-full object-cover rounded-lg select-none">
                 </div>
                 <div class="w-11/12 flex flex-wrap justify-center">
                     <h1 class="w-full bg-white text-5xl py-6 text-center text-black font-bold select-none">{{detalleConvenioTest.convenio.titulo}}</h1>

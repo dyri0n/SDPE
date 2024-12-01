@@ -1,4 +1,12 @@
-<div class="max-w-4xl mx-auto bg-[#0369A1] shadow-lg rounded-lg p-8 mt-10">
+<div class="w-full my-5 ps-10">
+    <button (click)="volverAlMenu()" class="transition-transform hover:scale-105 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
+        <p class="flex items-center">
+            <i class="pi pi-arrow-left text-xl me-2"></i> Volver al Menú
+        </p>
+    </button>
+</div>
+
+<div class="max-w-7xl mx-auto bg-[#0369A1] shadow-lg rounded-lg p-8 mt-10">
     <h1 class="text-3xl font-bold mb-4 text-white bg-[#21A4DC] p-2 rounded text-center">Asignaturas</h1>
     <div class="mb-4">
         <input type="text" placeholder="Buscar asignaturas..." class="w-full p-3 border border-[#21A4DC] rounded-md focus:outline-none focus:ring focus:ring-[#b77e13] focus:border-[#b77e13]" (input)="filtrarAsignaturasNuevo($event)" />
@@ -7,7 +15,7 @@
         <div class="spinner-border animate-spin inline-block w-16 h-16 border-4 rounded-full border-t-transparent border-[#21A4DC]"></div>
     </div>
     <ng-template #contenido>
-        <div class="w-10/12 mx-auto bg-white items-center flex justify-center mt-12">
+        <div class="w-full mx-auto bg-white rounded-md items-center flex justify-center mt-12">
             <div class="card flex justify-content-center">
                 <p-paginator 
                     (onPageChange)="onPageChangeNuevo($event)" 

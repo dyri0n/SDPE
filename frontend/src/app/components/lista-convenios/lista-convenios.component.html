@@ -1,5 +1,5 @@
-<div class="w-full my-5 ms-10">
-    <button (click)="volverAlMenu()" class="justify-center px-3 py-2 bg-gray-200 hover:bg-gray-300 hover:text-white text-gray-700 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400">
+<div class="w-full my-5 ps-10">
+    <button (click)="volverAlMenu()" class="transition-transform hover:scale-105 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
         <p class="flex items-center">
             <i class="pi pi-arrow-left text-xl me-2"></i> Volver al Menú
         </p>
@@ -24,13 +24,13 @@
     </div>
 
 } @else {
-    <div class="bg-sky-700 shadow-lg w-full py-4 px-10 mt-10 flex justify-between items-center">
+    <div class="bg-sky-700 shadow-lg w-full py-4 px-24 mt-10 flex justify-between items-center">
         <div class="w-full">
-            <span class="p-input-icon-left w-10/12">
+            <span class="p-input-icon-left w-full">
                 <i class="pi pi-search text-sky-700"></i>
                 <input 
                     type="text" 
-                    class="w-full ps-10 py-2 rounded-xl font-semibold text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white bg-white" 
+                    class="w-full ps-10 py-2 rounded-xl font-semibold text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white" 
                     placeholder="Buscar convenio" 
                     (input)="filtrarConvenios($event)">
             </span>

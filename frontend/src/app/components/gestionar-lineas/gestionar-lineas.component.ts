@@ -235,7 +235,7 @@ export class GestionarLineasComponent implements OnInit {
   });
   }
 
-  public volverFLuxograma(){
+  public volverFluxograma(){
     this.router.navigateByUrl(`fluxograma/${this.idPlan}`)
   }
 

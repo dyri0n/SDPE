@@ -1,7 +1,9 @@
 <div class="bg-white min-h-screen p-8">
-  <div (click)="devolverAlMenu()" class="p-4 bg-slate-400 mb-6 rounded-2xl cursor-pointer hover:bg-slate-500 transition duration-300 ease-in-out size-fit">
-    <p class="font-bold text-white"><- Volver al menu</p>
-  </div>
+  <button (click)="devolverAlMenu()" class="transition-transform mb-5 hover:scale-105 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
+    <p class="flex items-center">
+        <i class="pi pi-arrow-left text-xl me-2"></i> Volver al Menú
+    </p>
+</button>
   <div class="flex items-center justify-center bg-[#DC911A] rounded-xl py-6 mb-10">
     <h1 class="text-5xl font-black text-white">Fluxogramas</h1>
   </div>

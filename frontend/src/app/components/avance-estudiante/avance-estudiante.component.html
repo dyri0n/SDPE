@@ -7,14 +7,11 @@
         class="text-cyan-50 font-medium w-full px-4 text-wrap"
         *ngIf="avanceEstudiante.estudiante; else cargando"
       >
-        <div
-          (click)="devolverAMenuEstudiante()"
-          class="p-4 bg-slate-400 mb-4 rounded-2xl cursor-pointer"
-        >
-          <p class="font-bold text-white text-xs">
-            <- Volver a menu del estudiante
+        <button (click)="devolverAMenuEstudiante()" class="w-full transition-transform hover:scale-105 mb-5 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
+          <p class="flex items-center justify-center">
+              <i class="pi pi-arrow-left text-xl me-2"></i> Volver a menú del estudiante
           </p>
-        </div>
+        </button>
         <div class="rounded-md text-xl py-4 my-4 text-center">
           Datos del estudiante
         </div>

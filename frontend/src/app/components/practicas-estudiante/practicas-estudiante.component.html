@@ -1,11 +1,10 @@
 <div class="min-h-screen bg-blue-200 flex flex-col">
   <div class="pt-4 flex-grow">
-    <div
-      (click)="devolverAMenuEstudiante()"
-      class="p-4 bg-slate-400 mb-4 mx-4 size-fit rounded-2xl cursor-pointer"
-    >
-      <p class="font-bold text-white"><- Volver a menu del estudiante</p>
-    </div>
+    <button (click)="devolverAMenuEstudiante()" class="transition-transform hover:scale-105 mb-5 ms-10 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
+      <p class="flex items-center">
+          <i class="pi pi-arrow-left text-xl me-2"></i> Volver a menú del estudiante
+      </p>
+    </button>
 
     <div class="pr-20">
       <div class="bg-[#0369A1] py-4 rounded-e-3xl">

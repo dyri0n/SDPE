@@ -110,4 +110,8 @@ export class AsignaturasComponent implements OnInit {
     })
   }
 
+  public volverAlMenu(){
+    this.router.navigate(['menu'])
+  }
+
 }

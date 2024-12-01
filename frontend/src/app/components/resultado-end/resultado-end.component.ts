@@ -152,7 +152,7 @@ export class ResultadoEndComponent implements OnInit {
   }
 
   public volverAlListado(){
-    this.router.navigate(['convenios'])
+    this.router.navigate(['end'])
   }
 
 }

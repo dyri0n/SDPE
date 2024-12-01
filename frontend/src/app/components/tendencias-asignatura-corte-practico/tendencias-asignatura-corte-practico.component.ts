@@ -9,6 +9,7 @@ import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { Chart } from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { DetallesPracticaDTO } from '../../models/practica';
+import { Router } from '@angular/router';
 
 Chart.register(annotationPlugin)
 
@@ -22,7 +23,8 @@ Chart.register(annotationPlugin)
 export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
 
   constructor(
-    private tendenciaService: TendenciaService
+    private tendenciaService: TendenciaService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -87,6 +89,10 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
   public cortePromedios: number=4
   public cargando: boolean=true
   
+  public volverAlMenu(){
+    this.router.navigate(['menu'])
+  }
+
   public onPageChange(event: PaginatorState) {
     this.first = event.first ?? 0;
     this.rows = event.rows ?? 10; 

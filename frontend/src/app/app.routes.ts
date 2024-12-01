@@ -121,7 +121,7 @@ export const routes: Routes = [
     },
   },
   {
-    path: 'detalle-asignatura/:idFluxograma/:codigoAsignatura',
+    path: 'detalle-asignatura/:codigoAsignatura',
     component: DetalleAsignaturaComponent,
     canActivate: [authGuard],
   },
