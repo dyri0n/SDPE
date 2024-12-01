@@ -8,7 +8,7 @@ import { AsignaturaService } from '../../services/asignatura.service';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ContextMenu, ContextMenuModule } from 'primeng/contextmenu';
 import { ToastModule } from 'primeng/toast';
-import { LineaPlan } from '../../models/lineaAsignatura.dto';
+import { LineaActualizar, Lineas } from '../../models/lineaAsignatura.dto';
 
 
 @Component({
@@ -34,12 +34,16 @@ export class DetalleFluxogramaComponent implements OnInit {
     //llamamos a la funcion para obtener el detalle del fluxograma
     this.obtenerDetalleFluxograma()
     this.obtenerLineas()
+    window.addEventListener('scroll', this.cerrarContextMenu.bind(this));
+
   }
 
-  @ViewChild('menu') contextMenu!: ContextMenu; // referencia al menu
+  // referencia al ContextMenu
+  @ViewChild(ContextMenu) contextMenu!: ContextMenu;  
+  private ultimoContextMenu!: ContextMenu |null;
+  menuVisible = false;
   lineaMenu!: MenuItem[]; 
-  private lastContextMenu!: ContextMenu;
-  public selectedAsignaturaId!: number;
+  public selectedAsignaturaId!: string;
 
   //variable para guardar el detalle de un fluxograma
   public detalleFluxograma: AsignaturaFluxograma[]=[]
@@ -148,11 +152,14 @@ export class DetalleFluxogramaComponent implements OnInit {
   }
 
   public obtenerLineas() {
-    this.asignaturaService.obtenerLineasPlan(this.idFluxograma).subscribe((result: LineaPlan) => {
-      const lineas = result.lineasAsignatura.map((linea: any) => ({
+    // this.asignaturaService.obtenerLineasPlan(this.idFluxograma).subscribe((result: LineaPlan) => {
+
+    this.asignaturaService.obtenerLineas().subscribe((result: Lineas[]) => {
+      console.log(result)
+      const lineas = result.map((linea: any) => ({
         label: "Línea de " + linea.titulo,
         icon: 'pi pi-plus',
-        command: () => this.agregarALinea(linea.idLinea)
+        command: () => this.agregarALinea(linea.titulo)
       }));
   
       this.lineaMenu = [
@@ -167,13 +174,24 @@ export class DetalleFluxogramaComponent implements OnInit {
     });
   }
   
-  public agregarALinea(lineaId: number) {
+  public agregarALinea(tituloLinea: string) {
     if (this.selectedAsignaturaId) {
       console.log(
-        `Asignatura ID ${this.selectedAsignaturaId} agregada a la línea ID ${lineaId}`
+        `Asignatura ID ${this.selectedAsignaturaId} agregada a la línea ID ${tituloLinea}`
       );
 
-      this.asignaturaService.agregarAsignaturaLinea(this.selectedAsignaturaId, lineaId).subscribe({
+      const asignatura: LineaActualizar[] = [{
+        codigoAsignatura: this.selectedAsignaturaId,
+        tituloLineaRelacionada: tituloLinea
+      }];
+  
+      const asignaturaNueva: any ={
+        lineasNuevas: asignatura
+      }
+
+      console.log(asignaturaNueva)
+
+      this.asignaturaService.agregarAsignaturaLinea(this.idFluxograma, asignaturaNueva).subscribe({
           next: (response: any) => {
             this.messageService.add({
               severity: 'success', 
@@ -193,22 +211,28 @@ export class DetalleFluxogramaComponent implements OnInit {
     }
   }
 
-  public onContextMenuOpen(menu: ContextMenu, asignaturaId: number) {
-    this.selectedAsignaturaId = asignaturaId;
+  
 
-    if (this.lastContextMenu && this.lastContextMenu !== menu) {
-      this.lastContextMenu.hide();
-    }
-    this.lastContextMenu = menu;
-
-    console.log('asignatura seleccionada:', this.selectedAsignaturaId);
+  // Método para abrir el contextMenu
+public abrirContextMenu(event: MouseEvent, contextMenu: ContextMenu, codigo: string) {
+  if (this.ultimoContextMenu && this.ultimoContextMenu !== contextMenu) {
+    this.ultimoContextMenu.hide(); // Cierra el menu anterior si es diferente
   }
+  this.selectedAsignaturaId = codigo;
+  contextMenu.show(event);  // Mostrar el nuevo menú
+  this.ultimoContextMenu = contextMenu;  // Actualiza la referencia
+}
 
-  onScroll() {
-    if (this.lastContextMenu?.container) {
-      this.lastContextMenu.hide();
-    }
+// Método para cerrar el contextMenu
+public cerrarContextMenu() {
+  if (this.ultimoContextMenu && !this.menuVisible) {
+    this.menuVisible = true; // Marcar que estamos cerrando
+    this.ultimoContextMenu.hide(); // Solo ocultar si hay un menú visible
+    this.ultimoContextMenu = null;  // Resetea la referencia
+    this.menuVisible = false; // Resetear la bandera después de cerrar
   }
+}
+
 
   public gestionarLinea(){
     this.router.navigateByUrl(`gestionar-lineas/${this.idFluxograma}`)

@@ -34,17 +34,12 @@
                 }"
                 (click)="detalleAsignatura(asignatura.idAsignatura, asignatura.codigo)"
                 (mouseenter)="resaltarAsignaturas(asignatura.prerrequisitos, asignatura.tributaciones)"
-                (mouseleave)="quitarResaltado()">
+                (mouseleave)="quitarResaltado()"
+                (contextmenu)="abrirContextMenu($event, contextMenu, asignatura.codigo)">
                 <div class="text-sm font-semibold mb-1">{{asignatura.codigo}}</div>
                 <div class="text-lg font-bold">{{asignatura.nombre}}</div>
               </div>
-              <!-- <p-contextMenu
-                  #menu
-                  [target]="card"
-                  [model]="lineaMenu"
-                  (onShow)="onContextMenuOpen(menu, asignatura.idAsignatura)"
-                  [styleClass]="'w-[300px] bg-white shadow-lg border border-gray-300 rounded-md p-2'">
-              </p-contextMenu> -->
+              <p-contextMenu #contextMenu [model]="lineaMenu" (onHide)="cerrarContextMenu()" [styleClass]="'w-[300px] bg-white shadow-lg border border-gray-300 rounded-md p-2'"></p-contextMenu>
             </div>
           }
         </div>
@@ -52,5 +47,7 @@
     </div>
   </div>
 </div>
+
+
 
 <p-toast position="top-right"></p-toast>

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ListaAsignatura } from '../models/listaAsignatura.dto';
 import { AsignaturaDetalleDTO, ReporteAsignaturaDTO, TendenciasCortePracticoDTO } from '../models/asignatura.dto';
-import { Linea, LineaPlan, LineasAsignaturas } from '../models/lineaAsignatura.dto';
+import { Linea, LineaPlan, Lineas, LineasAsignaturas } from '../models/lineaAsignatura.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +19,8 @@ export class AsignaturaService {
     return this.http.get<ListaAsignatura[]>(this.apiAsignaturas)
   }
 
-  public agregarAsignaturaLinea(idAsignatura: number, idLinea: Number){
-    console.log("si")
-    return this.http.get<Linea[]>(`${this.apiAsignaturas}/lineas`);
+  public agregarAsignaturaLinea(idPlan: number, asignatura:Linea[]){
+    return this.http.post<Linea>(`${this.apiLinea}/planes/${idPlan}/asignaturas`, asignatura);
   }
 
   public guardarCambios(idPlan:number, lineas: Linea[]){
@@ -33,8 +32,8 @@ export class AsignaturaService {
     return this.http.get<LineasAsignaturas>(`${this.apiLinea}/planes/${idPlan}/asignaturas`);
   }
 
-  public obtenerLineas(): Observable<Linea[]> {
-    return this.http.get<Linea[]>(`${this.apiLinea}`);
+  public obtenerLineas(): Observable<Lineas[]> {
+    return this.http.get<Lineas[]>(`${this.apiLinea}`);
   }
 
   public obtenerLineasPlan(idPlan: number) {

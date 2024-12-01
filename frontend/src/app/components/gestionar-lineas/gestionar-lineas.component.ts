@@ -45,6 +45,7 @@ export class GestionarLineasComponent implements OnInit {
 
   public formularioLinea: FormGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
+    color: new FormControl('#ffffff', Validators.required)
   })
 
   constructor(

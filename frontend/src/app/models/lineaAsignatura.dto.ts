@@ -29,3 +29,8 @@ export interface LineaPlan {
     titulo: string;
   }[]
 }
+
+export interface Lineas{
+  idLinea: number,
+  titulo: string,
+}
