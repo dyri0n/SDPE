@@ -3,25 +3,24 @@ import { Injectable } from '@angular/core';
 import { LoginUsuario, RespuestaLogin } from '../models/login.dto';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
-
+import { jwtDecode } from 'jwt-decode';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoginService {
+  constructor(private http: HttpClient, private router: Router) {}
 
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) { }
-
-  private url = 'http://localhost:3000/auth'
+  private url = 'http://localhost:3000/auth';
 
   public iniciarSesion(usuario: LoginUsuario): Observable<RespuestaLogin> {
-    console.log(usuario)
+    console.log(usuario);
     return this.http.post<any>(`${this.url}/login`, usuario).pipe(
       map((result) => {
         if (result && result.access_token) {
           sessionStorage.setItem('token', result.access_token);
+
+          console.log(jwtDecode(result.access_token));
+
           return { success: true };
         }
         return { success: false };
@@ -33,7 +32,7 @@ export class LoginService {
           errorMessage = error.error.message;
         }
         return of({ success: false, message: errorMessage });
-      }),
+      })
     );
   }
 
@@ -61,5 +60,4 @@ export class LoginService {
     }
     return of(true);
   }
-
 }
