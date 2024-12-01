@@ -12,6 +12,8 @@ import {
   AsignaturaDeLinea,
   LineaConAsignaturas,
   ActualizarDatosLineaDTO,
+  UpdateLineaDTO,
+  CrearLineaDTO,
 } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
@@ -32,11 +34,12 @@ export class LineaAsignaturaService {
   ): Promise<GetLineaAsignaturaDTO[]> {
     const lineasResultado = await this.prisma.lineaAsignatura.findMany({
       where: {
-        Asignatura: {
-          some: {
-            idPlan: idPlan,
-          },
-        },
+        idPlan: idPlan,
+      },
+      select: {
+        idLinea: true,
+        titulo: true,
+        color: true,
       },
     });
 
@@ -129,21 +132,26 @@ export class LineaAsignaturaService {
     return hashMapLineaConAsignatura as LineaConAsignaturas;
   }
 
-  async findOne(idLinea: number) {
+  async findOne(idPlan: number, idLinea: number) {
     const lineaEncontrada = await this.prisma.lineaAsignatura.findUnique({
       where: {
-        idLinea: idLinea,
+        idPlan_idLinea: {
+          idPlan,
+          idLinea,
+        },
       },
     });
 
     return lineaEncontrada;
   }
 
-  async crearLinea(tituloLinea: string) {
+  async crearLinea(idPlan: number, data: CrearLineaDTO) {
     try {
       const lineaCreada = await this.prisma.lineaAsignatura.create({
         data: {
-          titulo: tituloLinea,
+          titulo: data.tituloLineaNuevo,
+          color: data.tituloLineaNuevo,
+          idPlan: idPlan,
         },
       });
 
@@ -159,11 +167,14 @@ export class LineaAsignaturaService {
     }
   }
 
-  async borrarLinea(idLinea: number) {
+  async borrarLinea(idPlan: number, idLinea: number) {
     try {
       const lineaBorrada = await this.prisma.lineaAsignatura.delete({
         where: {
-          idLinea: idLinea,
+          idPlan_idLinea: {
+            idPlan,
+            idLinea,
+          },
         },
       });
 
@@ -179,15 +190,16 @@ export class LineaAsignaturaService {
     }
   }
 
-  async actualizarLinea(idLinea: number, tituloNuevoLinea: string) {
+  async actualizarLinea(idPlan: number, idLinea: number, data: UpdateLineaDTO) {
     try {
       const lineaActualizada = await this.prisma.lineaAsignatura.update({
         where: {
-          idLinea: idLinea,
+          idPlan_idLinea: {
+            idPlan,
+            idLinea,
+          },
         },
-        data: {
-          titulo: tituloNuevoLinea,
-        },
+        data: data,
       });
 
       return lineaActualizada;
@@ -208,58 +220,79 @@ export class LineaAsignaturaService {
   async updateDatosLineaPorPlan(idPlan: number, data: ActualizarDatosLineaDTO) {
     const lineasUpdateQueries = [];
 
-    for (const asignaturaLineaNueva of data.lineasNuevas) {
-      if (!asignaturaLineaNueva.tituloLineaRelacionada) {
-        lineasUpdateQueries.push(
-          this.prisma.asignatura.update({
-            where: {
-              codigoPorPlanUnico: {
-                idPlan: idPlan,
-                codigo: asignaturaLineaNueva.codigoAsignatura,
+    for (const lineaNueva of data.lineasNuevas) {
+      for (const codigo of lineaNueva.codigosAsignaturas) {
+        if (!lineaNueva.tituloLineaRelacionada) {
+          lineasUpdateQueries.push(
+            this.prisma.asignatura.update({
+              where: {
+                codigoPorPlanUnico: {
+                  idPlan,
+                  codigo,
+                },
               },
-            },
-            data: {
-              LineaContemplaAsignatura: {
-                disconnect: true,
+              data: {
+                idLinea: null,
               },
-            },
-          }),
-        );
-      } else {
-        lineasUpdateQueries.push(
-          this.prisma.asignatura.update({
-            where: {
-              codigoPorPlanUnico: {
-                idPlan: idPlan,
-                codigo: asignaturaLineaNueva.codigoAsignatura,
+            }),
+          );
+        } else {
+          lineasUpdateQueries.push(
+            this.prisma.asignatura.update({
+              where: {
+                codigoPorPlanUnico: {
+                  idPlan,
+                  codigo,
+                },
               },
-            },
-            data: {
-              LineaContemplaAsignatura: {
-                connectOrCreate: {
-                  create: {
-                    titulo: asignaturaLineaNueva.tituloLineaRelacionada,
+              data: {
+                LineaContemplaAsignatura: {
+                  connectOrCreate: {
+                    where: {
+                      tituloUnicoPorPlan: {
+                        idPlan,
+                        titulo: lineaNueva.tituloLineaRelacionada,
+                      },
+                    },
+                    create: {
+                      idPlan,
+                      titulo: lineaNueva.tituloLineaRelacionada,
+                      color: lineaNueva.colorNuevo,
+                    },
                   },
-                  where: {
-                    titulo: asignaturaLineaNueva.tituloLineaRelacionada,
+                  update: {
+                    color: lineaNueva.colorNuevo,
+                    titulo: lineaNueva.tituloNuevo,
                   },
                 },
               },
-            },
-            include: {
-              LineaContemplaAsignatura: {
-                select: {
-                  titulo: true,
+              include: {
+                LineaContemplaAsignatura: {
+                  select: {
+                    titulo: true,
+                    color: true,
+                  },
                 },
               },
-            },
-          }),
-        );
+            }),
+          );
+        }
       }
     }
 
-    const result = await Promise.all(lineasUpdateQueries);
+    try {
+      const result = await Promise.all(lineasUpdateQueries);
 
-    return result;
+      return result;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        switch (error.code) {
+          case 'P2025':
+            throw new NotFoundException(
+              'Uno de los códigos proporcionados no corresponde a ningún plan o asignatura almacenados',
+            );
+        }
+      }
+    }
   }
 }

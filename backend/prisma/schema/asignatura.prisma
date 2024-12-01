@@ -42,7 +42,7 @@ model Asignatura {
   PlanDeEstudio Plan @relation(name: "es contemplada por", fields: [idPlan], references: [idPlan])
 
   idLinea                  Int?
-  LineaContemplaAsignatura LineaAsignatura? @relation(name: "referencia a la asignatura", fields: [idLinea], references: [idLinea])
+  LineaContemplaAsignatura LineaAsignatura? @relation(name: "referencia a la asignatura", fields: [idPlan, idLinea], references: [idPlan, idLinea])
 
   // es referenciado por
 
@@ -57,11 +57,22 @@ model Asignatura {
 }
 
 model LineaAsignatura {
-  idLinea Int @id @default(autoincrement())
+  idLinea Int @default(autoincrement())
 
-  titulo String @unique
+  titulo String
+  color  String?
+
+  // referencia a
+
+  idPlan Int
+  Plan   Plan @relation(name: "es definido por", fields: [idPlan], references: [idPlan])
 
   // es referenciado por
 
   Asignatura Asignatura[] @relation(name: "referencia a la asignatura")
+
+  //
+
+  @@id([idPlan, idLinea])
+  @@unique([idPlan, titulo], name: "tituloUnicoPorPlan")
 }
