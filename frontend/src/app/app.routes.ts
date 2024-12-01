@@ -20,9 +20,8 @@ import { DetalleAsignaturaComponent } from './components/detalle-asignatura/deta
 import { ListarEstudianteComponent } from './components/listar-estudiante/listar-estudiante.component';
 import { MenuEstudianteComponent } from './components/menu-estudiante/menu-estudiante.component';
 import { Roles } from './models/login.dto';
-import { TendenciasAsignaturaCortePracticoComponent } from './components/tendencias-asignatura-corte-practico/tendencias-asignatura-corte-practico.component';
-import { DetallePracticaComponent } from './components/detalle-practica/detalle-practica.component';
-import { PracticasConvenioComponent } from './components/practicas-convenio/practicas-convenio.component';
+import { ListaEndComponent } from './components/lista-end/lista-end.component';
+import { GestionarLineasComponent } from './components/gestionar-lineas/gestionar-lineas.component';
 /**
  * RUTAS                    ROLES
  * [/fluxogramas]       -> [todos - docente]
@@ -151,5 +150,7 @@ export const routes: Routes = [
   {path: 'ver-tendencias', component: TendenciasAsignaturaCortePracticoComponent, canActivate: [authGuard]},
   {path: 'practica-detalle/:titulo', component: DetallePracticaComponent, canActivate: [authGuard]},
   {path: 'practicas-convenio/:idConvenio', component: PracticasConvenioComponent, canActivate: [authGuard]},
+  {path: 'gestionar-lineas/:idPlan', component:GestionarLineasComponent,canActivate: [authGuard]},
   { path: '**', redirectTo: '/menu' },
+    
 ];

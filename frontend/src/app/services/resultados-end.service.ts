@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { resultadoPorEstandares, resultadoPorPA, resultadoPorTemas } from '../models/resultadosEND.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +7,8 @@ import { resultadoPorEstandares, resultadoPorPA, resultadoPorTemas } from '../mo
 export class ResultadosENDService {
 
 constructor() { }
+
+public listaResultados: resultadosEnd[]=[]
 
 public resultadosPorTemas: resultadoPorTemas[] = [
     {
@@ -262,6 +263,10 @@ public obtenerResultadosPorEstandares(): Observable<resultadoPorEstandares[]>{
 
 public obtenerResultadosPorPA(): Observable<resultadoPorPA[]>{
   return of(this.resultadosPorPA)
+}
+
+public obtenerListaResultado(): Observable<resultadosEnd[]>{
+  return of(this.listaResultados)
 }
 
 }

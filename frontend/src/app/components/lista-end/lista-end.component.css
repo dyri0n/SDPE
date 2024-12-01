@@ -1,8 +1,4 @@
-:host ::ng-deep .p-progress-spinner-circle {
-    stroke: rgb(3 105 161) !important;
-  }
-
-  ::ng-deep .p-calendar {
+::ng-deep .p-calendar {
     border: none !important; /* Quita el borde predeterminado */
     box-shadow: none !important; /* Elimina la sombra predeterminada */
     width: 100% !important; /* Asegura que el dropdown ocupe todo el ancho */
