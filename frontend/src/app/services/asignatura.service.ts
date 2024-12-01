@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ListaAsignatura } from '../models/listaAsignatura.dto';
+import { AsignaturaDetalleDTO, ReporteAsignaturaDTO, TendenciasCortePracticoDTO } from '../models/asignatura.dto';
+import { Linea, LineaPlan, LineasAsignaturas } from '../models/lineaAsignatura.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -40,26 +42,14 @@ export class AsignaturaService {
   }
 
   public obtenerAsignaturasNuevo(): Observable<AsignaturaDetalleDTO[]>{
-    return this.http.get<AsignaturaDetalleDTO[]>(this.apiUrl)
+    return this.http.get<AsignaturaDetalleDTO[]>(this.apiAsignaturas)
   }
 
   public obtenerDetalleAsignatura(idAsignatura: number): Observable<TendenciasCortePracticoDTO>{
-    return this.http.get<TendenciasCortePracticoDTO>(this.apiUrl + '/' + idAsignatura + '/detalle')
+    return this.http.get<TendenciasCortePracticoDTO>(this.apiAsignaturas + '/' + idAsignatura + '/detalle')
   }
 
   public obtenerDetalleAsignaturaNuevo(codigoAsignatura: string): Observable<ReporteAsignaturaDTO>{
-    return this.http.get<ReporteAsignaturaDTO>(this.apiUrl + '/' + codigoAsignatura + '/detalle')
-  }
-
-  public obtenerAsignaturasNuevo(): Observable<AsignaturaDetalleDTO[]>{
-    return this.http.get<AsignaturaDetalleDTO[]>(this.apiUrl)
-  }
-
-  public obtenerDetalleAsignatura(idAsignatura: number): Observable<TendenciasCortePracticoDTO>{
-    return this.http.get<TendenciasCortePracticoDTO>(this.apiUrl + '/' + idAsignatura + '/detalle')
-  }
-
-  public obtenerDetalleAsignaturaNuevo(codigoAsignatura: string): Observable<ReporteAsignaturaDTO>{
-    return this.http.get<ReporteAsignaturaDTO>(this.apiUrl + '/' + codigoAsignatura + '/detalle')
+    return this.http.get<ReporteAsignaturaDTO>(this.apiAsignaturas + '/' + codigoAsignatura + '/detalle')
   }
 }

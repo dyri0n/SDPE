@@ -254,7 +254,8 @@ export class ConvenioComponent implements OnInit{
     this.router.navigate(['convenios'])
   }
 
-  public verPracticas(idConvenio: number){
-    this.router.navigate(['/practicas-convenio', idConvenio])
+  public verPracticas(){
+    this.router.navigate(['/practicas-convenio', this.idConvenio])
 
+  }
 }

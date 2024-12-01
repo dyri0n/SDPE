@@ -88,7 +88,7 @@ export class EndsService {
   ) {
     try {
       return this.prisma.documentoEND.update({
-        where: { idDato: updateDto.idDato },
+        where: { idDato: +updateDto.idDato },
         data: {
           rutaDocumento: pathDocumento,
           cohorteAsociado: +updateDto.cohorteAsociado,

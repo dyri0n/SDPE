@@ -22,6 +22,9 @@ import { MenuEstudianteComponent } from './components/menu-estudiante/menu-estud
 import { Roles } from './models/login.dto';
 import { ListaEndComponent } from './components/lista-end/lista-end.component';
 import { GestionarLineasComponent } from './components/gestionar-lineas/gestionar-lineas.component';
+import { TendenciasAsignaturaCortePracticoComponent } from './components/tendencias-asignatura-corte-practico/tendencias-asignatura-corte-practico.component';
+import { DetallePracticaComponent } from './components/detalle-practica/detalle-practica.component';
+import { PracticasConvenioComponent } from './components/practicas-convenio/practicas-convenio.component';
 /**
  * RUTAS                    ROLES
  * [/fluxogramas]       -> [todos - docente]
@@ -63,13 +66,13 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'cursos/:idAsignatura',
+    path: 'cursos/:idFluxograma/:codigoAsignatura',
     component: CursosComponent,
     canActivate: [authGuard],
   },
   {
     path: 'end',
-    component: ResultadoEndComponent,
+    component: ListaEndComponent,
     canActivate: [authGuard, hasRoleGuard],
     data: {
       roles: [Roles.ADMINISTRADOR, Roles.JEFA_CARRERA, Roles.SECRETARIO],
@@ -81,7 +84,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'aprobacion/:idAsignatura',
+    path: 'aprobacion/:idFluxograma/:codigoAsignatura',
     component: AprobacionCursoComponent,
     canActivate: [authGuard],
   },
@@ -91,7 +94,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'estadisticas/:idAsignatura',
+    path: 'estadisticas/:idFluxograma/:codigoAsignatura',
     component: EstadisticaDiagnosticoComponent,
     canActivate: [authGuard],
   },
@@ -118,7 +121,7 @@ export const routes: Routes = [
     },
   },
   {
-    path: 'detalle-asignatura/:idAsignatura',
+    path: 'detalle-asignatura/:idFluxograma/:codigoAsignatura',
     component: DetalleAsignaturaComponent,
     canActivate: [authGuard],
   },
@@ -151,6 +154,7 @@ export const routes: Routes = [
   {path: 'practica-detalle/:titulo', component: DetallePracticaComponent, canActivate: [authGuard]},
   {path: 'practicas-convenio/:idConvenio', component: PracticasConvenioComponent, canActivate: [authGuard]},
   {path: 'gestionar-lineas/:idPlan', component:GestionarLineasComponent,canActivate: [authGuard]},
+  {path: 'end/:idEND', component:ResultadoEndComponent, canActivate: [authGuard]},
   { path: '**', redirectTo: '/menu' },
     
 ];

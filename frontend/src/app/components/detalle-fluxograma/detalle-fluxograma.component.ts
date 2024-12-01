@@ -41,11 +41,6 @@ export class DetalleFluxogramaComponent implements OnInit {
   private lastContextMenu!: ContextMenu;
   public selectedAsignaturaId!: number;
 
-  @ViewChild('menu') contextMenu!: ContextMenu; // referencia al menu
-  lineaMenu!: MenuItem[]; 
-  private lastContextMenu!: ContextMenu;
-  public selectedAsignaturaId!: number;
-
   //variable para guardar el detalle de un fluxograma
   public detalleFluxograma: AsignaturaFluxograma[]=[]
   //variable para guardar el id del fluxograma
