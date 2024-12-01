@@ -55,7 +55,10 @@ export class PlanesEstudioService {
   async findOneLineaAsignatura(idPlan: number, idLinea: number) {
     return this.prisma.lineaAsignatura.findUnique({
       where: {
-        idLinea: idLinea,
+        idPlan_idLinea: {
+          idLinea,
+          idPlan,
+        },
       },
       include: {
         Asignatura: {

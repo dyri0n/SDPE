@@ -14,7 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { CreatePlanDTO, ModifyPlanDTO } from './dto';
 import { AsignaturasService } from '../asignaturas/asignaturas.service';
 
-@ApiTags('plan-de-estudios')
+@ApiTags('planes-de-estudio')
 @Controller('planes-de-estudio')
 export class PlanesEstudioController {
   constructor(

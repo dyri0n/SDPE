@@ -2,7 +2,6 @@ import {
   Asignatura,
   Convenio,
   Cursacion,
-  EstadoAprobacion,
   Estudiante,
   LineaAsignatura,
   NIVEL,
@@ -44,10 +43,14 @@ async function main() {
 
   const lineasQueries: LineaAsignatura[] = [];
   for (const linea of constants.LINEA_ASIGNATURA) {
-    lineasQueries.push({
-      idLinea: linea.idLinea,
-      titulo: linea.titulo,
-    });
+    for (const plan of planesInsertados) {
+      lineasQueries.push({
+        idLinea: linea.idLinea,
+        idPlan: plan.idPlan,
+        titulo: linea.titulo,
+        color: linea.color,
+      });
+    }
   }
 
   const lineasAsignaturas = await prisma.lineaAsignatura.createManyAndReturn({
@@ -67,7 +70,6 @@ async function main() {
 
     for (const asignatura of constants.ASIGNATURAS) {
       asignatura.idPlan = plan.idPlan;
-      console.log(`${asignatura.idAsignatura}: ${asignatura.nombreCorto}`);
 
       asignaturasQueries.push({
         ...asignatura,
@@ -103,12 +105,6 @@ async function main() {
       if (asignatura.idPlan == plan.idPlan) return asignatura;
     });
 
-    moreLog(
-      asignaturasPorPlan.map((asignaturas) => {
-        return asignaturas.idPlan;
-      }),
-    );
-
     for (const estudiante of estudiantesPorPlan) {
       // Porcentaje de asignaturas del plan cursadas
       // const nroAsignaturasCursadas: number = Math.floor(
@@ -139,11 +135,11 @@ async function main() {
 
           cursacionesQueries.push({
             idCursacion: cursacionId,
-            agnio: estudiante.agnioIngreso + (cursacionId % 12),
+            agnio: estudiante.agnioIngreso + Math.floor(cursacionId / 12),
             notaFinal: nota,
             grupo: Math.random() > 0.5 ? 'A' : 'B',
             numIntento: intentoActual,
-            semestreRelativo: cursacionId % 6,
+            semestreRelativo: Math.floor(cursacionId / 6) + 1,
 
             idPlan: asignaturaCursada.idPlan,
             idAsignatura: asignaturaCursada.idAsignatura,
@@ -264,25 +260,25 @@ async function main() {
     if (cursacion.Asignatura.caracter === 'PRACTICA') return cursacion;
   });
   for (const cursacionPractica of cursacionesPracticas) {
-    const asignatura = cursacionPractica.Asignatura;
-    const estudiante = cursacionPractica.Estudiante;
+    const fechaInicio =
+      cursacionPractica.notaFinal < 4.0
+        ? randomDate(date0, date1)
+        : randomDate(date1, date2);
 
     practicasTomadasQueries.push({
-      fechaInicio:
-        cursacionPractica.numIntento > 1
-          ? randomDate(date0, date1)
-          : randomDate(date1, date2),
+      fechaInicio: fechaInicio,
       fechaTermino: undefined,
       resultadoDiagnostico: {},
-      resultado:
-        cursacionPractica.numIntento > 1
-          ? EstadoAprobacion.DESAPROBADO
-          : EstadoAprobacion.APROBADO,
-      idEstudiante: estudiante.idEstudiante,
-      idPlan: asignatura.idPlan,
-      idAsignatura: asignatura.idAsignatura,
+      resultado: cursacionPractica.notaFinal > 4.0 ? 'APROBADO' : 'DESAPROBADO',
+      idEstudiante: cursacionPractica.Estudiante.idEstudiante,
+      idPlan: cursacionPractica.Asignatura.idPlan,
+      idAsignatura: cursacionPractica.Asignatura.idAsignatura,
       idCursacion: cursacionPractica.idCursacion,
     });
+
+    // console.log(
+    //   `nota: ${cursacionPractica.notaFinal} ${cursacionPractica.notaFinal > 4.0 ? 'APROBADO' : 'DESAPROBADO'} ${fechaInicio}`,
+    // );
   }
 
   const practicastomadas = await prisma.practicaTomada.createManyAndReturn({
@@ -343,7 +339,7 @@ async function main() {
     data: usuariosQueries,
   });
 
-  console.log(usuarios);
+  moreLog(usuarios);
 
   console.timeEnd('Crear Usuarios');
   console.log('termino todo');

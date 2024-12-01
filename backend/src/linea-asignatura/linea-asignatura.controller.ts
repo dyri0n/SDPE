@@ -52,9 +52,12 @@ export class LineaAsignaturaController {
     return this.lineaService.getAllLineasAsignatura();
   }
 
-  @Get('/:idLinea')
-  public async getLinea(@Param('idLinea', ParseIntPipe) idLinea: number) {
-    const result = await this.lineaService.findOne(idLinea);
+  @Get('/planes/:idPlan/lineas/:idLinea')
+  public async getLinea(
+    @Param('idPlan', ParseIntPipe) idPlan: number,
+    @Param('idLinea', ParseIntPipe) idLinea: number,
+  ) {
+    const result = await this.lineaService.findOne(idPlan, idLinea);
 
     if (!result)
       throw new NotFoundException('No existe ninguna línea con ese título');
@@ -62,24 +65,28 @@ export class LineaAsignaturaController {
     return result;
   }
 
-  @Delete('/:idlinea')
-  public async deleteLinea(@Param('idlinea', ParseIntPipe) idLinea: number) {
-    return await this.lineaService.borrarLinea(idLinea);
+  @Delete('/planes/:idPlan/lineas/:idlinea')
+  public async deleteLinea(
+    @Param('idPlan', ParseIntPipe) idPlan: number,
+    @Param('idlinea', ParseIntPipe) idLinea: number,
+  ) {
+    return await this.lineaService.borrarLinea(idPlan, idLinea);
   }
 
-  @Put('/:idLinea')
+  @Put('/planes/:idPlan/lineas/:idLinea')
   public async updateLinea(
+    @Param('idPlan', ParseIntPipe) idPlan: number,
     @Param('idLinea', ParseIntPipe) idLinea: number,
     @Body() dto: UpdateLineaDTO,
   ) {
-    return await this.lineaService.actualizarLinea(
-      idLinea,
-      dto.tituloLineaNuevo,
-    );
+    return await this.lineaService.actualizarLinea(idPlan, idLinea, dto);
   }
 
-  @Post()
-  public async createLinea(@Body() dto: CrearLineaDTO) {
-    return await this.lineaService.crearLinea(dto.tituloLineaNuevo);
+  @Post('/planes/:idPlan')
+  public async createLinea(
+    @Param('idPlan', ParseIntPipe) idPlan: number,
+    @Body() dto: CrearLineaDTO,
+  ) {
+    return await this.lineaService.crearLinea(idPlan, dto);
   }
 }

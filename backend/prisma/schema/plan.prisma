@@ -8,5 +8,6 @@ model Plan {
 
   // es referenciado por
 
-  AsignaturasDefinidas Asignatura[] @relation(name: "es contemplada por")
+  AsignaturasDefinidas Asignatura[]      @relation(name: "es contemplada por")
+  LineasDefinidas      LineaAsignatura[] @relation(name: "es definido por")
 }

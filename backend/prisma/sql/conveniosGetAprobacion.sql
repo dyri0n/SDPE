@@ -27,18 +27,25 @@
 -- MODELO NUEVO
 
 select 
-    (
-        sum(
-            case when cur."notaFinal" > 4.0
-            then 1 end
-        ) / nullif(count(*), 0)
-        * 100
-    ):: numeric
+    nullif(
+        (
+            "porcentajeAprobacion"::numeric 
+            / "cuenta"::numeric
+        ), 0
+    ) as "porcentajeAprobacion"
+from (
+  select
+    count(*) as "cuenta",
+    sum(
+      case when cur."notaFinal" > 4.0
+      then 1 end
+    ) * 100
     as "porcentajeAprobacion"
-from "Convenio" con
-join "PTConvenio" ptc using ("idConvenio")
-join "PracticaTomada" pto using ("idPlan", "idAsignatura", "idEstudiante", "idCursacion")
-join "Cursacion" cur using ("idPlan", "idAsignatura", "idEstudiante", "idCursacion")
-where con."idConvenio" = $1
-group by 
+  from "Convenio" con
+  join "PTConvenio" ptc using ("idConvenio")
+  join "PracticaTomada" pto using ("idPlan", "idAsignatura", "idEstudiante", "idCursacion")
+  join "Cursacion" cur using ("idPlan", "idAsignatura", "idEstudiante", "idCursacion")
+  where con."idConvenio" = $1
+  group by 
     con."idConvenio"
+)
