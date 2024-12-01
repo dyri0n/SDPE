@@ -222,10 +222,10 @@ export class DetalleAsignaturaComponent implements OnInit {
   }
 
   public cargarDatosNuevo() {
-    this.cargando = true;
+    this.cargando = true
     setTimeout(() => {
-      this.cargando = false;
-    }, 1000);
+      this.cargando = false
+    }, 1000)
   
     if (this.anioSeleccionado) {
       const promedioAnio = this.detalleAsignaturaNuevo.promedios.general.filter((promedio) => promedio.agnio === Number(this.anioSeleccionado))
@@ -256,7 +256,7 @@ export class DetalleAsignaturaComponent implements OnInit {
               this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan.filter((a) => a.codigoPlan === plan.codigoPlan && a.agnio === Number(this.anioSeleccionado)).length
             ).toFixed(2)
           ),
-        }));
+        }))
     } else {
       this.promedioGeneral = parseFloat(
         (
@@ -272,24 +272,32 @@ export class DetalleAsignaturaComponent implements OnInit {
         ).toFixed(2)
       )
   
-      this.promediosPorPlan = this.detalleAsignaturaNuevo.promedios.promediosPorPlan.map((plan) => ({
-        codigoPlan: plan.codigoPlan,
+      const codigosPlanesUnicos = Array.from(
+        new Set(this.detalleAsignaturaNuevo.promedios.promediosPorPlan.map(plan => plan.codigoPlan))
+      )
+      
+      this.promediosPorPlan = codigosPlanesUnicos.map(codigoPlan => ({
+        codigoPlan,
         promedio: parseFloat(
           (
-            this.detalleAsignaturaNuevo.promedios.promediosPorPlan.filter((p) => p.codigoPlan === plan.codigoPlan).reduce((acc, p) => acc + p.promedio, 0) /
-            this.detalleAsignaturaNuevo.promedios.promediosPorPlan.filter((p) => p.codigoPlan === plan.codigoPlan).length
+            this.detalleAsignaturaNuevo.promedios.promediosPorPlan
+              .filter(plan => plan.codigoPlan === codigoPlan)
+              .reduce((acc, plan) => acc + plan.promedio, 0) /
+            this.detalleAsignaturaNuevo.promedios.promediosPorPlan.filter(plan => plan.codigoPlan === codigoPlan).length
           ).toFixed(2)
-        ),
+        )
       }))
-  
-      this.aprobacionesPorPlan = this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan.map((plan) => ({
-        codigoPlan: plan.codigoPlan,
+      
+      this.aprobacionesPorPlan = codigosPlanesUnicos.map(codigoPlan => ({
+        codigoPlan,
         aprobacion: parseFloat(
           (
-            this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan.filter((a) => a.codigoPlan === plan.codigoPlan).reduce((acc, a) => acc + a.aprobacion, 0) /
-            this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan.filter((p) => p.codigoPlan === plan.codigoPlan).length
+            this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan
+              .filter(plan => plan.codigoPlan === codigoPlan)
+              .reduce((acc, plan) => acc + plan.aprobacion, 0) /
+            this.detalleAsignaturaNuevo.aprobaciones.aprobacionesPorPlan.filter(plan => plan.codigoPlan === codigoPlan).length
           ).toFixed(2)
-        ),
+        )
       }))
     }
   

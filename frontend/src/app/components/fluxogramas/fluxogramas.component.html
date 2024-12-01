@@ -11,11 +11,7 @@
   </div>
 
   <div *ngIf="!cargando" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 m-4">
-    <!--<p-card *ngFor="let fluxograma of fluxogramas" header="" styleClass="bg-[#21A4DC] shadow-md cursor-pointer rounded-lg text-center text-white py-12 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]" (click)="escogerPlan(fluxograma.id)">
-      <p class="text-2xl font-bold mb-2">{{ fluxograma.titulo }}</p>
-      <p class="text-lg">Código: {{ fluxograma.anio }}</p>
-    </p-card>-->
-    <p-card *ngFor="let fluxograma of fluxogramasNuevo" header="" styleClass="bg-[#21A4DC] shadow-md cursor-pointer rounded-lg text-center text-white py-12 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]" (click)="escogerPlan(fluxograma.idPlan)">
+    <p-card *ngFor="let fluxograma of fluxogramas" header="" styleClass="bg-[#21A4DC] shadow-md cursor-pointer rounded-lg text-center text-white py-12 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]" (click)="escogerPlan(fluxograma.idPlan)">
       <p class="text-2xl font-bold mb-2">{{ fluxograma.titulo }}</p>
       <p class="text-lg">Código: {{ fluxograma.codigo }}</p>
       <p class="text-lg">Fecha: {{ fluxograma.agnio}}</p>

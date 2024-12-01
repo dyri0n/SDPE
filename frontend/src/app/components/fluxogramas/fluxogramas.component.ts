@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Fluxograma, FluxogramaNuevo } from '../../models/Fluxograma.model';
+import { Fluxograma } from '../../models/Fluxograma.model';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FluxogramaService } from '../../services/fluxograma.service';
@@ -15,35 +15,41 @@ import { CardModule } from 'primeng/card';
   imports: [CommonModule, RouterModule, MenubarModule, CardModule]
 })
 export class FluxogramasComponent implements OnInit {
+
   constructor(
     private fluxogramaService: FluxogramaService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    this.cargarFluxogramas();
+    //se llama a la funcion para cargar todos los fluxogramas
+    this.cargarFluxogramas()
   }
 
-  public fluxogramas: Fluxograma[] = [];
-  public fluxogramasNuevo: FluxogramaNuevo[] = [];
+  //variable para almacenar los fluxogramas
+  public fluxogramas: Fluxograma[] = []
+  //variable para iniciar el tiempo de carga
   public cargando = true
-  public timeout: any
+  //variable para el tiempo de carga
+  public tiempoDeCarga: any
 
+  //esta funcion llama al servicio de fluxogramas y crea el tiempo de carga
   public cargarFluxogramas(): void {
+    //se llama a la funcion del servicio para obtener todos los fluxogramas
     this.fluxogramaService.obtenerFluxogramas().subscribe((fluxogramas) => {
+      //guardamos todos los fluxogramas
       this.fluxogramas = fluxogramas
-    });
-    this.fluxogramaService.obtenerFluxogramasNuevo().subscribe((fluxogramas) => {
-      this.fluxogramasNuevo = fluxogramas
-      console.log(this.fluxogramasNuevo)
-    });
-    this.timeout = setTimeout(() => {this.cargando = false}, 1000)
+    })
+    //creamos el tiempo de carga
+    this.tiempoDeCarga = setTimeout(() => {this.cargando = false}, 1000)
   }
 
-  public escogerPlan(id: number): void {
-    this.router.navigate(['/fluxograma/', id]);
+  //esta funcion redirige al detalle del fluxograma
+  public escogerPlan(idPlan: number): void {
+    this.router.navigate(['/fluxograma/', idPlan])
   }
   
+  //esta funcion devuelve al menu
   public devolverAlMenu() {
     this.router.navigateByUrl('/menu')
   }

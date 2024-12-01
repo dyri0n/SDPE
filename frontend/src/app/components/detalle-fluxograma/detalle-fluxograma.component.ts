@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FluxogramaService } from '../../services/fluxograma.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AsignaturaFluxograma, AsignaturaFluxogramaNuevo } from '../../models/asignatura.dto';
-import { Fluxograma, FluxogramaNuevo } from '../../models/Fluxograma.model';
+import { AsignaturaFluxograma } from '../../models/asignatura.dto';
+import { Fluxograma } from '../../models/Fluxograma.model';
 
 @Component({
   selector: 'app-detalle-fluxograma',
@@ -20,69 +20,74 @@ export class DetalleFluxogramaComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.idFluxograma = +this.route.snapshot.paramMap.get('idFluxograma')!;
-    this.obtenerFluxograma();
+    //obtenemos la id del fluxograma a traves de la ruta
+    this.idFluxograma = +this.route.snapshot.paramMap.get('idFluxograma')!
+    //llamamos a la funcion para obtener el detalle del fluxograma
+    this.obtenerDetalleFluxograma()
   }
 
-  detalleFluxograma?: AsignaturaFluxograma[];
-  detalleFluxogramaNuevo?: AsignaturaFluxogramaNuevo[];
-  public idFluxograma: number = 0;
-  fluxograma?: Fluxograma;
-  fluxogramaNuevo?: FluxogramaNuevo;
+  //variable para guardar el detalle de un fluxograma
+  public detalleFluxograma: AsignaturaFluxograma[]=[]
+  //variable para guardar el id del fluxograma
+  public idFluxograma: number = 0
+  //variable para guardar la informacion general del fluxograma
+  public fluxograma: Fluxograma={
+    idPlan:0,
+    agnio:0,
+    codigo: 0,
+    fechaInstauracion: new Date(),
+    titulo: ''
+  }
+  //variable para guardar los semestres
+  public semestres: string[] = []
+  //variable para guardar los prerequisitos
+  public asignaturasPrevias: number[] = []
+  //variable para guardar las tributaciones
+  public asignaturasTributadas: number[] = []
 
-  semestres: string[] = [];
-
-  asignaturasPrevias: number[] = [];
-  asignaturasTributadas: number[] = [];
-
-  public resaltarAsignaturas(
-    previas: { idAsignaturaTributada: number }[],
-    tributa: { idAsignaturaRequerida: number }[]
-  ): void {
-    this.asignaturasPrevias = previas.map(
-      (asignatura) => asignatura.idAsignaturaTributada
-    );
-    this.asignaturasTributadas = tributa.map(
-      (asignatura) => asignatura.idAsignaturaRequerida
-    );
+  //esta funcion guarda las asignaturas previas y las que tributa una asignatura cuando se le pone el mouse encima
+  public resaltarAsignaturas(previas: number[],tributa: number[]): void {
+    this.asignaturasPrevias = previas
+    this.asignaturasTributadas = tributa
   }
 
+  //esta funcion vacia el arreglo de asignatuaras previas y de tributacion cuando se quita el mouse de una asignatura
   public quitarResaltado(): void {
-    this.asignaturasPrevias = [];
-    this.asignaturasTributadas = [];
+    this.asignaturasPrevias = []
+    this.asignaturasTributadas = []
   }
 
+  //esta funcion comprueba si la asignatura que se esta revisando es requisito para la asignatura en la que este el mouse encima, 
+  //devolviendo un boolean para cambiar el color de la asignatura a rojo
   public esPrevia(id: number): boolean {
-    return this.asignaturasPrevias.includes(id);
+    return this.asignaturasPrevias.includes(id)
   }
 
+  //esta funcion comprueba si la asignatura que se esta revisando es una tributacion para la asignatura en la que este el mouse encima, 
+  //devolviendo un boolean para cambiar el color de la asignatura a verde
   public esTributada(id: number): boolean {
-    return this.asignaturasTributadas.includes(id);
+    return this.asignaturasTributadas.includes(id)
   }
 
-  public esCortePractico(asignatura: AsignaturaFluxograma): boolean {
-    return asignatura.caracter === 'PRACTICA';
-  }
-
+  //esta funcion comprueba si la asignatura que se esta revisando es de caracter practico devolviendo un bolean para cambiar el color a celeste
   public esCortePracticoNuevo(caracter: string): boolean {
-    return caracter === 'PRACTICA';
+    return caracter === 'PRACTICA'
   }
 
-  public detalleAsignatura(
-    idAsignatura: number,
-    codigoAsignatura: string
-  ) {
-    this.detalleFluxograma!.forEach((asignatura) => {
+  //esta funcion permite verificar que la asignatura en la cual damos click este en detalle fluxograma y segun su caracter manda a ver las estadisticas o la aprobacion de esta
+  public detalleAsignatura(idAsignatura: number, codigoAsignatura: string) {
+    this.detalleFluxograma.forEach((asignatura) => {
       if (asignatura.idAsignatura === idAsignatura) {
         if (asignatura.caracter === 'PRACTICA') {
-          this.router.navigate(['/estadisticas/', this.idFluxograma, codigoAsignatura]);
+          this.router.navigate(['/estadisticas/', this.idFluxograma, codigoAsignatura])
         } else {
-          this.router.navigate(['/aprobacion/', this.idFluxograma, codigoAsignatura]);
+          this.router.navigate(['/aprobacion/', this.idFluxograma, codigoAsignatura])
         }
       }
-    });
+    })
   }
 
+  //esta funcion sirve para poner numeros romanos en los semestres ingresando el numero del semestre
   public obtenerSemestres(n: number): string[] {
     const numerosRomanos: string[] = [
       'I',
@@ -101,43 +106,28 @@ export class DetalleFluxogramaComponent implements OnInit {
     return numerosRomanos.slice(0, n);
   }
 
-  public obtenerFluxograma() {
-    this.servicioFluxograma
-      .obtenerDetalleFluxograma(this.idFluxograma)
-      .subscribe((detalleFluxograma) => {
-        let semestres = 0;
-        this.detalleFluxograma = detalleFluxograma;
+  //esta funcion sirve para obtener el detalle del fluxograma donde iran todas las asignaturas y tambien crearemos los semestres
+  public obtenerDetalleFluxograma() {
+    //aqui obtenemos el detalle del fluxograma con su id
+    this.servicioFluxograma.obtenerDetalleFluxograma(this.idFluxograma).subscribe((detalleFluxograma) => {
+        let semestres = 0
+        this.detalleFluxograma = detalleFluxograma
+        //aqui recorremos las asignaturas buscando el semestre mas alto para guardarlo
         detalleFluxograma.forEach((asignatura) => {
           if (asignatura.semestre > semestres) {
-            semestres = asignatura.semestre;
+            semestres = asignatura.semestre
           }
-        });
-        this.semestres = this.obtenerSemestres(semestres);
-      });
-    this.servicioFluxograma
-      .obtenerDetalleFluxogramaNuevo(this.idFluxograma)
-      .subscribe((detalleFluxograma) => {
-        let semestres = 0;
-        this.detalleFluxogramaNuevo = detalleFluxograma;
-        detalleFluxograma.forEach((asignatura) => {
-          if (asignatura.semestre > semestres) {
-            semestres = asignatura.semestre;
-          }
-        });
-        this.semestres = this.obtenerSemestres(semestres);
-      });
-    this.servicioFluxograma
-      .obtenerFluxogramaPorID(this.idFluxograma)
-      .subscribe((fluxograma) => {
-        this.fluxograma = fluxograma;
-      });
-      this.servicioFluxograma
-      .obtenerFluxogramaPorIDNuevo(this.idFluxograma)
-      .subscribe((fluxograma) => {
-        this.fluxogramaNuevo = fluxograma;
-      });
+        })
+        //aqui con el semestre mas alto creamos el arreglo de semestres en romano para los titulos
+        this.semestres = this.obtenerSemestres(semestres)
+      })
+    //aqui vamos a buscar el fluxograma para mostrar informacion de este, su titulo y año
+    this.servicioFluxograma.obtenerFluxogramaPorID(this.idFluxograma).subscribe((fluxograma) => {
+      this.fluxograma = fluxograma
+    })
   }
 
+  //esta funcion devuelve a la vista de fluxogramas
   public devolverAListarFluxogramas() {
     this.router.navigateByUrl('/fluxogramas')
   }

@@ -723,7 +723,7 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
         label: 'Cohorte ' + cohorte,
         data: dataPorCohorte,
         backgroundColor: 'rgba(66, 165, 245, 0.1)',
-        fill: true,
+        fill: false,
         borderColor: this.getRandomColor(),
         tension: 0.4,
         borderWidth: 6,
