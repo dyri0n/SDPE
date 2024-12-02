@@ -37,6 +37,9 @@ export class PlanesEstudioService {
       orderBy: {
         posicion: 'asc',
       },
+      include: {
+        LineaContemplaAsignatura: true,
+      },
     });
   }
 

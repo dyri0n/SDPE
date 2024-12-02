@@ -23,7 +23,7 @@ async function main() {
 
   const estudiantesInsertados: Estudiante[] =
     await prisma.estudiante.createManyAndReturn({
-      data: constants.generarEstudiantes(1000),
+      data: constants.generarEstudiantes(400),
     });
 
   moreLog(estudiantesInsertados);
