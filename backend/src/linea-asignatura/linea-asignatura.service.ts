@@ -169,7 +169,7 @@ export class LineaAsignaturaService {
 
   async borrarLinea(idPlan: number, idLinea: number) {
     try {
-      const asignaturasDesligadas = this.prisma.asignatura.updateMany({
+      const asignaturasDesligadas = await this.prisma.asignatura.updateMany({
         where: {
           LineaContemplaAsignatura: {
             idPlan,
@@ -181,7 +181,7 @@ export class LineaAsignaturaService {
         },
       });
 
-      const lineaBorrada = this.prisma.lineaAsignatura.delete({
+      const lineaBorrada = await this.prisma.lineaAsignatura.delete({
         where: {
           idPlan_idLinea: {
             idPlan,
@@ -190,9 +190,10 @@ export class LineaAsignaturaService {
         },
       });
 
-      const result = await Promise.all([asignaturasDesligadas, lineaBorrada]);
-
-      return result;
+      return {
+        asignaturasDesligadas,
+        lineaBorrada,
+      };
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
