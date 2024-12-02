@@ -5,12 +5,13 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AsignaturaService } from '../../services/asignatura.service';
-import { AsignaturaLinea, Linea, LineaActualizar } from '../../models/lineaAsignatura.dto';
+import { AsignaturaLinea, Linea, LineaActualizar, LineaCambios, LineaPlan } from '../../models/lineaAsignatura.dto';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import Swal from 'sweetalert2'
 
 
 @Component({
@@ -22,7 +23,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   styleUrl: './gestionar-lineas.component.css'
 })
 export class GestionarLineasComponent implements OnInit {
-
   searchTermAsignaturas: string = '';
   searchTermLineas: string = '';
 
@@ -35,13 +35,74 @@ export class GestionarLineasComponent implements OnInit {
 
   hayCambios: boolean = false;
   display: boolean = false;
-
-
+  editando: boolean = false;
+  idLineaSeleccioanda!: number
 
   idPlan!: number;
 
   cargando: boolean = true;
 
+  mostrarModalParaEditar(linea: any) {
+    this.editando = true;
+    this.display = true;
+    this.idLineaSeleccioanda = linea.id
+
+    // cargar datos en el formulario
+    this.formularioLinea.patchValue({
+      nombre: linea.nombre,
+      color: linea.color,
+    });
+  }
+
+  mostrarModalParaAgregar() {
+    this.editando = false;
+    this.display = true;
+
+    // reiniciar el formulario
+    this.formularioLinea.reset({ color: '#ffffff' });
+  }
+
+  
+  public eliminarLinea(idLinea: number){
+    //esta hecho para funcionar con el delete al backend, no pienso cambiarlo 🤬
+    this.servicioAsignatura.eliminarLinea(this.idPlan, idLinea).subscribe({
+      next: respuesta =>{
+        if(respuesta){
+          Swal.fire(
+            '¡Eliminado!',
+            'La línea ha sido eliminada.',
+            'success'
+          )
+          this.cargando = true
+          this.cargarDatos()
+          }
+      },
+      error: error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: `Error al guardar los cambios: ${error.message}`,
+        });
+      }
+    })
+  }
+
+  public confirmarEliminacion(idLinea: number){
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡No podrás revertir esta acción!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((resultado) => {
+      if (resultado.isConfirmed) {
+        this.eliminarLinea(idLinea)
+      }
+    })
+  }
 
   public formularioLinea: FormGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
@@ -60,24 +121,60 @@ export class GestionarLineasComponent implements OnInit {
     this.cargarDatos()
   }
  
-  public mostrarModal() {
-    this.display = true;
-  }
-
   public esconderModal() {
     this.display = false;
     this.formularioLinea.reset();
+  }
+
+  public guardarCambios() {
+    if (this.editando) {
+      this.editarLinea();
+    } else {
+      this.agregarLinea();
+    }
+  }
+
+  public editarLinea(){
+    if (this.formularioLinea.valid) {
+      const lineaEditada = this.formularioLinea.value; 
+      // buscar la linea por ID y actualizar sus datos
+      const index = this.lineas.findIndex(linea => linea.id === this.idLineaSeleccioanda);
+      if (index !== -1) {
+        console.log(lineaEditada.color)
+        console.log(this.lineas[index].color)
+        console.log(lineaEditada.nombre)
+        console.log(this.lineas[index].nombre)
+        if(lineaEditada.color != this.lineas[index].color || lineaEditada.nombre != this.lineas[index].nombre) {
+          this.lineas[index] = {
+            ...this.lineas[index], // mantener otros datos
+            color: lineaEditada.color,
+            tituloNuevo: lineaEditada.nombre, // nuevo campo
+          };
+          console.log('linea actualizada:', this.lineas[index]);
+          this.esconderModal();
+          this.hayCambios = true
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: `No se han detectado cambios en la línea`,
+          });
+        }
+      }  
+    }
   }
 
   public agregarLinea() {
     if (this.formularioLinea.valid) {
       const nuevaLinea: Linea = {
         nombre: this.formularioLinea.value.nombre,
-        asignaturas: []
+        asignaturas: [],
+        color: this.formularioLinea.value.color
       };
       this.lineas.push(nuevaLinea);
       this.esconderModal();
       this.detectarCambios();
+      console.log(this.lineas)
     }
   }
 
@@ -92,17 +189,19 @@ export class GestionarLineasComponent implements OnInit {
   }
 
   public cargarDatos(): void {
-    this.servicioAsignatura.obtenerLineas().subscribe((lineas) => {
-      // Guardar las líneas obtenidas
-      this.lineas = lineas.map((linea:any) => ({
+    this.servicioAsignatura.obtenerLineasPlan(this.idPlan).subscribe((lineas:LineaPlan) => {
+      // guardar las lineas obtenidas
+      console.log(lineas)
+      this.lineas = lineas.lineasAsignatura.map((linea:any) => ({
         id: linea.idLinea,
         nombre: linea.titulo,
-        asignaturas: [] as any[], // Inicialmente vacío
+        asignaturas: [] as any[], // inicialmente vacio
+        color: linea.color
       }));
     
-      // Obtener las asignaturas
+      // obtener las asignaturas
       this.servicioAsignatura.obtenerListadoAsignaturas(this.idPlan).subscribe((asignaturasData) => {
-        // Procesar las asignaturas SIN LINEA
+        // procesar las asignaturas SIN LINEA
         this.asignaturas = asignaturasData["SIN LINEA"]?.map((asignatura: any) => ({
           titulo: asignatura.titulo,
           codigo: asignatura.codigo,
@@ -111,7 +210,7 @@ export class GestionarLineasComponent implements OnInit {
           idAsignatura: asignatura.idAsignatura,
         })) || [];
     
-        // Asociar las asignaturas con las líneas correspondientes
+        // asociar las asignaturas con las lineas correspondientes
         Object.keys(asignaturasData).forEach((lineaNombre) => {
           if (lineaNombre === "SIN LINEA") return; // Ya procesamos SIN LINEA
     
@@ -123,14 +222,14 @@ export class GestionarLineasComponent implements OnInit {
             idAsignatura: asignatura.idAsignatura,
           })) || [];
     
-          // Buscar la línea correspondiente por su nombre
+          // buscar la linea correspondiente por su nombre
           const lineaExistente = this.lineas.find(linea => linea.nombre === lineaNombre);
           if (lineaExistente) {
             lineaExistente.asignaturas.push(...asignaturas);
           }
         });
     
-        // Respaldar datos
+        // respaldar datos
         this.lineasBackup = JSON.parse(JSON.stringify(this.lineas));
         this.asignaturasBackup = JSON.parse(JSON.stringify(this.asignaturas));
     
@@ -196,41 +295,61 @@ export class GestionarLineasComponent implements OnInit {
   public confirmarCambios(): void {
 
     const asignaturas: LineaActualizar[] = [
-      ...this.lineas.flatMap(linea =>
-        linea.asignaturas.map(asignatura => ({
-          codigoAsignatura: asignatura.codigo!,
-          tituloLineaRelacionada: linea.nombre
-        }))
-      ),
-      ...this.asignaturasEliminadas.map(asignatura => ({
-        codigoAsignatura: asignatura.codigo!,
-        tituloLineaRelacionada: '' // Título vacío como se requiere
-      }))
+      ...this.lineas.map(linea => {
+        if (linea.id) {
+          console.log(linea)
+          if (linea.tituloNuevo) { 
+            return {
+              codigosAsignaturas: linea.asignaturas.map(asignatura => asignatura.codigo!),
+              tituloLineaRelacionada: linea.nombre,
+              tituloNuevo: linea.tituloNuevo,
+              colorNuevo: linea.color,
+            };
+          } else { 
+            return {
+              codigosAsignaturas: linea.asignaturas.map(asignatura => asignatura.codigo!),
+              tituloLineaRelacionada: linea.nombre,
+            };
+          }
+        } else { 
+          return {
+            codigosAsignaturas: linea.asignaturas.map(asignatura => asignatura.codigo!),
+            tituloLineaRelacionada: linea.nombre,
+            colorNuevo: linea.color,
+          };
+        }
+      }).filter(linea => linea.codigosAsignaturas.length > 0),
+      
+      ...(this.asignaturasEliminadas.length > 0 ? 
+        [{
+          codigosAsignaturas: this.asignaturasEliminadas.map(asignatura => asignatura.codigo!),
+        }] : []),
     ];
 
-
-    const lineaNueva: any ={
+    const lineaNueva: LineaCambios ={
       lineasNuevas: asignaturas
     }
 
-
+    this.cargando = true;
     this.servicioAsignatura.guardarCambios(this.idPlan,lineaNueva).subscribe({
     next: (response) => {
       this.lineasBackup = JSON.parse(JSON.stringify(this.lineas));
       this.asignaturasBackup = JSON.parse(JSON.stringify(this.asignaturas));
       this.hayCambios = false;
+      this.asignaturasEliminadas= []
       this.messageService.add({
         severity: 'success',
         summary: 'Guardado',
         detail: 'Cambios guardados con éxito',
       });
-      console.log("RESPUESTA BACK",response)
+      console.log("RESPUESTA BACK",response);
+      this.cargarDatos();
     },
     error: (error: any) => {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: `Error al guardar los cambios: ${error.message}`,
+        detail: `Error al eliminar la línea: ${error.message}`,
       });
     },
   });

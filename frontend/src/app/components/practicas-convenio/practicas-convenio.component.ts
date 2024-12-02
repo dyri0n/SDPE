@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ListarPracticasPorConvenioDTO, PracticaEnConvenioDTO } from '../../models/practica';
 import { PracticasService } from '../../services/practicas.service';
@@ -17,6 +17,7 @@ export class PracticasConvenioComponent implements OnInit {
   constructor(
     private practicasService: PracticasService,
     private route: ActivatedRoute,
+    private location: Location,
     private router: Router
   ) { }
 
@@ -75,5 +76,9 @@ export class PracticasConvenioComponent implements OnInit {
   
   public verPracticasEstudiante(idEstudiante: number): void {
     this.router.navigate(['/practicas-estudiante', idEstudiante]);
+  }
+
+  public volver(){
+    this.location.back();
   }
 }

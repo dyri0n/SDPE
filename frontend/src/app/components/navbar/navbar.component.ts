@@ -29,98 +29,135 @@ export class NavbarComponent {
     { label: 'Cerrar sesión', icon: 'pi pi-sign-out', command: () => { this.logout(); } }
   ];
 
+
+  // {
+  //   label: 'Fluxogramas',
+  //   data: 'Fluxogramas',
+  //   routerLink: '/fluxogramas',
+  //   children: [
+  //     {
+  //       label: 'Fluxograma 1',
+  //       data: 'Fluxograma 1',
+  //       routerLink: '/fluxograma/1', 
+  //       children: [
+  //         {
+  //           label: 'semestres',
+  //           data: 'semestres',
+  //           routerLink: '/semestres', 
+  //         },
+  //       ]
+  //     },
+  //     {
+  //       label: 'Fluxograma 1',
+  //       data: 'Fluxograma 1',
+  //       routerLink: '/fluxograma/2',
+  //     },
+  //   ],
+  // },
+  // {
+  //   label: 'Asignaturas',
+  //   data: 'Asignaturas',
+  //   routerLink: '/asignaturas',
+  //   children: [
+  //     {
+  //       label: 'Asignatura 1',
+  //       data: 'Asignatura 1',
+  //       routerLink: '/detalle-asignatura/1', 
+  //     },
+  //   ],
+  // },
+  // {
+  //   label: 'Prácticas',
+  //   data: 'Prácticas',
+  //   routerLink: '/practicas', 
+  //   children: [
+  //     {
+  //       label: 'Asignatura-corte-practico',
+  //       data: 'Asignatura-corte-practico',
+  //       routerLink: '/asignatura-corte-practico', 
+  //     },
+  //     {
+  //       label: 'Estadisticas asignatura corte practico 1',
+  //       data: 'Estadisticas asignatura corte practico 1',
+  //       routerLink: '/estadisticas/1', 
+  //     },
+  //     {
+  //       label: 'Practicas estudiante 1',
+  //       data: 'Practicas estudiante 1',
+  //       routerLink: '/practicas-estudiante', 
+  //     },
+  //   ],
+  // },
+  // {
+  //   label: 'Convenios',
+  //   data: 'Convenios',
+  //   routerLink: '/convenios', 
+  //   children: [
+  //     {
+  //       label: 'Convenio 1',
+  //       data: 'Convenio 1',
+  //       routerLink: '/convenio/1',
+  //     },
+  //   ],
+  // },
+  // {
+  //   label: 'Avance individual',
+  //   data: 'Avance individual',
+  //   routerLink: '/avance-estudiante', 
+  //   children: [
+  //     {
+  //       label: 'Curso 1',
+  //       data: 'Curso 1',
+  //       routerLink: '/cursos/1',
+  //     },
+  //     {
+  //       label: 'Aprobacion curso 1',
+  //       data: 'Aprobacion curso 1',
+  //       routerLink: '/aprobacion/1',
+  //     },
+  //   ],
+  // },
+  // {
+  //   label: 'END',
+  //   data: 'END',
+  //   routerLink: '/end',
+  // },
+
   public opciones = [
     {
       label: 'Fluxogramas',
       data: 'Fluxogramas',
       routerLink: '/fluxogramas',
-      children: [
-        {
-          label: 'Fluxograma 1',
-          data: 'Fluxograma 1',
-          routerLink: '/fluxograma/1', 
-          children: [
-            {
-              label: 'semestres',
-              data: 'semestres',
-              routerLink: '/semestres', 
-            },
-          ]
-        },
-        {
-          label: 'Fluxograma 1',
-          data: 'Fluxograma 1',
-          routerLink: '/fluxograma/2',
-        },
-      ],
     },
     {
       label: 'Asignaturas',
       data: 'Asignaturas',
       routerLink: '/asignaturas',
-      children: [
-        {
-          label: 'Asignatura 1',
-          data: 'Asignatura 1',
-          routerLink: '/detalle-asignatura/1', 
-        },
-      ],
     },
     {
       label: 'Prácticas',
       data: 'Prácticas',
       routerLink: '/practicas', 
-      children: [
-        {
-          label: 'Asignatura-corte-practico',
-          data: 'Asignatura-corte-practico',
-          routerLink: '/asignatura-corte-practico', 
-        },
-        {
-          label: 'Estadisticas asignatura corte practico 1',
-          data: 'Estadisticas asignatura corte practico 1',
-          routerLink: '/estadisticas/1', 
-        },
-        {
-          label: 'Practicas estudiante 1',
-          data: 'Practicas estudiante 1',
-          routerLink: '/practicas-estudiante', 
-        },
-      ],
     },
     {
       label: 'Convenios',
       data: 'Convenios',
       routerLink: '/convenios', 
-      children: [
-        {
-          label: 'Convenio 1',
-          data: 'Convenio 1',
-          routerLink: '/convenio/1',
-        },
-      ],
     },
     {
       label: 'Avance individual',
       data: 'Avance individual',
-      routerLink: '/avance-estudiante', 
-      children: [
-        {
-          label: 'Curso 1',
-          data: 'Curso 1',
-          routerLink: '/cursos/1',
-        },
-        {
-          label: 'Aprobacion curso 1',
-          data: 'Aprobacion curso 1',
-          routerLink: '/aprobacion/1',
-        },
-      ],
+      routerLink: '/listar-estudiantes', 
     },
     {
       label: 'END',
       data: 'END',
       routerLink: '/end',
+    },
+    {
+      label: 'Tendencias de Corte Práctico',
+      data: 'END',
+      routerLink: '/ver-tendencias',
     },
   ];
 

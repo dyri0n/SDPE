@@ -1,12 +1,20 @@
 export interface Linea {
   id?: number;
+  tituloNuevo?: string;
   nombre: string;
   asignaturas: AsignaturaLinea[];
+  color: string;
 }
   
 export interface LineaActualizar {
-  codigoAsignatura: string;
+  codigosAsignaturas: string[];
   tituloLineaRelacionada?: string;
+  tituloNuevo?: string;
+  colorNuevo?: string;
+}
+
+export interface LineaCambios{
+  lineasNuevas: LineaActualizar[]
 }
 
 export interface AsignaturaLinea {
@@ -27,6 +35,7 @@ export interface LineaPlan {
   lineasAsignatura: {
     idLinea: number;
     titulo: string;
+    color: string;
   }[]
 }
 

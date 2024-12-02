@@ -9,7 +9,7 @@
 <div class="bg-white border-y py-3 shadow-lg">
     <div class="flex items-center justify-between w-11/12">
         <div class="bg-sky-700 w-auto px-10 rounded-r-xl py-4">
-            <h1 class="text-4xl text-white text-center font-bold">Gestionar líneas</h1>
+            <h1 class="text-4xl text-white text-center font-bold">Gestionar Líneas</h1>
         </div>
     </div>
 </div>
@@ -55,7 +55,31 @@
             <div class="flex-1 overflow-y-auto mb-5 pe-3">
                 @for (linea of lineasFiltradas; track linea; let i = $index) {
                     <div class="mb-5 h-fit">
-                        <h3 class="text-base bg-gray-300 rounded-t-md border-4 border-gray-300 p-3 font-medium text-sky-700 font-semibold">Línea de {{ linea.nombre }}</h3>
+                        <div class="text-base rounded-t-md border-4 border-gray-300 p-3 font-medium text-white font-semibold flex items-center justify-between" [style.background-color]="linea.color">
+                            <!-- Texto alineado a la izquierda -->
+                            <p class="px-4 w-fit rounded-md bg-white text-sky-700">{{linea.tituloNuevo? 'Línea de ' + linea.tituloNuevo : 'Linea de '+ linea.nombre}}</p>
+                          
+                            <!-- Iconos alineados a la derecha -->
+                            <div class="flex space-x-4">
+                                <!-- Icono para editar -->
+                                <button 
+                                    class="text-orange-500 hover:text-orange-700 bg-white rounded-full p-2"
+                                    (click)="mostrarModalParaEditar(linea)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                      </svg>
+                                </button>
+                                <!-- Icono para eliminar -->
+                                <button 
+                                    class="text-red-500 hover:text-red-700 bg-white rounded-full p-2"
+                                    (click)="confirmarEliminacion(linea.id!)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="" viewBox="0 0 16 16">
+                                        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+                                    </svg>                             
+                                </button>
+                            </div>
+                          </div>
                         <div cdkDropList [cdkDropListData]="linea.asignaturas" class="border-x-4 border-b-0 border-gray-300 h-[200px] overflow-y-auto bg-white p-3 space-y-3" (cdkDropListDropped)="soltar($event, linea)">
                             @for (asignatura of linea.asignaturas; track asignatura; let j = $index) {
                                 <div class="bg-white border border-gray-300 p-2 rounded relative cursor-pointer hover:bg-sky-200 hover:border-sky-200 flex items-center justify-between" cdkDrag>
@@ -84,52 +108,64 @@
                 }
             </div>
       
-            <button (click)="mostrarModal()" class="w-full rounded-md text-start text-sky-700 bg-sky-100 border-2 p-2 px-4 border-sky-400 text-xl font-semibold">Agregar nueva línea de asignaturas</button>
+            <button (click)="mostrarModalParaAgregar()" class="w-full rounded-md text-start text-sky-700 bg-sky-100 border-2 p-2 px-4 border-sky-400 text-xl font-semibold">Agregar Nueva Línea de Asignaturas</button>
       
             <p-dialog  
-                [(visible)]="display" 
-                [modal]="true" 
-                [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
-                [style]="{ width: '45vw' }" 
-                [draggable]="false" 
-                [resizable]="false">
-                <ng-template pTemplate="headless">
-                    <div class="bg-gray-100 border-2 border-sky-700 rounded-md shadow-lg">
-                        <form [formGroup]="formularioLinea" (ngSubmit)="agregarLinea()">
-                            <div class="bg-white mt-5 py-5 shadow-lg border-y">
-                                <h1 class="p-4 rounded-r-2xl w-fit px-10 bg-sky-700 text-white text-4xl font-bold">Agregar Línea</h1>
-                            </div>
-                            <div class="border bg-white rounded-lg py-3 my-4 mx-8 shadow-xl overflow-auto h-[30vh]">
-                                <h2 class="mx-8 my-4 text-xl p-2 font-bold">Nueva línea</h2>
-                                <div class="mx-8 mb-10 flex justify-between">
-                                    <p-floatLabel class="w-full me-5">
-                                        <input id="nombre" formControlName="nombre" type="text" class="bg-gray-100 focus:outline-none focus:border-sky-700 w-full px-2 py-1 border-2 shadow-lg rounded-2xl font-medium" pInputText/>
-                                        <label for="Nombre de la linea">Nombre</label>
-                                    </p-floatLabel>
-                                </div>
-                                <h2 class="mx-8 text-xl p-2 font-bold">Color de la línea</h2>
-                                <div class="mx-8 mb-10 flex justify-between">
-                                  <div class="w-full ms-2 me-5">
-                                    <input 
-                                      id="color" 
-                                      formControlName="color" 
-                                      type="color" 
-                                      class="w-10 h-10 bg-white" 
-                                    />
-                                  </div>
-                                </div>
-                            </div>
-                            <div class="flex justify-center">
-                                <a class="border-2 ms-1 my-1 bg-sky-700 hover:bg-sky-800 cursor-pointer text-center text-white w-6/12 py-4 text-xl font-bold p-2 rounded-l-md" (click)="esconderModal()">
-                                    Volver
-                                </a>
-                                <button class="border-2 me-1 my-1 bg-sky-700 hover:bg-sky-800 text-center text-white w-6/12 py-4 text-xl font-bold p-2 rounded-r-md" type="submit">
-                                    Guardar
-                                </button>
-                            </div>
-                        </form>
+            [(visible)]="display" 
+            [modal]="true" 
+            [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+            [style]="{ width: '45vw' }" 
+            [draggable]="false" 
+            [resizable]="false">
+            <ng-template pTemplate="headless">
+                <div class="bg-gray-100 border-2 border-sky-700 rounded-md shadow-lg">
+                <form [formGroup]="formularioLinea" (ngSubmit)="guardarCambios()">
+                    <div class="bg-white mt-5 py-5 shadow-lg border-y">
+                    <h1 class="p-4 rounded-r-2xl w-fit px-10 bg-sky-700 text-white text-4xl font-bold">
+                        {{ editando ? 'Editar Línea' : 'Agregar Línea' }}
+                    </h1>
                     </div>
-                </ng-template>
+                    <div class="border bg-white rounded-lg py-3 my-4 mx-8 shadow-xl overflow-auto h-[30vh]">
+                    <h2 class="mx-8 my-4 text-xl p-2 font-bold">Nueva línea</h2>
+                    <div class="mx-8 mb-5 flex justify-between">
+                        <p-floatLabel class="w-full me-5">
+                        <input 
+                            id="nombre" 
+                            formControlName="nombre" 
+                            type="text" 
+                            class="bg-gray-100 focus:outline-none focus:border-sky-700 w-full px-2 py-1 border-2 shadow-lg rounded-2xl font-medium" 
+                            pInputText 
+                        />
+                        <label for="Nombre de la linea">Nombre</label>
+                        </p-floatLabel>
+                    </div>
+                    <h2 class="mx-8 text-xl p-2 font-bold">Color de la línea</h2>
+                    <div class="mx-8 mb-10 flex justify-between">
+                        <div class="w-full ms-2 me-5">
+                        <input 
+                            id="color" 
+                            formControlName="color" 
+                            type="color" 
+                            class="w-10 h-10 bg-white" 
+                        />
+                        </div>
+                    </div>
+                    </div>
+                    <div class="flex justify-center">
+                    <a 
+                        class="border-2 ms-1 my-1 bg-sky-700 hover:bg-sky-800 cursor-pointer text-center text-white w-6/12 py-4 text-xl font-bold p-2 rounded-l-md" 
+                        (click)="esconderModal()">
+                        Volver
+                    </a>
+                    <button 
+                        class="border-2 me-1 my-1 bg-sky-700 hover:bg-sky-800 text-center text-white w-6/12 py-4 text-xl font-bold p-2 rounded-r-md" 
+                        type="submit">
+                        {{ editando ? 'Guardar Cambios' : 'Agregar Línea' }}
+                    </button>
+                    </div>
+                </form>
+                </div>
+            </ng-template>
             </p-dialog>
         </div>
       </div>

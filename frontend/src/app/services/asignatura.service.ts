@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ListaAsignatura } from '../models/listaAsignatura.dto';
 import { AsignaturaDetalleDTO, ReporteAsignaturaDTO, TendenciasCortePracticoDTO } from '../models/asignatura.dto';
-import { Linea, LineaPlan, Lineas, LineasAsignaturas } from '../models/lineaAsignatura.dto';
+import { Linea, LineaCambios, LineaPlan, Lineas, LineasAsignaturas } from '../models/lineaAsignatura.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -15,19 +15,16 @@ export class AsignaturaService {
 
   constructor(private http: HttpClient) { }
 
-  public obtenerAsignaturas(): Observable<ListaAsignatura[]>{
-    return this.http.get<ListaAsignatura[]>(this.apiAsignaturas)
-  }
-
-  public agregarAsignaturaLinea(idPlan: number, asignatura:Linea[]){
+  // LINEAS 
+  public agregarAsignaturaLinea(idPlan: number, asignatura:LineaCambios){
     return this.http.post<Linea>(`${this.apiLinea}/planes/${idPlan}/asignaturas`, asignatura);
   }
 
-  public guardarCambios(idPlan:number, lineas: Linea[]){
+  public guardarCambios(idPlan:number, lineas: LineaCambios){
+    console.log(lineas)
     return this.http.post<Linea>(`${this.apiLinea}/planes/${idPlan}/asignaturas`, lineas);
   }
 
-  // LINEAS
   public obtenerListadoAsignaturas(idPlan:Number) {
     return this.http.get<LineasAsignaturas>(`${this.apiLinea}/planes/${idPlan}/asignaturas`);
   }
@@ -36,8 +33,18 @@ export class AsignaturaService {
     return this.http.get<Lineas[]>(`${this.apiLinea}`);
   }
 
+  public eliminarLinea(idPlan: number, idLinea: number){
+    console.log('sisi')
+    return this.http.delete(`${this.apiLinea}/planes/${idPlan}/lineas/${idLinea}`)
+  }
+
   public obtenerLineasPlan(idPlan: number) {
     return this.http.get<LineaPlan>(`${this.apiLinea}/planes/${idPlan}`);
+  }
+
+  // ASIGNATURAS
+  public obtenerAsignaturas(): Observable<ListaAsignatura[]>{
+    return this.http.get<ListaAsignatura[]>(this.apiAsignaturas)
   }
 
   public obtenerAsignaturasNuevo(): Observable<AsignaturaDetalleDTO[]>{

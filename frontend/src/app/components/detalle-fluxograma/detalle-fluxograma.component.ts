@@ -8,7 +8,7 @@ import { AsignaturaService } from '../../services/asignatura.service';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ContextMenu, ContextMenuModule } from 'primeng/contextmenu';
 import { ToastModule } from 'primeng/toast';
-import { LineaActualizar, Lineas } from '../../models/lineaAsignatura.dto';
+import { LineaActualizar, LineaPlan, Lineas } from '../../models/lineaAsignatura.dto';
 
 
 @Component({
@@ -154,9 +154,9 @@ export class DetalleFluxogramaComponent implements OnInit {
   public obtenerLineas() {
     // this.asignaturaService.obtenerLineasPlan(this.idFluxograma).subscribe((result: LineaPlan) => {
 
-    this.asignaturaService.obtenerLineas().subscribe((result: Lineas[]) => {
+    this.asignaturaService.obtenerLineasPlan(this.idFluxograma).subscribe((result: LineaPlan) => {
       console.log(result)
-      const lineas = result.map((linea: any) => ({
+      const lineas = result.lineasAsignatura.map((linea: any) => ({
         label: "Línea de " + linea.titulo,
         icon: 'pi pi-plus',
         command: () => this.agregarALinea(linea.titulo)
@@ -181,7 +181,7 @@ export class DetalleFluxogramaComponent implements OnInit {
       );
 
       const asignatura: LineaActualizar[] = [{
-        codigoAsignatura: this.selectedAsignaturaId,
+        codigosAsignaturas: [this.selectedAsignaturaId],
         tituloLineaRelacionada: tituloLinea
       }];
   
