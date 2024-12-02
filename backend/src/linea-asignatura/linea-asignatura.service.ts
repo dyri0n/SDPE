@@ -169,7 +169,19 @@ export class LineaAsignaturaService {
 
   async borrarLinea(idPlan: number, idLinea: number) {
     try {
-      const lineaBorrada = await this.prisma.lineaAsignatura.delete({
+      const asignaturasDesligadas = this.prisma.asignatura.updateMany({
+        where: {
+          LineaContemplaAsignatura: {
+            idPlan,
+            idLinea,
+          },
+        },
+        data: {
+          idLinea: null,
+        },
+      });
+
+      const lineaBorrada = this.prisma.lineaAsignatura.delete({
         where: {
           idPlan_idLinea: {
             idPlan,
@@ -178,7 +190,9 @@ export class LineaAsignaturaService {
         },
       });
 
-      return lineaBorrada;
+      const result = await Promise.all([asignaturasDesligadas, lineaBorrada]);
+
+      return result;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -218,6 +232,31 @@ export class LineaAsignaturaService {
    * Las asignaturas se
    * */
   async updateDatosLineaPorPlan(idPlan: number, data: ActualizarDatosLineaDTO) {
+    const lineasExistentes: string[] = await this.prisma.lineaAsignatura
+      .findMany({
+        where: { idPlan },
+        select: { titulo: true },
+      })
+      .then((v) => v.flatMap((v) => v.titulo));
+
+    const lineasDatosNuevos = data.lineasNuevas.map((l) => {
+      return {
+        titulo: l.tituloLineaRelacionada,
+        color: l.colorNuevo,
+        idPlan,
+      } as LineaAsignatura;
+    });
+
+    const lineasNuevas = lineasDatosNuevos.filter((l) => {
+      if (!lineasExistentes.includes(l.titulo)) return l;
+    });
+
+    const lineasNuevasInsertadas = await this.prisma.lineaAsignatura.createMany(
+      {
+        data: lineasNuevas,
+      },
+    );
+
     const lineasUpdateQueries = [];
 
     for (const lineaNueva of data.lineasNuevas) {
@@ -283,7 +322,10 @@ export class LineaAsignaturaService {
     try {
       const result = await Promise.all(lineasUpdateQueries);
 
-      return result;
+      return {
+        lineasNuevasInsertadas,
+        updateResult: result,
+      };
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         switch (error.code) {

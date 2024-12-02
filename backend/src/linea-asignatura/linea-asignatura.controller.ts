@@ -42,8 +42,6 @@ export class LineaAsignaturaController {
   ) {
     const result = await this.lineaService.updateDatosLineaPorPlan(idPlan, dto);
 
-    if (!result) throw new ImATeapotException('qe');
-
     return result;
   }
 

@@ -116,7 +116,7 @@ const apellidos = [
 ];
 
 // Arreglo de años desde 2012 hasta 2024
-const años = Array.from({ length: 13 }, (_, index) => 2012 + index);
+const años = Array.from({ length: 4 }, (_, index) => 2018 + index);
 
 // Función para generar estudiantes aleatorios con dos nombres y dos apellidos
 export function generarEstudiantes(cantidad): Estudiante[] {
