@@ -1,13 +1,11 @@
 import { Routes } from '@angular/router';
 import { FluxogramasComponent } from './components/fluxogramas/fluxogramas.component';
-import { CursosComponent } from './components/cursos/cursos.component';
 import { SemestresComponent } from './components/semestres/semestres.component';
 import { AprobacionCursoComponent } from './components/aprobacion-curso/aprobacion-curso.component';
 import { DetalleFluxogramaComponent } from './components/detalle-fluxograma/detalle-fluxograma.component';
 import { EstadisticaDiagnosticoComponent } from './components/estadistica-diagnostico/estadistica-diagnostico.component';
 import { PracticasComponent } from './components/practicas/practicas.component';
 import { ResultadoEndComponent } from './components/resultado-end/resultado-end.component';
-import { AsignaturaCortePracticoComponent } from './components/asignatura-corte-practico/asignatura-corte-practico.component';
 import { ListaConveniosComponent } from './components/lista-convenios/lista-convenios.component';
 import { ConvenioComponent } from './components/convenio/convenio.component';
 import { LoginComponent } from './components/login/login.component';
@@ -66,11 +64,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'cursos/:idFluxograma/:codigoAsignatura',
-    component: CursosComponent,
-    canActivate: [authGuard],
-  },
-  {
     path: 'end',
     component: ListaEndComponent,
     canActivate: [authGuard, hasRoleGuard],
@@ -123,11 +116,6 @@ export const routes: Routes = [
   {
     path: 'detalle-asignatura/:codigoAsignatura',
     component: DetalleAsignaturaComponent,
-    canActivate: [authGuard],
-  },
-  {
-    path: 'asignatura-corte-practico',
-    component: AsignaturaCortePracticoComponent,
     canActivate: [authGuard],
   },
   {

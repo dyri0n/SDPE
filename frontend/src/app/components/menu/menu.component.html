@@ -34,9 +34,9 @@
   <p-card
     header=""
     styleClass="bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]"
-    (click)="redirigirHacia('practicas-estudiante')"
+    (click)="redirigirHacia('ver-tendencias')"
   >
-    <p class="text-4xl font-semibold">Prácticas</p>
+    <p class="text-4xl font-semibold">Tendencias de corte práctico</p>
   </p-card>
   <p-card
     *tieneRol="[ADMINISTRADOR, JEFA_CARRERA, SECRETARIO]"
@@ -54,8 +54,4 @@
   >
     <p class="text-4xl font-semibold">END</p>
   </p-card>
-  <p-card header="" styleClass="bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]"
-            (click)="redirigirHacia('ver-tendencias')">
-        <p class="text-4xl font-semibold">Tendencias de corte práctico</p>
-    </p-card>
 </div>

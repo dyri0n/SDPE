@@ -23,7 +23,7 @@ export class EstadisticaDiagnosticoComponent implements OnInit {
     this.idFluxograma = +this.route.snapshot.paramMap.get('idFluxograma')!
     //llamamos al servicio para que nos entregue los promedios de la asignatura que le indicamos, de esto promedios usaremos unicamente los años
     //para inicializar el filtro
-    this.servicioDiagnosticos.obtenerPromedios(this.codigoAsignatura).subscribe(diagnosticos=>{
+    this.diagnosticosService.obtenerPromedios(this.codigoAsignatura).subscribe(diagnosticos=>{
       //creamos un tiempo para cargar datos
       this.cargando = true
       setTimeout(() => {
@@ -41,7 +41,7 @@ export class EstadisticaDiagnosticoComponent implements OnInit {
   }
 
   constructor(
-    private servicioDiagnosticos: DiagnosticosService,
+    private diagnosticosService: DiagnosticosService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -141,7 +141,7 @@ export class EstadisticaDiagnosticoComponent implements OnInit {
 
   //esta funcion va a buscar la asignatura con el codigo para guardarla y despues mostrar su nombre en el titulo
   public obtenerNombreAsignatura() {
-    this.servicioDiagnosticos.obtenerNombreAsignatura(this.codigoAsignatura).subscribe((asignatura) => {
+    this.diagnosticosService.obtenerNombreAsignatura(this.codigoAsignatura).subscribe((asignatura) => {
       this.asignatura = asignatura
     })
   }
@@ -182,7 +182,7 @@ export class EstadisticaDiagnosticoComponent implements OnInit {
   //esta funcion obtiene todos los datos necesarios para mostrar en el grafico
   public obtenerPromedios() {
     //se llama al servicio para obtener los diagnosticos
-    this.servicioDiagnosticos.obtenerPromedios(this.codigoAsignatura).subscribe((diagnosticos) => {
+    this.diagnosticosService.obtenerPromedios(this.codigoAsignatura).subscribe((diagnosticos) => {
       //los mandamos a obtener los label de estos
       this.obtenerLabel(diagnosticos)
       //obtenemos la data para el grafico donde tiene su label junto a su dataset
