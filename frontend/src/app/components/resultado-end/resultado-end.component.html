@@ -1,118 +1,111 @@
-<h1 class="text-5xl my-10 text-center font-semibold">Resultados obtenidos en END</h1>
+@if(cargando){
+  
+  <div class="w-full flex justify-center items-center" style="height: calc(100vh - 70px);">
+    <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="none" animationDuration=".5s"/>
+  </div>
 
-<div class="container mx-auto my-20 shadow-lg rounded-lg bg-gray-50 p-8">
-  <div class="flex flex-col lg:flex-row">
-    <!-- Primera tabla: Temas y estandares -->
-    <div class="w-full lg:w-1/2 pr-4 mb-4">
-      <h3 class="text-lg mb-3 text-start font-medium">Temas y estándares evaluados</h3>
+} @else {
 
-      <table class="min-w-full table-auto border-collapse border border-black text-left text-sm">
-        <thead>
-          <tr>
-            <th class="border border-black px-2 py-1 bg-teal-400">Tema</th>
-            <th class="border border-black px-2 py-1 bg-teal-400">Estándares</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="border border-black px-2 py-1 bg-teal-100" rowspan="2">Tema 1: Aprendizaje y desarrollo de estudiantes de Educación Básica</td>
-            <td class="border border-black px-2 py-1">E1. Conoce a los estudiantes de educación básica y sabe cómo ellos aprenden.</td>
-          </tr>
-          <tr>
-            <td class="border border-black px-2 py-1">E2. Está preparado para promover el desarrollo personal y social de los estudiantes.</td>
-          </tr>
-
-          <tr>
-            <td class="border border-black px-2 py-1 bg-teal-100" rowspan="6">Tema 2: Diseño e implementación de la enseñanza</td>
-            <td class="border border-black px-2 py-1">E3. Conoce el currículo de la educación básica.</td>
-          </tr>
-          <tr>
-            <td class="border border-black px-2 py-1">E4. Sabe cómo diseñar e implementar estrategias enseñanza-aprendizaje adecuadas para los objetivos de acuerdo al contexto.</td>
-          </tr>
-          <tr>
-            <td class="border border-black px-2 py-1">E5. Está preparado para gestionar la clase y crear un ambiente apropiado para el aprendizaje según contextos.</td>
-          </tr>
-          <tr>
-            <td class="border border-black px-2 py-1">E6. Conoce y sabe aplicar métodos de evaluación para observar el progreso de los estudiantes y sabe usar los resultados para retroalimentar el aprendizaje y la práctica pedagógica.</td>
-          </tr>
-          <tr>
-            <td class="border border-black px-2 py-1">E7. Conoce cómo se genera y transforma cultura escolar.</td>
-          </tr>
-          <tr>
-            <td class="border border-black px-2 py-1">E8. Está preparado para atender la diversidad y promover la integración en el aula.</td>
-          </tr>
-
-          <tr>
-            <td class="border border-black px-2 py-1 bg-teal-100" rowspan="1">Tema 3: La profesión docente y el sistema educacional chileno</td>
-            <td class="border border-black px-2 py-1">E10. Aprende en forma continua y reflexiona sobre su práctica y su inserción en el sistema educacional.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Segunda tabla: Resolución de situaciones pedagógicas -->
-    <div class="w-full lg:w-1/2 pl-4 mb-4">
-      <h3 class="text-lg mb-3 text-start font-medium">Niveles de desempeño de pregunta abierta de situaciones pedagógicas</h3>
-
-      <table class="min-w-full table-auto border-collapse border border-black text-left text-sm">
-        <thead>
-          <tr>
-            <th colspan="2" class="border border-black px-2 py-1 font-semibold bg-teal-400">Resolución de situaciones pedagógicas</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="border border-black px-2 py-1 font-semibold bg-teal-400">Descriptor</td>
-            <td class="border border-black px-2 py-1 font-semibold bg-teal-400">Nivel</td>
-          </tr>
-          <tr>
-            <td class="border border-black px-2 py-1 bg-teal-100">Proponen una actividad de clase en que involucra la participación de los estudiantes en la que se comunica e implementan normas de convivencia de acuerdo con la información proporcionada en el caso.</td>
-            <td class="border border-black px-2 py-1">A</td>
-          </tr>
-          <tr>
-            <td class="border border-black px-2 py-1 bg-teal-100">Proponen una actividad en la que se comunican y complementan normas de convivencia; sin embargo, no es realizable en clases o no se especifica cómo se involucrará a los estudiantes.</td>
-            <td class="border border-black px-2 py-1">B</td>
-          </tr>
-          <tr>
-            <td class="border border-black px-2 py-1 bg-teal-100">Proponen una opinión sobre una posible actividad, la que no está expresada como una actividad de clase y no es posible observar cómo se involucra a los estudiantes.</td>
-            <td class="border border-black px-2 py-1">C</td>
-          </tr>
-          <tr>
-            <td class="border border-black px-2 py-1 bg-teal-100">Describen la situación expuesta en el caso, sin proponer una actividad que involucre la comunicación e implementación de normas de convivencia.</td>
-            <td class="border border-black px-2 py-1">D</td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="w-full my-5 ms-10">
+    <button (click)="volverAlListado()" class="justify-center px-3 py-2 bg-gray-200 hover:bg-gray-300 hover:text-white text-gray-700 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400">
+        <p class="flex items-center">
+            <i class="pi pi-arrow-left text-xl me-2"></i> Volver al Listado de Resultados END
+        </p>
+    </button>
+  </div>
+  
+  <div class="bg-white border-y py-5 shadow-lg">
+    <div class="flex items-center justify-between w-11/12">
+        <div class="bg-sky-700 w-fit px-5 rounded-r-xl py-4">
+            <h1 class="text-4xl text-white text-center font-bold">Resultados END</h1>
+        </div>
+  
+        <div class="w-3/6 flex rounded-xl justify-evenly bg-sky-700 py-5 text-center">
+          <label class="px-4 text-center text-white text-3xl font-semibold select-none">Año {{end.agnoRendicion}}</label> 
+          <label class="px-4 text-center text-white text-3xl font-semibold select-none">Cohorte {{end.cohorteAsociado}}</label> 
+        </div>
+  
+        <button [disabled]="cargando" class="rounded-full px-4 transform transition hover:scale-105 py-2 bg-sky-700 hover:bg-sky-800" (click)="alternarModal()">
+          <span class="text-white font-semibold">Editar documento</span>
+      </button>  
     </div>
   </div>
-</div>
 
-<div class="container mx-auto my-20 shadow-lg rounded-lg bg-gray-50 p-8">
-    <h3 class="text-lg mb-3 text-start font-medium">Porcentaje de logro de carrera PEDIF por temas</h3>
-    <p-chart type="bar" [data]="temasData" [options]="options" />
-</div>
-
-<div class="container mx-auto my-20 shadow-lg rounded-lg bg-gray-50 p-8">
-  <h3 class="text-lg mb-3 text-start font-medium">Porcentaje de logro de los estudiantes de PEDIF por estándar</h3>
-  <p-chart type="bar" [data]="estandaresData" [options]="options" />
-</div>
-
-<div class="container mx-auto my-20 shadow-lg rounded-lg bg-gray-50 p-8">
-  <h3 class="text-lg mb-10 text-start font-medium">Nivel de desempeño de los estudiantes de PEDIF en la prueba de respuesta abierta</h3>
-  <div class="flex justify-between">
-    <div class="w-[38rem] mx-10">
-      <h4 class="text-sm mb-3 text-start font-medium">Distribución de nivel de desempeño en la pregunta de respuesta abierta de Situaciones pedagógicas (PA-SP)</h4>
-      <p-chart type="doughnut" [data]="SPData" [options]="PAOptions"></p-chart>
-    </div>
-    <div class="w-[38rem] mx-10">
-      <h4 class="text-sm mb-3 text-start font-medium">Distribución de nivel de desempeño en la pregunta de respuesta abierta de Comunicación Escrita (PA-CE)</h4>
-      <p-chart type="doughnut" [data]="CEData" [options]="PAOptions"></p-chart>
+  <div class="flex justify-center my-5">
+    <div class="border-2 border-gray-300 rounded-lg p-4 w-9/12">
+      <iframe [src]="ruta" width="100%" height="1000" style="border: none; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px;"></iframe>
     </div>
   </div>
-</div>
 
-<!-- no se si mostrar tambien individualmente -->
-<!-- <div class="container mx-auto my-20 shadow-lg rounded-lg bg-gray-50 p-8">
-    <h3 class="text-lg mb-3 text-start font-medium">Porcentaje de logro de los estudiantes de PEDIF por tema</h3>
+  <p-dialog  
+          [(visible)]="visible" 
+          [modal]="true" 
+          [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+          [style]="{ width: '75vw' }" 
+          [draggable]="false" 
+          [resizable]="false">
+          
+          <ng-template pTemplate="headless">
+              <div class="bg-gray-100 border-2 border-sky-700 rounded-md shadow-lg">
+                  <form [formGroup]="formularioEND" (ngSubmit)="editarDocumento()">
+                      <div class="bg-white mt-5 py-5 shadow-lg border-y">
+                          <h1 class="p-4 rounded-r-2xl w-6/12 bg-sky-700 text-white text-4xl font-bold">Editar resultados END</h1>
+                      </div>
+                      <div class="border bg-white rounded-lg py-4 my-5 mx-10 shadow-xl overflow-auto max-h-[60vh]">
+                          <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Detalles de los resultados END</h2>    
+                          <div class="mx-10 mb-12 flex items-center"> 
+                              <p-floatLabel class="w-6/12 me-5 pe-6">
+                                  <p-calendar  
+                                      view="year" 
+                                      dateFormat="yy"
+                                      formControlName="agnio"
+                                      class="bg-gray-100 focus:outline-none focus:border-sky-700 py-3 border-2 shadow-lg rounded-2xl font-medium" 
+                                      id="inicio"
+                                      />
+                                  <label for="inicio">Año</label>
+                              </p-floatLabel>
+                          </div><div class="mx-10 mb-12 flex items-center"> 
+                              <p-floatLabel class="w-6/12 me-5 pe-6">
+                                  <p-calendar  
+                                      view="year" 
+                                      dateFormat="yy"
+                                      formControlName="cohorte"
+                                      class="bg-gray-100 focus:outline-none focus:border-sky-700 py-3 border-2 shadow-lg rounded-2xl font-medium" 
+                                      id="inicio"
+                                      />
+                                  <label for="inicio">Cohorte</label>
+                              </p-floatLabel>
+                          </div>
 
-</div> -->
+                          <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Documento PDF de los resultados END</h2>
+                          <div class="mx-10 mb-12">
+                              <p-fileUpload 
+                                  name="demo[]" 
+                                  [multiple]="false" 
+                                  chooseLabel="Seleccionar archivo"
+                                  chooseStyleClass="bg-sky-700 border-sky-700"
+                                  removeStyleClass="bg-sky-700 border-sky-700"
+                                  showUploadButton="false"
+                                  showCancelButton="false"
+                                  accept="application/pdf"
+                                  maxFileSize="5000000"
+                                  (onSelect)="seleccionarArchivo($event)"
+                                  (onRemove)="borrarArchivo($event)">
+                              </p-fileUpload>
+                          </div>
+                      </div>
+                      <div class="flex justify-center">
+                          <a class="border-2 ms-1 my-1 bg-sky-700 hover:bg-sky-800 cursor-pointer  text-center text-white w-6/12 py-5 text-2xl font-bold p-2 rounded-l-md" (click)="alternarModal()">
+                              Volver
+                          </a>
+                          <button class="border-2 me-1 my-1 bg-sky-700 hover:bg-sky-800 text-white w-6/12 py-5 text-2xl font-bold p-2 rounded-r-md">
+                              Agregar
+                          </button>
+                      </div>
+                  </form>
+              </div>
+          </ng-template>
+  </p-dialog>
+}
+
+<p-toast position="top-right"></p-toast>

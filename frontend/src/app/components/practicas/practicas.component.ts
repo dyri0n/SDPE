@@ -28,10 +28,6 @@ export class PracticasComponent {
       return this.practicas;
     }
     const term = this.buscador.toLowerCase();
-    return this.practicas.filter(
-      (p) =>
-        p.nombreModalidad.toLowerCase().includes(term) ||
-        p.centroPractica.toLowerCase().includes(term)
-    );
+    return this.practicas.filter((p) => p);
   }
 }

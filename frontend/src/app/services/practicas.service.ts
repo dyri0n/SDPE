@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { InfoPracticaDTO } from '../models/practica';
+import { InfoPracticaDTO, ListarPracticasPorConvenioDTO } from '../models/practica';
 import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PracticasService {
   practicas: InfoPracticaDTO[] = [];
-  constructor() {}
+  constructor(private http: HttpClient) {}
+
+  private apiUrl = 'http://localhost:3000/practicas'
 
   public obtenerPracticas(): InfoPracticaDTO[] {
     return this.practicas;
@@ -16,5 +19,9 @@ export class PracticasService {
   public obtenerAlumno(tituloPractica: string): Observable<any> {
     const alumnoPrueba = {id: 1, nombreCompleto: 'Gilberto Manuel Natanael Arias Ossandón', cohorte: '2021', promedio: 6.7, imagen: 'path/to/default-avatar.png'}
     return of(alumnoPrueba)
+  }
+
+  public obtenerPracticasPorConvenio(idConvenio: number): Observable<ListarPracticasPorConvenioDTO>{
+    return this.http.get<ListarPracticasPorConvenioDTO>(this.apiUrl + '/convenio/' + idConvenio)
   }
 }

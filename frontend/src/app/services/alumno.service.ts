@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AlumnoAvance } from '../models/alumno-avance';
-import { Observable } from 'rxjs';
-import { EstudiantePracticas } from '../models/estudiante';
+import { Observable, of } from 'rxjs';
+import { Estudiante, EstudiantePracticas } from '../models/estudiante';
 import { DetallesPracticaDTO } from '../models/practica';
+import { CohorteEstudiantes } from '../models/listar-estudiantes';
 
 @Injectable({
   providedIn: 'root',
@@ -12,33 +13,55 @@ export class AlumnoService {
   /**
    * Servicio que inyecta los datos correspondiente a los alumnos
    *
-   * Es inyectado a la vista avance-estudiante y practicas
+   * Es inyectado a las vistas:
+   *  - avance-estudiante
+   *  - practicas de un estudiante
+   *  - listar estudiantes
    */
 
   // FIXME: crear una archivo .env para meter las urls
-  private api_url_avance = 'http://localhost:3000/estudiantes/1/avance';
-  private api_url_practicas = 'http://localhost:3000/practicas/estudiante/1';
+  private api_url_avance = 'http://localhost:3000/estudiantes/';
+  private api_url_practicas = 'http://localhost:3000/practicas/estudiante/';
+  private api_url_listar_estudiantes =
+    'http://localhost:3000/estudiantes/cohorte';
 
   constructor(private httpclient: HttpClient) {}
 
   /**
-   * Funcion  que retorna un objeto AlumnoAvance
+   * Funcion  que obtiene el avance que tiene el estudiante a lo largo de la carrera
    * @param {number} id_estudiante
+   * 
    * @returns {Observable<AlumnoAvance>}
    *
    */
-  public getAvanceEstudiante(id_estudiante: number): Observable<AlumnoAvance> {
-    return this.httpclient.get<AlumnoAvance>(this.api_url_avance);
+  public getAvanceEstudiante(id_estudiante: string): Observable<AlumnoAvance> {
+    return this.httpclient.get<AlumnoAvance>(
+      this.api_url_avance + id_estudiante + '/avance'
+    );
   }
 
   /**
    * Funcion que obtiene los datos de las practicas realizadas por el estudiante
    * @param {number} id_estudiante
+   *
    * @returns {EstudiantePracticas}
    */
   public getPracticasAlumno(
-    id_estudiante: number
+    id_estudiante: String
   ): Observable<DetallesPracticaDTO> {
-    return this.httpclient.get<DetallesPracticaDTO>(this.api_url_practicas);
+    return this.httpclient.get<DetallesPracticaDTO>(
+      this.api_url_practicas + id_estudiante
+    );
+  }
+  /**
+   * Funcion que obtiene todos los estudiante o puede obtener los estudiantes por cohorte,
+   * el parametro cohorte puede ser opcional
+   *
+   * @returns { ListarEstudiantes }
+   */
+  public getEstudiantes(): Observable<CohorteEstudiantes[]> {
+    return this.httpclient.get<CohorteEstudiantes[]>(
+      this.api_url_listar_estudiantes
+    );
   }
 }

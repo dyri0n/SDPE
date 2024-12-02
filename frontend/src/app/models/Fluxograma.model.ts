@@ -1,5 +1,7 @@
 export interface Fluxograma {
-  id: number;
+  idPlan: number;
+  codigo: number;
   titulo: string;
-  anio: number;
+  agnio: number;
+  fechaInstauracion: Date;
 }

@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Asignatura } from '../models/asignaturas.dto';
 import { AsignaturaSola } from '../models/asignaturaSola.dto';
+import { AsignaturaDetalleDTO } from '../models/asignatura.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -11,34 +12,38 @@ import { AsignaturaSola } from '../models/asignaturaSola.dto';
 export class DiagnosticosService {
   constructor(private http: HttpClient) {}
 
-  public apiUrl = 'http://localhost:3000/asignaturas';
-  public asignaturasUrl = 'http://localhost:3000/planes-de-estudio';
+  public apiUrl = 'http://localhost:3000/asignaturas'
 
-  public asignatura: string = 'Liderazgo y Colaboración Pedagógica'; //de prueba noma
-  public promedios: PromedioDiagnostico[] = [
-    { id: 1, año: 2016, promedio: 4.5 },
-    { id: 2, año: 2017, promedio: 3.8 },
-    { id: 3, año: 2018, promedio: 6.2 },
-    { id: 4, año: 2019, promedio: 5.7 },
-    { id: 5, año: 2020, promedio: 4.1 },
-    { id: 6, año: 2021, promedio: 6.8 },
-    { id: 7, año: 2022, promedio: 2.9 },
-    { id: 8, año: 2023, promedio: 5.3 },
-  ];
-
-  public obtenerPromedios(): Observable<PromedioDiagnostico[]> {
-    return of(this.promedios);
+  //Esta funcion obtiene todos los fluxogramas guardados en la base de datos con el formato "Fluxograma"
+  /*
+  Fluxograma tiene:
+  -idPlan: id para identificar al plan
+  -codigo: codigo con el cual se guarda el plan
+  -titulo: titulo del plan
+  -agnio: año del plan
+  -fechaInstauracion: fecha exacta de creacion del plan
+  */
+  public obtenerPromedios(codigoAsignatura: string): Observable<PromedioDiagnostico[]> {
+    return this.http.get<PromedioDiagnostico[]>(this.apiUrl + '/promedios/general/' + codigoAsignatura)
   }
 
-  public obtenerAsignaturas(idPlan: number): Observable<Asignatura[]> {
-    return this.http.get<Asignatura[]>(
-      this.asignaturasUrl + '/' + idPlan + '/asignaturas'
-    );
-  }
+  //Esta funcion obtiene el detalle de la asignatura guardados en la base de datos con el formato "AsignaturaDetalleDTO"
+  /*
+  AsignaturaDetalleDTO tiene:
+  -idAsignatura: id para identificar la asignatura
+  -codigoAsignatura: codigo para identificar la asignatura
+  -nombreAsignatura: nombre de la asignatura
+  -nombreCortoAsignatura: nombre corto de la asignatura
+  -semestreRealizacion: semestre en el cual se esta realizando la asignatura
+  -areaFormacion: area de formacion al que pertenece la asignatura
+  -planes: arreglo de planes con el formato "PlanDetalleDTO"
 
-  public obtenerNombreAsignatura(
-    idAsignatura: number
-  ): Observable<AsignaturaSola> {
-    return this.http.get<AsignaturaSola>(this.apiUrl + '/' + idAsignatura);
+    PlanDetalleDTO tiene:
+    -titulo: titulo del plan
+    -codigo: codigo para identificar el plan
+    -fechaInstauracion: fecha en la cual se creo el plan
+  */
+  public obtenerNombreAsignatura(codigoAsignatura: string): Observable<AsignaturaDetalleDTO> {
+    return this.http.get<AsignaturaDetalleDTO>(this.apiUrl + '/' + codigoAsignatura)
   }
 }

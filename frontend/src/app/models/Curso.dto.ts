@@ -6,4 +6,12 @@ export interface CursoDTO {
     porcentajeAprobacion: number;
     porcentajeReprobacion: number;
 }
+
+export interface AprobacionCursoDTO{
+    agnio: number;
+    cohorte: number;
+    plan: string;
+    aprobacion: number;
+}
+  
   

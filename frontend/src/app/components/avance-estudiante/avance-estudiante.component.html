@@ -1,23 +1,43 @@
 <div class="p-6">
-    <div class="bg-[#0369A1] p-6 grid grid-cols-5 gap-4 rounded-lg shadow-xl">
-        <div class="bg-[#048ad3] py-10 rounded-lg flex flex-col items-center shadow-lg justify-between">
-      <div class="text-cyan-50 font-medium w-full px-4 text-wrap" *ngIf="avanceEstudiante.estudiante; else cargando">
-        <div class="rounded-md text-3xl py-4 my-4 text-center">Datos del estudiante</div>
-        <div class="rounded-md text-xl py-4 my-4 bg-[#DC911A]">
+  <div class="bg-[#0369A1] p-6 grid grid-cols-5 gap-4 rounded-lg shadow-xl">
+    <div
+      class="bg-[#048ad3] py-4 rounded-lg flex flex-col items-center shadow-lg justify-between"
+    >
+      <div
+        class="text-cyan-50 font-medium w-full px-4 text-wrap"
+        *ngIf="avanceEstudiante.estudiante; else cargando"
+      >
+        <button (click)="devolverAMenuEstudiante()" class="w-full transition-transform hover:scale-105 mb-5 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
+          <p class="flex items-center justify-center">
+              <i class="pi pi-arrow-left text-xl me-2"></i> Volver a menú del estudiante
+          </p>
+        </button>
+        <div class="rounded-md text-xl py-4 my-4 text-center">
+          Datos del estudiante
+        </div>
+        <div class="rounded-md text-lg py-4 my-4 bg-[#DC911A]">
           <p class="text-xs mx-5">Nombre estudiante</p>
-          <p class="px-5">{{avanceEstudiante.estudiante.nombreCompleto || ""}}</p>
+          <p class="px-5 text-sm">
+            {{ avanceEstudiante.estudiante.nombreCompleto || "" }}
+          </p>
         </div>
-        <div class="rounded-md text-xl py-4 my-4 bg-[#DC911A]">
+        <div class="rounded-md text-lg py-4 my-4 bg-[#DC911A]">
           <p class="text-xs mx-5">Rut</p>
-          <p class="px-5">{{avanceEstudiante.estudiante.rut || ""}}</p>
+          <p class="px-5 text-sm">
+            {{ avanceEstudiante.estudiante.rut || "" }}
+          </p>
         </div>
-        <div class="rounded-md text-xl py-4 my-4 bg-[#DC911A]">
+        <div class="rounded-md text-lg py-4 my-4 bg-[#DC911A]">
           <p class="text-xs mx-5">Año de ingreso</p>
-          <p class="px-5">{{avanceEstudiante.estudiante.agnioIngreso || ""}}</p>
+          <p class="px-5 text-sm">
+            {{ avanceEstudiante.estudiante.agnioIngreso || "" }}
+          </p>
         </div>
-        <div class="rounded-md text-xl py-4 my-4 bg-[#DC911A]">
+        <div class="rounded-md text-lg py-4 my-4 bg-[#DC911A]">
           <p class="text-xs mx-5">Plan</p>
-          <p class="px-5">{{avanceEstudiante.estudiante.plan || ""}}</p>
+          <p class="px-5 text-sm">
+            {{ avanceEstudiante.estudiante.plan || "" }}
+          </p>
         </div>
       </div>
       <div>
@@ -26,52 +46,77 @@
         </ng-template>
       </div>
     </div>
-    <div class="col-span-4 bg-[#048ad3] p-6 rounded-l flex flex-col items-center shadow-lg">
-        <div class="text-4xl p-2 mb-4 bg-[#DC911A] w-full text-center rounded-md shadow-md">
-          <p class="text-cyan-50 font-semibold font-sans">Avance individual</p>
-          </div>
-            <p-chart id="myChart" type="line" [data]="this.data"[options]="this.options" class="w-full p-8 bg-white rounded-md shadow-md" />
-        </div>
-      </div>
-      <div class="bg-[#0369A1] p-6 mt-4 rounded-lg shadow-xl">
-        <div class="text-4xl py-4 mb-4 bg-[#DC911A] w-full text-center rounded-md shadow-md">
-          <p class="text-cyan-50 font-semibold font-sans">Cursos realizados por el estudiante</p>
-        </div>
-        <input type="text" [(ngModel)]="entradaBuscador"  placeholder="Buscar cursos" class="w-full p-2 rounded-lg mb-4 border border-gray-300">
-        <div class="max-h-[600px] overflow-y-auto
-        [&::-webkit-scrollbar]:w-2
-        [&::-webkit-scrollbar-track]:bg-gray-100
-        [&::-webkit-scrollbar-thumb]:bg-gray-300
-        dark:[&::-webkit-scrollbar-track]:bg-neutral-700
-        dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500" >
-        <div *ngFor="let curso of this.filtrarCursos()">
-          <div class="my-4 mx-2 transition ease-in-out hover:-translate-x-1 hover:scale-120 bg-white p-4 rounded-lg grid grid-cols-2 gap-4 shadow-md">
-            <div>
-              <div class="justify-start">
-                <p class="font-semibold">{{curso.nombreAsignatura}}</p>
-                <div class="flex-row">
-                  <p class="font-semibold">{{curso.codigo}} ({{curso.areaFormacion}})</p> 
+    <div
+      class="col-span-4 bg-[#048ad3] p-6 rounded-l flex flex-col items-center shadow-lg"
+    >
+      <p-chart
+        id="myChart"
+        type="line"
+        [data]="this.informacion_grafico"
+        [options]="this.configuracion_grafico"
+        class="w-full p-2 bg-white rounded-md shadow-md"
+      />
+    </div>
+  </div>
+  <div class="bg-[#0369A1] p-6 mt-4 rounded-lg shadow-xl">
+    <div
+      class="text-2xl py-4 mb-4 bg-[#DC911A] w-full text-center rounded-md shadow-md"
+    >
+      <p class="text-cyan-50 font-semibold font-sans text-lg">
+        Cursos realizados por el estudiante
+      </p>
+    </div>
+    <input
+      type="text"
+      [(ngModel)]="entradaBuscador"
+      placeholder="Nombre curso o codigo curso"
+      class="w-full p-2 rounded-lg mb-4 border border-gray-300 text-sm"
+    />
+    <div
+      class="max-h-[600px] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+    >
+      <div *ngFor="let curso of this.filtrarCursos()">
+        <div
+          class="my-4 mx-2 transition ease-in-out hover:-translate-x-1 hover:scale-120 bg-white p-4 rounded-lg grid grid-cols-2 gap-4 shadow-md"
+        >
+          <div>
+            <div class="justify-start">
+              <p class="font-semibold">{{ curso.nombreAsignatura }}</p>
+              <div class="flex-row">
+                <p class="font-semibold">
+                  {{ curso.codigo }} ({{ curso.areaFormacion }})
+                </p>
+              </div>
+              <div class="pt-3">
+                <div class="tracking-tighter">
+                  Realizado en {{ curso.semestreRealizacion }}° semestre
                 </div>
-                <div class="pt-3">
-                  <div class="tracking-tighter">Se realiza en {{curso.semestreRealizacion}} semestre</div>
-                  <div class="tracking-tighter">Intento: {{curso.numIntento || 1}}</div>
+                <div class="tracking-tighter">
+                  Intento: {{ curso.numIntento || 1 }}
                 </div>
               </div>
             </div>
-            <div class="justify-self-end font-bold space-x-reverse">
-              <div *ngIf="curso.notaFinal >= 4.0" class="bg-green-400 shadow-lg text-2xl w-28 h-28 flex items-center justify-center rounded-xl">
-                <p class="text-shadow text-5xl text-green-100 font-light">{{curso.notaFinal.toFixed(1)}}</p>
-              </div>
-              <div *ngIf="curso.notaFinal < 4.0" class="bg-red-400 shadow-lg text-2xl w-28 h-28 flex items-center justify-center rounded-xl">
-                <p class="text-shadow text-5xl text-green-100 font-light">{{curso.notaFinal.toFixed(1)}}</p>
-              </div>
+          </div>
+          <div class="justify-self-end font-bold space-x-reverse">
+            <div
+              *ngIf="curso.notaFinal >= 4.0"
+              class="bg-green-400 shadow-lg text-2xl w-28 h-28 flex items-center justify-center rounded-xl"
+            >
+              <p class="text-shadow text-5xl text-green-100 font-light">
+                {{ curso.notaFinal.toFixed(1) }}
+              </p>
+            </div>
+            <div
+              *ngIf="curso.notaFinal < 4.0"
+              class="bg-red-400 shadow-lg text-2xl w-28 h-28 flex items-center justify-center rounded-xl"
+            >
+              <p class="text-shadow text-5xl text-green-100 font-light">
+                {{ curso.notaFinal.toFixed(1) }}
+              </p>
             </div>
           </div>
         </div>
-
-
-          
-        </div>
       </div>
-      
+    </div>
+  </div>
 </div>

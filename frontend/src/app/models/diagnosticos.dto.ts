@@ -1,5 +1,4 @@
 export interface PromedioDiagnostico {
-    id: number;
-    año: number;
-    promedio: number;
-  }
+  agnio: number;
+  promedio: number;
+}

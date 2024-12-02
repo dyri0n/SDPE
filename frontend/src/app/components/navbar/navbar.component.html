@@ -1,35 +1,34 @@
-<p-menubar styleClass="bg-sky-700 text-white border-0 rounded-none">
-  <ng-template pTemplate="start">
-    <div class="flex ms-6">
-      <button pButton class="p-button-text text-white border p-2" (click)="mostrarBarraLateral()">
-        <i class="pi pi-bars text-2xl"></i>
-      </button>
-      <div class="flex items-center me-6 cursor-pointer" (click)="menu()">
-        <img src="logo.png" alt="Logo" class="h-12 mx-10">
-        <div class="text-start my-1">
-          <h2 class="font-bold text-md leading-tight">Pedagogia en</h2>
-          <h2 class="font-bold text-md leading-tight">Educacion Diferencial</h2>
-        </div>
-      </div>
-      
-    </div>
-  </ng-template>
+<nav class="bg-sky-700 text-white flex justify-between items-center px-10 py-3">
+  <div class="flex items-center">
+    <button class="text-white p-2 mr-10" (click)="mostrarBarraLateral()">
+      <i class="pi pi-bars text-2xl"></i>
+    </button>
 
- 
-  <ng-template pTemplate="end">
-    @if (!isLoginRoute()){
-    <div class="flex items-center space-x-4 me-6">
-      <button>
-        <i class="pi pi-bell text-xl"></i>
-      </button>
-      <button (click)="menu.toggle($event)">
-        <i class="pi pi-cog text-xl"></i>
-      </button>
-      <p-menu #menu [popup]="true" [model]="menuDesplegable" [appendTo]="'body'"></p-menu>
+    <!-- Logo y texto -->
+    <div class="flex items-center cursor-pointer ms-5" (click)="menu()">
+      <img
+        src="logo.png"
+        alt="Logo"
+        class="h-12 mr-4 object-contain"
+      />
+      <div class="text-start">
+        <h2 class="font-bold text-md leading-tight">Pedagogía en</h2>
+        <h2 class="font-bold text-md leading-tight">Educación Diferencial</h2>
+      </div>
     </div>
-    }
-  </ng-template>
-</p-menubar>
+  </div>
+
+  @if (!isLoginRoute()) {
+    <div class="flex items-center space-x-4">
+      <div>
+        <button class="text-white" (click)="menu.toggle($event)">
+          <i class="pi pi-cog text-xl"></i>
+        </button>
+        <p-menu #menu [popup]="true" [model]="menuDesplegable" [appendTo]="'body'"></p-menu>
+      </div>
+    </div>
+  }
+</nav>
 
 <div class="absolute" [style]="{height: 'calc(100vh - 66px)'}">
   <p-sidebar [(visible)]="barraLateralVisible" position="left" [modal]="false" [style]="{position: 'absolute'}">

@@ -1,0 +1,30 @@
+<div class="bg-[#0073A6] min-h-screen p-8 text-white">
+  <button (click)="devolverAListarEstudiantes()" class="transition-transform hover:scale-105 mb-5 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
+    <p class="flex items-center">
+        <i class="pi pi-arrow-left text-xl me-2"></i> Volver a lista de estudiantes
+    </p>
+  </button>   
+  <div class="mb-6">
+    <div class="text-sm font-light">Nombre completo estudiante</div>
+    <div class="text-2xl font-bold">{{nombreEstudiante}}</div>
+  </div>
+
+  <div class="mt-6">
+    <div class="text-xl font-semibold mb-4">Menú</div>
+
+    <div class="bg-white rounded-xl shadow-lg mb-4 cursor-pointer" (click)="irAPracticasEstudiante()">
+      <div class="bg-[#DAA520] h-2 rounded-t-xl"></div>
+      <div class="flex justify-center items-center h-24 bg-[#DFF4F9]">
+        <span class="text-2xl font-semibold text-black">Prácticas</span>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg cursor-pointer" (click)="irAAvanceCurricular()">
+      <div class="bg-[#DAA520] h-2 rounded-t-xl"></div>
+      <div class="flex justify-center items-center h-24 bg-[#DFF4F9]">
+        <span class="text-2xl font-semibold text-black">Avance curricular</span>
+      </div>
+    </div>
+  </div>
+</div>
+  

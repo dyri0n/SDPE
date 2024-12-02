@@ -85,7 +85,7 @@ export class EndsController {
     @UploadedFile() file: Express.Multer.File,
     @Body() updateDto: PatchResultadoENDDTO,
   ) {
-    const extensionArchivo = file.originalname.split('.').pop();
+    const extensionArchivo = file?.originalname.split('.').pop();
     if (extensionArchivo != 'pdf') {
       throw new BadRequestException('Debe enviar un documento pdf');
     }
