@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FluxogramaService } from '../../services/fluxograma.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AsignaturaFluxograma } from '../../models/asignatura.dto';
+import { AsignaturaFluxograma, LineaContemplaAsignaturaDTO } from '../../models/asignatura.dto';
 import { Fluxograma } from '../../models/Fluxograma.model';
 import { AsignaturaService } from '../../services/asignatura.service';
 import { MenuItem, MessageService } from 'primeng/api';
@@ -89,8 +89,13 @@ export class DetalleFluxogramaComponent implements OnInit {
   }
 
   //esta funcion comprueba si la asignatura que se esta revisando es de caracter practico devolviendo un bolean para cambiar el color a celeste
-  public esCortePracticoNuevo(caracter: string): boolean {
-    return caracter === 'PRACTICA'
+  public esCortePracticoNuevo(linea: LineaContemplaAsignaturaDTO): boolean {
+    if(linea){
+      console.log('si tiene linea')
+      return true
+    }else{
+      return false
+    }
   }
 
   //esta funcion permite verificar que la asignatura en la cual damos click este en detalle fluxograma y segun su caracter manda a ver las estadisticas o la aprobacion de esta
@@ -131,6 +136,7 @@ export class DetalleFluxogramaComponent implements OnInit {
     this.servicioFluxograma.obtenerDetalleFluxograma(this.idFluxograma).subscribe((detalleFluxograma) => {
         let semestres = 0
         this.detalleFluxograma = detalleFluxograma
+        console.log(this.detalleFluxograma)
         //aqui recorremos las asignaturas buscando el semestre mas alto para guardarlo
         detalleFluxograma.forEach((asignatura) => {
           if (asignatura.semestre > semestres) {

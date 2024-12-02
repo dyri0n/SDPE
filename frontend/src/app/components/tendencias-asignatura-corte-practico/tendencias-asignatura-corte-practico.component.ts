@@ -71,7 +71,7 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
   public semestreSeleccionadoTest: number | ''=''
   //variable para guardar los datos para el resumen de asignaturas
   public datosAgrupados: {
-    idAsignatura: number;
+    nombreAsignatura: string;
     posicion: number;
     cohorte: string;
     promedio: number;
@@ -317,9 +317,9 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
     this.obtenerDatosGraficoDeLineas()
     //llamamos a la funcion para obtener los datos para el grafico de barras
     this.obtenerDatosGraficoDeBarras()
-
   }
 
+  //esta funcion obtiene los datos para el resumen de asignaturas creando los calculos 
   public obtenerResumenAsignaturas(){
     this.asignaturasCortePractico.forEach(asignatura => {
       const cohortePromedios: { [cohorte: string]: number[] } = {}
@@ -341,7 +341,7 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
         const promedioCohorte = parseFloat((promedios.reduce((acc, promedio) => acc + promedio, 0) / promedios.length).toFixed(2))
         const porcentajeAprobacion = this.calcularPorcentajeAprobacion(cohorteAprobaciones, cohorte)
         const datoCohorte = {
-          idAsignatura: asignatura.asignaturas.idAsignatura,
+          nombreAsignatura: asignatura.asignaturas.nombreAsignatura,
           posicion: asignatura.asignaturas.semestreRealizacion,
           cohorte: cohorte,
           promedio: promedioCohorte,
