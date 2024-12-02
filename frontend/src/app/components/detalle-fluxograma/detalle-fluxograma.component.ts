@@ -88,16 +88,6 @@ export class DetalleFluxogramaComponent implements OnInit {
     return this.asignaturasTributadas.includes(id)
   }
 
-  //esta funcion comprueba si la asignatura que se esta revisando es de caracter practico devolviendo un bolean para cambiar el color a celeste
-  public esCortePracticoNuevo(linea: LineaContemplaAsignaturaDTO): boolean {
-    if(linea){
-      console.log('si tiene linea')
-      return true
-    }else{
-      return false
-    }
-  }
-
   //esta funcion permite verificar que la asignatura en la cual damos click este en detalle fluxograma y segun su caracter manda a ver las estadisticas o la aprobacion de esta
   public detalleAsignatura(idAsignatura: number, codigoAsignatura: string) {
     this.detalleFluxograma.forEach((asignatura) => {
