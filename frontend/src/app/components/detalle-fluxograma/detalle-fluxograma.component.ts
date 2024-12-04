@@ -230,6 +230,7 @@ export class DetalleFluxogramaComponent implements OnInit {
     return this.selectedAsignaturaCodigo ? this.detalleFluxograma.some(asignatura => asignatura.codigo === this.selectedAsignaturaCodigo && asignatura.idLinea === idLinea) : false;
   }
 
+
   public agregarALinea(tituloLinea: string) {
     if (this.selectedAsignaturaCodigo) {
       console.log(

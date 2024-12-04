@@ -369,6 +369,20 @@ export class GestionarLineasComponent implements OnInit {
     }
 
 
+    // Verificamos si alguna línea nueva (sin id) tiene 0 asignaturas
+    const lineasNuevasConCeroAsignaturas = this.lineas.filter(linea => !linea.id && linea.asignaturas.length === 0);
+
+    if (lineasNuevasConCeroAsignaturas.length > 0) {
+      // Si alguna línea nueva tiene 0 asignaturas, mostramos un mensaje de advertencia
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Precaución',
+        detail: 'Agregue una asignatura a la nueva línea antes de confirmar',
+      });
+      return; // Detenemos el proceso sin guardar los cambios
+    }
+
+
     const lineaNueva: LineaCambios ={
       lineasNuevas: asignaturas
     }
