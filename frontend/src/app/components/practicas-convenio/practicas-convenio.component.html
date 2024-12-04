@@ -32,15 +32,16 @@
           <div class="flex-1">
             <p class="text-lg font-semibold">{{practica.nombreCompleto}}</p>
             <p class="text-sm text-gray-500">{{practica.tituloPractica}}</p>
+            <p class="text-sm text-gray-500">Modalidad: {{practica.nombreModalidad}}</p>
             <p class="text-sm text-gray-500">Fecha de Inicio: {{practica.fechaInicio | date:'dd/MM/yyyy'}}</p>
             <p class="text-sm text-gray-500">Fecha de Término: {{practica.fechaFin | date:'dd/MM/yyyy'}}</p>
           </div>
           <div class="flex space-x-4 ml-6">
-            <button (click)="verDetallePractica(practica.tituloPractica)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">
+            <!--<button (click)="verDetallePractica(practica.tituloPractica)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">
               Ver Detalle
-            </button>
+            </button>-->
             
-            <button (click)="verPracticasEstudiante(1)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition">
+            <button (click)="verPracticasEstudiante(practica.idEstudiante)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition">
               Ver Prácticas del Estudiante
             </button>
           </div>

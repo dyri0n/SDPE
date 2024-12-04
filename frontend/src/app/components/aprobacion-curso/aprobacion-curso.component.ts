@@ -127,7 +127,7 @@ export class AprobacionCursoComponent {
       }, 1000)
       //guardamos los cohortes y años de forma unica para el filtrador
       this.cohortes = [...new Set(respuesta.map((item) => item.cohorte))].sort()
-      this.anios = [...new Set(respuesta.map((item) => item.agnio))].sort()
+      this.anios = [...new Set(respuesta.map((item) => item.agnioRendicion))].sort()
 
       //aplicamos los filtros y guardamos las aprobaciones
       let cursosFiltrados: AprobacionCursoDTO[] = this.filtrarAprobaciones()
@@ -137,18 +137,18 @@ export class AprobacionCursoComponent {
         //usamos reduce para agrupar por plan
         this.graficos = cursosFiltrados.reduce((acc: any[], curso) => {
           //buscamos si hay otra aprobacion con el mismo plan
-          const index = acc.findIndex((item) => item.plan === curso.plan)
+          const index = acc.findIndex((item) => item.plan === curso.tituloPlan)
   
           if (index === -1) {
             //si no existe agregamos los datos del curso
             acc.push({
-              plan: curso.plan,
-              totalAprobacion: curso.aprobacion,
+              plan: curso.tituloPlan,
+              totalAprobacion: curso.aprobacionAnual,
               totalCursos: 1,
             })
           } else {
             //si ya existe aumentamos
-            acc[index].totalAprobacion += curso.aprobacion
+            acc[index].totalAprobacion += curso.aprobacionAnual
             acc[index].totalCursos++
           }
           //devolvemos el acumulador
@@ -192,7 +192,7 @@ export class AprobacionCursoComponent {
         cursosFiltrados= this.aprobacionesCohorte
       }else{
         //si se escogio un año pero no un cohorte se hace un filtro por el año seleccionado
-        cursosFiltrados = this.aprobacionesCohorte.filter(cohorte=>cohorte.agnio===Number(this.anioSeleccionado))
+        cursosFiltrados = this.aprobacionesCohorte.filter(cohorte=>cohorte.agnioRendicion===Number(this.anioSeleccionado))
       }
     }else{
       //vemos si se escogio un año
@@ -201,7 +201,7 @@ export class AprobacionCursoComponent {
         cursosFiltrados = this.aprobacionesCohorte.filter((cohortes) => cohortes.cohorte === Number(this.cohorteSeleccionado))
       }else{
         //si se escogio un cohorte y un año se ha un filtro considerando el cohorte y el año seleccionado
-        cursosFiltrados = this.aprobacionesCohorte.filter((cohortes) => cohortes.cohorte === Number(this.cohorteSeleccionado) && cohortes.agnio === Number(this.anioSeleccionado))
+        cursosFiltrados = this.aprobacionesCohorte.filter((cohortes) => cohortes.cohorte === Number(this.cohorteSeleccionado) && cohortes.agnioRendicion === Number(this.anioSeleccionado))
       }
     }
     //devolvemos las aprobaciones despues de comprobar los filtros

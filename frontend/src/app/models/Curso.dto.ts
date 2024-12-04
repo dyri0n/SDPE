@@ -8,10 +8,11 @@ export interface CursoDTO {
 }
 
 export interface AprobacionCursoDTO{
-    agnio: number;
+    codigoPlan: number;
+    agnioRendicion: number;
     cohorte: number;
-    plan: string;
-    aprobacion: number;
+    tituloPlan: string;
+    aprobacionAnual: number;
 }
   
   
