@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FluxogramaService } from '../../services/fluxograma.service';
 import { MenubarModule } from 'primeng/menubar';
 import { CardModule } from 'primeng/card';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 
 @Component({
@@ -12,7 +13,7 @@ import { CardModule } from 'primeng/card';
   templateUrl: './fluxogramas.component.html',
   styleUrls: ['./fluxogramas.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterModule, MenubarModule, CardModule]
+  imports: [CommonModule, RouterModule, MenubarModule, CardModule, ProgressSpinnerModule]
 })
 export class FluxogramasComponent implements OnInit {
 

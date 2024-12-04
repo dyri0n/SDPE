@@ -1,16 +1,16 @@
 <div class="w-full my-5 ps-10">
   <button (click)="volver()" class="transition-transform hover:scale-105 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
       <p class="flex items-center">
-          <i class="pi pi-arrow-left text-xl me-2"></i> Volver a Detalles de Convenio
+          <i class="pi pi-arrow-left text-xl me-2"></i> Volver
       </p>
   </button>
 </div>
 
 <div class="min-h-screen p-4 mt-5">
   <div class="max-w-7xl mx-auto bg-[#21A4DC] p-8 rounded-lg">
-    <h2 class="text-3xl font-bold text-center text-white mb-6">Prácticas realizadas en {{practicas.tituloConvenio}}</h2>
+    <h2 class="text-3xl font-bold text-center text-white mb-6">Prácticas Realizadas en {{practicas.tituloConvenio}}</h2>
     <div class="mb-6">
-      <input type="text" placeholder="Buscar práctica..." class="w-full p-3 rounded-lg text-black" (input)="filtrarPracticas($event)"/>
+      <input type="text" placeholder="Buscar nombre de estudiante..." class="w-full p-3 rounded-lg text-black" (input)="filtrarPracticas($event)"/>
     </div>
     <div *ngIf="cargando; else contenido" class="w-full flex justify-center items-center h-96">
       <div class="spinner-border animate-spin inline-block w-16 h-16 border-4 rounded-full border-t-transparent border-[#0369A1]"></div>

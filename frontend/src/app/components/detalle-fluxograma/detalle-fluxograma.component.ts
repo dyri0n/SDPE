@@ -2,20 +2,20 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FluxogramaService } from '../../services/fluxograma.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AsignaturaFluxograma, LineaContemplaAsignaturaDTO } from '../../models/asignatura.dto';
+import { AsignaturaFluxograma } from '../../models/asignatura.dto';
 import { Fluxograma } from '../../models/Fluxograma.model';
 import { AsignaturaService } from '../../services/asignatura.service';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ContextMenu, ContextMenuModule } from 'primeng/contextmenu';
 import { ToastModule } from 'primeng/toast';
-import { LineaActualizar, LineaCambios, LineaPlan, Lineas } from '../../models/lineaAsignatura.dto';
-import { style } from '@angular/animations';
+import { LineaActualizar, LineaCambios, LineaPlan } from '../../models/lineaAsignatura.dto';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 
 @Component({
   selector: 'app-detalle-fluxograma',
   standalone: true,
-  imports: [CommonModule, ContextMenuModule, ToastModule],
+  imports: [CommonModule, ContextMenuModule, ToastModule, ProgressSpinnerModule],
   providers: [MessageService],
   templateUrl: './detalle-fluxograma.component.html',
   styleUrl: './detalle-fluxograma.component.css',
@@ -45,9 +45,11 @@ export class DetalleFluxogramaComponent implements OnInit {
   menuVisible = false;
   lineaMenu!: MenuItem[]; 
   public selectedAsignaturaCodigo!: string;
-  
+
   public lineasAsignatura: any[] = [];
 
+  public cargando: boolean = true
+  public cargandoLinea: boolean = false
 
   //variable para guardar el detalle de un fluxograma
   public detalleFluxograma: AsignaturaFluxograma[]=[]
@@ -138,6 +140,8 @@ export class DetalleFluxogramaComponent implements OnInit {
         })
         //aqui con el semestre mas alto creamos el arreglo de semestres en romano para los titulos
         this.semestres = this.obtenerSemestres(semestres)
+        this.cargando = false;
+        this.cargandoLinea = false
       })
     //aqui vamos a buscar el fluxograma para mostrar informacion de este, su titulo y año
     this.servicioFluxograma.obtenerFluxogramaPorID(this.idFluxograma).subscribe((fluxograma) => {
@@ -192,6 +196,7 @@ export class DetalleFluxogramaComponent implements OnInit {
   }
 
   public eliminarDeLinea(codigoAsignatura: string){
+    this.cargandoLinea = true;
     const linea: LineaActualizar[] = [{
       codigosAsignaturas: [codigoAsignatura]
     }];
@@ -204,10 +209,11 @@ export class DetalleFluxogramaComponent implements OnInit {
       next: (response) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Guardado',
-          detail: 'Cambios guardados con éxito',
+          summary: 'Eliminada',
+          detail: 'Asignatura eliminada de la línea',
         });
         console.log("RESPUESTA BACK",response);
+        this.obtenerDetalleFluxograma()
       },
       error: (error: any) => {
         this.messageService.add({
@@ -229,6 +235,8 @@ export class DetalleFluxogramaComponent implements OnInit {
       console.log(
         `Asignatura ID ${this.selectedAsignaturaCodigo} agregada a la línea ID ${tituloLinea}`
       );
+
+      this.cargandoLinea = true;
 
       const asignatura: LineaActualizar[] = [{
         codigosAsignaturas: [this.selectedAsignaturaCodigo],

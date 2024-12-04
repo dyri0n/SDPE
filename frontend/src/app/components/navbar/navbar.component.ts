@@ -25,7 +25,7 @@ export class NavbarComponent {
   ){}
   
   public menuDesplegable: MenuItem[] = [
-    { label: 'Perfil', icon: 'pi pi-user', command: () => { this.perfil(); } },
+    // { label: 'Perfil', icon: 'pi pi-user', command: () => { this.perfil(); } },
     { label: 'Cerrar sesión', icon: 'pi pi-sign-out', command: () => { this.logout(); } }
   ];
 
@@ -135,14 +135,14 @@ export class NavbarComponent {
       routerLink: '/asignaturas',
     },
     {
-      label: 'Prácticas',
-      data: 'Prácticas',
-      routerLink: '/practicas', 
-    },
-    {
       label: 'Convenios',
       data: 'Convenios',
       routerLink: '/convenios', 
+    },
+    {
+      label: 'Tendencias de Corte Práctico',
+      data: 'END',
+      routerLink: '/ver-tendencias',
     },
     {
       label: 'Avance individual',
@@ -153,11 +153,6 @@ export class NavbarComponent {
       label: 'END',
       data: 'END',
       routerLink: '/end',
-    },
-    {
-      label: 'Tendencias de Corte Práctico',
-      data: 'END',
-      routerLink: '/ver-tendencias',
     },
   ];
 

@@ -223,4 +223,9 @@ export class ListarEstudianteComponent {
     componentMenu.show(evento);
     this.estudiante_seleccionado_cm = estudianteSeleccionado;
   }
+
+  public volver(){
+    this.router.navigate(['menu'])
+  }
+
 }

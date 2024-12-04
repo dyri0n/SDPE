@@ -99,11 +99,31 @@ export class ConvenioComponent implements OnInit{
   }
 
   public descargarArchivo() {
-    const link = document.createElement('a'); 
-    link.href = this.documento; // Asigna la ruta del archivo
-    link.target = '_blank'; // Asegura que no se cambie de página
-    link.download = `ResultadosEND${this.formularioConvenio.get('inicio')?.value}`; // Nombre del archivo descargado
-    link.click(); // Simula el clic para iniciar la descarga
+     // Abrir el archivo en una nueva pestaña
+  const nuevaVentana = window.open(this.documento, '_blank');
+  if (!nuevaVentana) {
+    console.error('El navegador bloqueó la apertura de la nueva pestaña.');
+  }
+
+  // Descargar el archivo
+  fetch(this.documento)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('No se pudo descargar el archivo.');
+      }
+      return response.blob(); // Convierte la respuesta en un blob
+    })
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob); // Crea una URL temporal para el blob
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `DocumentoConvenio${this.formularioConvenio.get('nombre')?.value.replace(/\s+/g, "")}.pdf`; // Nombre del archivo descargado
+      link.click(); // Simula el clic para descargar
+      window.URL.revokeObjectURL(url); // Libera la URL temporal
+    })
+    .catch(error => {
+      console.error('Error al descargar el archivo:', error);
+    });
   }
 
 
