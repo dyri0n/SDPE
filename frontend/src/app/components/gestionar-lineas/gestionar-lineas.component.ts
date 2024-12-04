@@ -243,13 +243,24 @@ export class GestionarLineasComponent implements OnInit {
   public soltar(event: CdkDragDrop<any[]>, linea?: Linea): void {
     if (linea) {
       const asignatura = event.previousContainer.data[event.previousIndex];
+  
       if (event.previousContainer === event.container) {
         moveItemInArray(linea.asignaturas, event.previousIndex, event.currentIndex);
       } else {
-        // saca la asignatura del listado general y la agrega a la linea
-        const index = this.asignaturas.findIndex(a => a.idAsignatura === asignatura.idAsignatura);
-        if (index !== -1) {
-          this.asignaturas.splice(index, 1);
+        if (event.previousContainer.id === 'listadoGeneral') {
+          const index = this.asignaturas.findIndex(a => a.idAsignatura === asignatura.idAsignatura);
+          if (index !== -1) {
+            this.asignaturas.splice(index, 1); // eliminar del listado 
+          }
+        } else {
+          // desde una linea a otra
+          const lineaOrigen = this.lineas.find(l => l.asignaturas.includes(asignatura));
+          if (lineaOrigen) {
+            const index = lineaOrigen.asignaturas.findIndex(a => a.idAsignatura === asignatura.idAsignatura);
+            if (index !== -1) {
+              lineaOrigen.asignaturas.splice(index, 1); // eliminar de la linea original
+            }
+          }
         }
         linea.asignaturas.push(asignatura);
       }

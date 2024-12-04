@@ -16,7 +16,15 @@ export interface AsignaturaFluxograma {
     linkSyllabus: string;
     idPlan: number;
     idLinea: number;
+    LineaContemplaAsignatura: LineaContemplaAsignaturaDTO
   }
+
+export interface LineaContemplaAsignaturaDTO{
+    idLinea: number;
+    titulo: string;
+    color: string;
+    idPlan: number;
+}
 
 export interface PlanDetalleDTO {
     titulo: string;

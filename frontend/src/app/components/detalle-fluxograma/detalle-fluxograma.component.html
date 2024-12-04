@@ -23,25 +23,43 @@
       <div *ngFor="let semestre of semestres; let i = index" class="p-6 bg-gray-100 rounded-lg shadow-md w-[400px]">
         <div class="mb-6 p-4 bg-[#DC911A] text-white text-2xl font-bold rounded-lg">{{semestre}} Semestre</div>
         <div class="space-y-4">
-          @for (asignatura of detalleFluxograma; track asignatura; let j = $index){
-            <div *ngIf="asignatura.semestre == i + 1">
-              <div class="p-4 rounded-xl cursor-pointer transition-transform hover:scale-105 hover:shadow-lg"
-                [ngClass]="{
-                  'bg-sky-500 text-white': esCortePracticoNuevo(asignatura.caracter),
-                  'bg-green-500 text-white': esTributada(asignatura.idAsignatura),
-                  'bg-red-500 text-white': esPrevia(asignatura.idAsignatura) && !esTributada(asignatura.idAsignatura),
-                  'bg-gray-300 text-gray-800': !esPrevia(asignatura.idAsignatura) && !esTributada(asignatura.idAsignatura)
-                }"
-                (click)="detalleAsignatura(asignatura.idAsignatura, asignatura.codigo)"
-                (mouseenter)="resaltarAsignaturas(asignatura.prerrequisitos, asignatura.tributaciones)"
-                (mouseleave)="quitarResaltado()"
-                (contextmenu)="abrirContextMenu($event, contextMenu, asignatura.codigo)">
-                <div class="text-sm font-semibold mb-1">{{asignatura.codigo}}</div>
-                <div class="text-lg font-bold">{{asignatura.nombre}}</div>
-              </div>
+          <ng-container *ngFor="let asignatura of detalleFluxograma; let j = index">
+            <div *ngIf="asignatura.semestre === i + 1">
+              <ng-container *ngIf="!asignatura.LineaContemplaAsignatura; else conLinea">
+                <div class="p-4 rounded-xl cursor-pointer transition-transform hover:scale-105 hover:shadow-lg"
+                  [ngClass]="{
+                    'bg-green-500 text-white': esTributada(asignatura.idAsignatura),
+                    'bg-red-500 text-white': esPrevia(asignatura.idAsignatura) && !esTributada(asignatura.idAsignatura),
+                    'bg-gray-300 text-gray-800': !esPrevia(asignatura.idAsignatura) && !esTributada(asignatura.idAsignatura)
+                  }"
+                  (click)="detalleAsignatura(asignatura.idAsignatura, asignatura.codigo)"
+                  (mouseenter)="resaltarAsignaturas(asignatura.prerrequisitos, asignatura.tributaciones)"
+                  (mouseleave)="quitarResaltado()"
+                  (contextmenu)="abrirContextMenu($event, contextMenu, asignatura.codigo)">
+                  <div class="text-sm font-semibold mb-1">{{asignatura.codigo}}</div>
+                  <div class="text-lg font-bold">{{asignatura.nombre}}</div>
+                </div>
+              </ng-container>
+
+              <ng-template #conLinea>
+                <div class="p-4 rounded-xl cursor-pointer transition-transform hover:scale-105 hover:shadow-lg"
+                  [ngStyle]="{ 'background-color': asignatura.LineaContemplaAsignatura.color || '#CCCCCC' }"
+                  [ngClass]="{
+                    'bg-green-500 text-white': esTributada(asignatura.idAsignatura),
+                    'bg-red-500 text-white': esPrevia(asignatura.idAsignatura) && !esTributada(asignatura.idAsignatura),
+                  }"
+                  (click)="detalleAsignatura(asignatura.idAsignatura, asignatura.codigo)"
+                  (mouseenter)="resaltarAsignaturas(asignatura.prerrequisitos, asignatura.tributaciones)"
+                  (mouseleave)="quitarResaltado()"
+                  (contextmenu)="abrirContextMenu($event, contextMenu, asignatura.codigo)">
+                  <div class="text-sm font-semibold mb-1">{{asignatura.codigo}}</div>
+                  <div class="text-lg font-bold">{{asignatura.nombre}}</div>
+                </div>
+              </ng-template>
+
               <p-contextMenu #contextMenu [model]="lineaMenu" (onHide)="cerrarContextMenu()" [styleClass]="'w-[300px] bg-white shadow-lg border border-gray-300 rounded-md p-2'"></p-contextMenu>
             </div>
-          }
+          </ng-container>
         </div>
       </div>
     </div>
