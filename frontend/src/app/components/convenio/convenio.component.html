@@ -66,7 +66,6 @@
                     stroke="none">
                     <path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5zm0 2h10v14H5V5zm12 0v14h1a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1zm-4 7H6v2h7v-2zm0-4H6v2h7V8z"/>
                 </svg>
-                <!-- Mensaje de texto -->
                 <p class="text-2xl font-bold text-sky-700">
                     Aún no se han registrado prácticas
                 </p>
@@ -112,12 +111,14 @@
             </a>
         </div>
     </div>
-
-     <div class="w-11/12 flex justify-end my-10">
-        <button (click)="verPracticas()" class="bg-amber-500 text-white py-3 px-10 rounded-lg shadow-lg text-xl font-semibold hover:bg-amber-600 transform transition hover:scale-105">
-            Ver prácticas realizadas
-        </button>
-    </div>
+    @if(detalleConvenioTest.nroPracticasRealizadas === 0){
+    }@else{
+        <div class="w-11/12 flex justify-end my-10">
+            <button (click)="verPracticas()" class="bg-amber-500 text-white py-3 px-10 rounded-lg shadow-lg text-xl font-semibold hover:bg-amber-600 transform transition hover:scale-105">
+                Ver prácticas realizadas
+            </button>
+        </div>
+    }
 
     <p-dialog  
         [(visible)]="visible" 
