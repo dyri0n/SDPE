@@ -50,6 +50,8 @@ export class AvanceEstudianteComponent {
   // id del estudiante obtenido de la ruta
   idEstudiante: number = 0;
 
+  cargando: boolean = true
+
   constructor(
     private readonly alumnoService: AlumnoService,
     private route: ActivatedRoute,
@@ -66,6 +68,7 @@ export class AvanceEstudianteComponent {
         (avance) => {
           this.avanceEstudiante = avance;
           this.establecerGrafico();
+          this.cargando = false
         },
         (error) => {
           console.error('Error al obtener los datos del estudiante', error);

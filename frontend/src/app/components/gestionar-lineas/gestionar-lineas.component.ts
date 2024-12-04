@@ -64,21 +64,19 @@ export class GestionarLineasComponent implements OnInit {
 
   
   public eliminarLinea(idLinea: number) {
-    // Verificar si la línea tiene id
+    // verificar si la líiea tiene id
     const linea = this.lineas.find(l => l.id === idLinea);
   
     if (linea) {
-      if (!linea.id) { // Si la línea no tiene id (es nueva)
-        // Eliminar solo del arreglo local
-        this.lineas = this.lineas.filter(l => l.id !== idLinea);
+      if (!linea.id) { // si la linea no tiene id (es nueva)
+        // eliminar solo del arreglo local
         Swal.fire(
           '¡Eliminado!',
           'La línea ha sido eliminada.',
           'success'
         );
-        this.cargarDatos(); // Actualiza los datos después de la eliminación
       } else {
-        // Si tiene id, llamar al backend para eliminar
+        // si tiene id, llamar al backend para eliminar
         this.servicioAsignatura.eliminarLinea(this.idPlan, idLinea).subscribe({
           next: respuesta => {
             if (respuesta) {
@@ -88,7 +86,7 @@ export class GestionarLineasComponent implements OnInit {
                 'success'
               );
               this.cargando = true;
-              this.cargarDatos(); // Actualiza los datos después de la eliminación
+              this.cargarDatos(); // actualiza los datos después de la eliminacion
             }
           },
           error: error => {
@@ -172,8 +170,8 @@ export class GestionarLineasComponent implements OnInit {
           this.hayCambios = true
         } else {
           this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
+            severity: 'warn',
+            summary: 'Precaución',
             detail: `No se han detectado cambios en la línea`,
           });
         }
@@ -191,6 +189,13 @@ export class GestionarLineasComponent implements OnInit {
       this.lineas.push(nuevaLinea);
       this.esconderModal();
       this.detectarCambios();
+      console.log(this.lineas)
+    } else {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Precaución',
+        detail: 'Ingrese correctamente los datos de la nueva línea',
+      });
     }
   }
 
@@ -347,17 +352,17 @@ export class GestionarLineasComponent implements OnInit {
         }] : []),
     ];
 
-    // Verificamos si alguna línea nueva (sin id) tiene 0 asignaturas
+    // verifica si alguna linea nueva (sin id) tiene 0 asignaturas
     const lineasNuevasConCeroAsignaturas = this.lineas.filter(linea => !linea.id && linea.asignaturas.length === 0);
 
     if (lineasNuevasConCeroAsignaturas.length > 0) {
-      // Si alguna línea nueva tiene 0 asignaturas, mostramos un mensaje de advertencia
+      // si alguna linea nueva tiene 0 asignaturas, aparece mensaje de advertencia
       this.messageService.add({
         severity: 'warn',
         summary: 'Precaución',
         detail: 'Agregue una asignatura a la nueva línea antes de confirmar',
       });
-      return; // Detenemos el proceso sin guardar los cambios
+      return; // no se guardan los cambios
     }
 
 

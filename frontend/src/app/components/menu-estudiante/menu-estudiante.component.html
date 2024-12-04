@@ -1,30 +1,42 @@
-<div class="bg-[#0073A6] min-h-screen p-8 text-white">
-  <button (click)="devolverAListarEstudiantes()" class="transition-transform hover:scale-105 mb-5 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
-    <p class="flex items-center">
-        <i class="pi pi-arrow-left text-xl me-2"></i> Volver a lista de estudiantes
-    </p>
-  </button>   
-  <div class="mb-6">
-    <div class="text-sm font-light">Nombre completo estudiante</div>
-    <div class="text-2xl font-bold">{{nombreEstudiante}}</div>
+<div class="w-full my-5 ps-10">
+  <button (click)="devolverAListarEstudiantes()" class="transition-transform hover:scale-105 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
+      <p class="flex items-center">
+          <i class="pi pi-arrow-left text-xl me-2"></i> Volver
+      </p>
+  </button>
+</div>
+
+<div class="bg-[#0073A6] p-8 text-white shadow-md">
+  <div class="text-sm font-light">Nombre completo del estudiante</div>
+  <div class="text-3xl font-bold">{{ nombreEstudiante }}</div>
+</div>
+
+<div class="container mx-auto bg-white my-8 rounded-lg shadow-md p-10 text-[#0073A6]">
+  <div class="text-2xl font-semibold mb-6">Menú</div>
+
+  <div
+    class="bg-white rounded-xl shadow-lg mb-6 cursor-pointer transition-transform hover:scale-105 hover:shadow-2xl"
+    (click)="irAPracticasEstudiante()"
+  >
+    <div class="bg-gradient-to-r from-yellow-500 to-yellow-400 h-2 rounded-t-xl"></div>
+    <div class="flex justify-center items-center h-24 bg-[#DFF4F9] hover:bg-[#E5F5FA]">
+      <span class="text-2xl font-semibold text-black flex items-center space-x-2">
+        <i class="pi pi-clipboard text-lg"></i>
+        <span>Prácticas</span>
+      </span>
+    </div>
   </div>
 
-  <div class="mt-6">
-    <div class="text-xl font-semibold mb-4">Menú</div>
-
-    <div class="bg-white rounded-xl shadow-lg mb-4 cursor-pointer" (click)="irAPracticasEstudiante()">
-      <div class="bg-[#DAA520] h-2 rounded-t-xl"></div>
-      <div class="flex justify-center items-center h-24 bg-[#DFF4F9]">
-        <span class="text-2xl font-semibold text-black">Prácticas</span>
-      </div>
-    </div>
-
-    <div class="bg-white rounded-xl shadow-lg cursor-pointer" (click)="irAAvanceCurricular()">
-      <div class="bg-[#DAA520] h-2 rounded-t-xl"></div>
-      <div class="flex justify-center items-center h-24 bg-[#DFF4F9]">
-        <span class="text-2xl font-semibold text-black">Avance curricular</span>
-      </div>
+  <div
+    class="bg-white rounded-xl shadow-lg mb-6 cursor-pointer transition-transform hover:scale-105 hover:shadow-2xl"
+    (click)="irAAvanceCurricular()"
+  >
+    <div class="bg-gradient-to-r from-yellow-500 to-yellow-400 h-2 rounded-t-xl"></div>
+    <div class="flex justify-center items-center h-24 bg-[#DFF4F9] hover:bg-[#E5F5FA]">
+      <span class="text-2xl font-semibold text-black flex items-center space-x-2">
+        <i class="pi pi-chart-line text-lg"></i>
+        <span>Avance Curricular</span>
+      </span>
     </div>
   </div>
 </div>
-  

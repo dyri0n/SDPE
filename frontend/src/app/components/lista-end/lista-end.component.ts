@@ -12,11 +12,12 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { CalendarModule } from 'primeng/calendar';
 import { EndService } from '../../services/end.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-lista-end',
   standalone: true,
-  imports: [CardModule, PaginatorModule, ReactiveFormsModule, ToastModule, DialogModule, InputTextModule, FileUploadModule, FloatLabelModule, CalendarModule],
+  imports: [CardModule, PaginatorModule, ReactiveFormsModule, ToastModule, DialogModule, InputTextModule, FileUploadModule, FloatLabelModule, CalendarModule, ProgressSpinnerModule],
   providers: [MessageService],
   templateUrl: './lista-end.component.html',
   styleUrl: './lista-end.component.css'
@@ -46,6 +47,7 @@ export class ListaEndComponent implements OnInit {
   public inicioMaximoAgnio: Date = new Date();
   public inicioMaximoCohorte: Date = new Date(this.inicioMaximoAgnio.getFullYear() - 4, this.inicioMaximoAgnio.getMonth(), this.inicioMaximoAgnio.getDate());
 
+  public cargando: boolean = true
 
   public formularioEND: FormGroup = new FormGroup({
     agnio: new FormControl('', [Validators.required]),
@@ -127,6 +129,7 @@ export class ListaEndComponent implements OnInit {
       this.resultadosFiltrados = respuesta
       this.totalRecords = this.resultadosFiltrados.length,
       this.actualizarResultadosPaginados() 
+      this.cargando = false
     })
   }
 

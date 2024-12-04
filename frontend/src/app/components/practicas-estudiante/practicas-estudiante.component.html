@@ -28,7 +28,7 @@
           [rows]="practicasPorPagina"
           [totalRecords]="obtenerCantidadTotalPracticas()"
           [pageLinkSize]="5"
-          [first]="paginaActual - 1 * practicasPorPagina"
+          [first]="(paginaActual - 1) * practicasPorPagina"
           (onPageChange)="onCambioDePagina($event)"
         >
         </p-paginator>
