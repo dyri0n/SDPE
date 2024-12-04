@@ -111,11 +111,12 @@ export class ListarEstudianteComponent {
     }
     const textoBusqueda = this.input_estudiante.toLowerCase();
     // Filtra estudiantes por nombre o rut
-    return estudiantes.filter(
+    const estudiante = estudiantes.filter(
       (est) =>
         est.nombreCompleto?.toLowerCase().includes(textoBusqueda) ||
         est.rut.toLowerCase().includes(textoBusqueda)
     );
+    return estudiante
   }
 
   /**
@@ -128,6 +129,8 @@ export class ListarEstudianteComponent {
       (cohorte) => cohorte.estudiantes
     );
     this.cohorteSeleccionado = null;
+    this.input_estudiante=''
+    this.obtenerEstudiantesPaginados()
   }
   /**
    * Funcion para redigirir a la vista donde se encuentra el menu del estudiante seleccionado a traves
@@ -160,13 +163,14 @@ export class ListarEstudianteComponent {
    * @returns {Estudiante []} Retorna una arreglo de estudiantes
    */
   public obtenerEstudiantesPaginados(): Estudiante[] {
+    const estudiantesFiltrados = this.buscarEstudiante(this.estudiantesFiltrados);
     const indiceInicial = (this.paginaActual - 1) * this.estudiantesPorPagina;
     const indiceFinal = indiceInicial + this.estudiantesPorPagina;
-    const estudiantesPaginados = this.estudiantesFiltrados.slice(
+    const estudiantesPaginados = estudiantesFiltrados.slice(
       indiceInicial,
       indiceFinal
     );
-    return this.buscarEstudiante(estudiantesPaginados);
+    return estudiantesPaginados
   }
 
   /**
@@ -175,7 +179,7 @@ export class ListarEstudianteComponent {
    * @returns {number} retorna la cantidad de estudiantes que hay para mostrar
    */
   public obtenerCantidadTotalEstudiantes(): number {
-    return this.estudiantesFiltrados.length;
+    return this.buscarEstudiante(this.estudiantesFiltrados).length
   }
 
   /**
