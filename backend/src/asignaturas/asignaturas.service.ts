@@ -426,12 +426,30 @@ export class AsignaturasService {
   > {
     const idsAsignaturasCortePractico = await this.prisma.asignatura.findMany({
       where: {
-        caracter: 'PRACTICA',
-      }, //TODO: CAMBIAR LUEGO EL PLAN
+        OR: [
+          {
+            caracter: 'PRACTICA',
+          },
+          {
+            LineaContemplaAsignatura: {
+              titulo: 'Corte Práctico',
+            },
+          },
+        ],
+      },
       select: {
         codigo: true,
-        idPlan: false,
+        idPlan: true,
+        posicion: true,
       },
+      orderBy: [
+        {
+          idPlan: 'asc',
+        },
+        {
+          posicion: 'asc',
+        },
+      ],
     }); //BUSCA ASIGNATURAS DE CORTE PRACTICO
 
     console.log(idsAsignaturasCortePractico);
