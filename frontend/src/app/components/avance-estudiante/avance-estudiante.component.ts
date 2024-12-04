@@ -65,7 +65,6 @@ export class AvanceEstudianteComponent {
       .subscribe(
         (avance) => {
           this.avanceEstudiante = avance;
-
           this.establecerGrafico();
         },
         (error) => {
@@ -93,7 +92,7 @@ export class AvanceEstudianteComponent {
 
     let semestres_individual: String[] =
       this.avanceEstudiante.avanceIndividual.map(
-        (sem) => `Semestre ${sem.numSemestre + 1}`
+        (sem) => `Semestre ${sem.numSemestre}`
       );
     let promedios_individual: String[] =
       this.avanceEstudiante.avanceIndividual.map((sem) =>
