@@ -66,8 +66,6 @@ async function main() {
 
   const asignaturasQueries = [];
   for (const plan of planesInsertados) {
-    console.log(`PLAN: ${plan.titulo}`);
-
     for (const asignatura of constants.ASIGNATURAS) {
       asignatura.idPlan = plan.idPlan;
 

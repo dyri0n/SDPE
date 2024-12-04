@@ -738,7 +738,7 @@ export const ASIGNATURAS: Asignatura[] = [
     creditos: 4,
     tributaciones: [31],
     prerrequisitos: [19], // Prerrequisito: Psicolingüística (DE128)
-    posicion: 19,
+    posicion: 25,
     semestre: 5,
     competencias: [
       'Diagnosticar y tratar patologías del lenguaje en contextos educativos',
@@ -761,7 +761,7 @@ export const ASIGNATURAS: Asignatura[] = [
     creditos: 4,
     tributaciones: [35],
     prerrequisitos: [11], // Prerrequisito: Política y marco jurídico (ED897)
-    posicion: 11,
+    posicion: 26,
     semestre: 5,
     competencias: [
       'Identificar y abordar trastornos del aprendizaje en contextos educativos',
@@ -784,7 +784,7 @@ export const ASIGNATURAS: Asignatura[] = [
     creditos: 5,
     tributaciones: [32],
     prerrequisitos: [20], // Prerrequisito: Planificación y sus fundamentos (ED568)
-    posicion: 20,
+    posicion: 27,
     semestre: 5,
     competencias: [
       'Diseñar y aplicar instrumentos de evaluación educativa',
@@ -807,7 +807,7 @@ export const ASIGNATURAS: Asignatura[] = [
     creditos: 4,
     tributaciones: [31, 34],
     prerrequisitos: [19], // Prerrequisito: Psicolingüística (DE128)
-    posicion: 19,
+    posicion: 28,
     semestre: 5,
     competencias: [
       'Analizar y abordar dificultades en el razonamiento matemático',
@@ -830,7 +830,7 @@ export const ASIGNATURAS: Asignatura[] = [
     creditos: 4,
     tributaciones: [36, 42, 46],
     prerrequisitos: [21], // Prerrequisito: Orientación, mediación y jefatura de curso (ED693)
-    posicion: 21,
+    posicion: 29,
     semestre: 5,
     competencias: [
       'Aplicar técnicas de orientación vocacional en contextos educativos diversos',
@@ -853,7 +853,7 @@ export const ASIGNATURAS: Asignatura[] = [
     creditos: 10,
     tributaciones: [39, 49],
     prerrequisitos: [24], // Prerrequisito: Práctica I (ED906)
-    posicion: 24,
+    posicion: 30,
     semestre: 5,
     competencias: [
       'Implementar proyectos educativos autónomamente bajo supervisión docente',
