@@ -1,18 +1,18 @@
 <div class="w-full my-5 ms-10">
     <button (click)="volverAlMenu()" class="transition-transform hover:scale-105 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
         <p class="flex items-center">
-            <i class="pi pi-arrow-left text-xl me-2"></i> Volver al Menú
+            <i class="pi pi-arrow-left text-xl me-2"></i> Volver
         </p>
     </button>
 </div>
 
-<div class="bg-white border-y py-5 shadow-lg">
+<div class="bg-white border-y py-3 shadow-lg">
     <div class="flex items-center justify-between w-11/12">
         <div class="bg-sky-700 w-auto px-10 rounded-r-xl py-4">
             <h1 class="text-4xl text-white text-center font-bold">Resultados de Evaluación Nacional Diagnóstica</h1>
         </div>
         <button class="rounded-full px-4 transform transition hover:scale-105 py-2 bg-sky-700 hover:bg-sky-800" (click)="alternarModal()">
-            <span class="text-white font-semibold">Agregar resultados END</span>
+            <span class="text-white font-semibold">Agregar Resultados END</span>
         </button>  
     </div>
 </div>
@@ -20,7 +20,10 @@
 <div class="mx-10 mt-14 bg-white p-10 shadow-lg rounded-md">
 
     <div class="w-full mb-10 flex justify-between items-center">
-        <input type="text" class="px-4 py-2 w-8/12 h-fit rounded-xl font-normal font-bold border border-sky-500 focus:outline-none focus:ring focus:ring-sky-500 hover:ring-sky-500" placeholder="Buscar resultados" (input)="filtrarResultados($event)">
+        <span class="p-input-icon-left w-8/12">
+            <i class="pi pi-search text-sky-700"></i>
+            <input type="text" class="ps-10 px-4 py-2 w-full h-fit rounded-xl font-normal font-bold border border-sky-500 focus:outline-none focus:ring focus:ring-sky-500 hover:ring-sky-500" placeholder="Buscar resultados" (input)="filtrarResultados($event)">
+        </span>
         <div class="card flex justify-center w-4/12">
             <p-paginator 
                 (onPageChange)="onPageChange($event)" 
@@ -56,10 +59,10 @@
             <div class="bg-gray-100 border-2 border-sky-700 rounded-md shadow-lg">
                 <form [formGroup]="formularioEND" (ngSubmit)="agregarConvenio()">
                     <div class="bg-white mt-5 py-5 shadow-lg border-y">
-                        <h1 class="p-4 rounded-r-2xl w-6/12 bg-sky-700 text-white text-4xl font-bold">Registrar resultados END</h1>
+                        <h1 class="p-4 rounded-r-2xl w-6/12 bg-sky-700 text-white text-4xl font-bold">Registrar Resultados END</h1>
                     </div>
                     <div class="border bg-white rounded-lg py-4 my-5 mx-10 shadow-xl overflow-auto max-h-[60vh]">
-                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Detalles de los resultados END</h2>    
+                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Detalles de los Resultados END</h2>    
                         <div class="mx-10 mb-12 flex items-center"> 
                             <p-floatLabel class="w-6/12 me-5 pe-6">
                                 <p-calendar  
@@ -90,12 +93,12 @@
                             </p-floatLabel>
                         </div>
 
-                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Documento PDF de los resultados END</h2>
+                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Documento PDF de los Resultados END</h2>
                         <div class="mx-10 mb-12">
                             <p-fileUpload 
                                 name="demo[]" 
                                 [multiple]="false" 
-                                chooseLabel="Seleccionar archivo"
+                                chooseLabel="Seleccionar Archivo"
                                 chooseStyleClass="bg-sky-700 border-sky-700"
                                 removeStyleClass="bg-sky-700 border-sky-700"
                                 showUploadButton="false"

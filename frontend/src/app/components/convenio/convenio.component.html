@@ -7,12 +7,12 @@
     <div class="w-full my-5 ms-10">
         <button (click)="volverAlListado()" class="justify-center px-3 py-2 bg-gray-200 hover:bg-gray-300 hover:text-white text-gray-700 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400">
             <p class="flex items-center">
-                <i class="pi pi-arrow-left text-xl me-2"></i> Volver al Listado de Convenios
+                <i class="pi pi-arrow-left text-xl me-2"></i> Volver
             </p>
         </button>
     </div>
 
-    <div class="bg-white border-y shadow-lg py-5">
+    <div class="bg-white border-y shadow-lg py-3">
         <div class="bg-sky-700 w-10/12 rounded-r-2xl py-10">
             <div class="flex items-center mx-32">
                 <div class="w-4/12 h-64">
@@ -31,16 +31,16 @@
 
     <div class="bg-sky-700 py-4 px-28 mt-10 flex justify-between">
         <div class="w-3/12 flex">
-            <label class="px-4 me-10 py-2 w-44 text-center bg-amber-500 rounded-lg text-white text-lg font-semibold select-none">Año de inicio</label>
-            <label class="px-4 py-2 w-32 text-center bg-white rounded-lg text-lg font-semibold select-none">{{detalleConvenioTest.convenio.fechaInicioConvenio | date:'yyyy'}}</label>
+            <label class="px-4 me-10 py-2 w-44 text-center bg-amber-500 rounded-md text-white text-lg font-semibold select-none">Año de Inicio</label>
+            <label class="px-4 py-2 w-32 text-center bg-white rounded-md text-lg select-none">{{detalleConvenioTest.convenio.fechaInicioConvenio | date:'yyyy'}}</label>
         </div>
         <div class="w-7/12 flex">
-            <label class="px-4 me-10 py-2 w-44 text-center  bg-amber-500 rounded-lg text-white text-lg font-semibold select-none">Modalidad</label>
-            <label class="px-4 py-2 me-11 w-10/12 bg-white rounded-lg text-lg font-semibold select-none">{{detalleConvenioTest.convenio.Modalidad.nombreModalidad}}</label>
+            <label class="px-4 me-10 py-2 w-44 text-center  bg-amber-500 rounded-md text-white text-lg font-semibold select-none">Modalidad</label>
+            <label class="px-4 py-2 me-11 w-10/12 bg-white rounded-md text-lg select-none">{{detalleConvenioTest.convenio.Modalidad.nombreModalidad}}</label>
         </div>
         <div class="w-2/12 flex">
-            <button class="rounded-2xl px-4 transform transition hover:scale-105 py-2 bg-amber-500 hover:bg-amber-600" (click)="alternarModal()">
-                <span class="text-white font-semibold">Editar convenio</span>
+            <button class="rounded-3xl px-4 transform transition hover:scale-105 py-2 bg-amber-500 hover:bg-amber-600" (click)="alternarModal()">
+                <span class="text-white font-semibold">Editar Convenio</span>
             </button>  
         </div>
         
@@ -48,7 +48,7 @@
 
     <div class="bg-white border-y mt-20 py-4 shadow-lg">
         <div class="bg-sky-700 w-fit px-10 rounded-r-2xl py-4">
-            <h2 class="text-4xl text-white text-center font-bold select-none">Estadísticas de prácticas</h2>
+            <h2 class="text-4xl text-white text-center font-bold select-none">Estadísticas de Prácticas</h2>
         </div>
     </div>
 
@@ -79,17 +79,17 @@
             <div class="border-sky-700 border-4 rounded-lg ">
                 <div class="bg-sky-700 rounded-t-sm">
                     <div class="flex justify-between mx-20">
-                        <label class="w-2/12 flex justify-center items-center my-3 rounded-xl text-center text-3xl font-semibold text-white select-none">Prácticas realizadas</label>
-                        <label class="w-2/12 flex justify-center items-center my-3 rounded-xl text-center text-3xl font-semibold text-white select-none">Promedio en prácticas</label>
-                        <label class="w-2/12 flex justify-center items-center my-3 rounded-xl text-center text-3xl font-semibold text-white select-none">Porcentaje de aprobación</label>
-                        <label class="w-2/12 flex justify-center items-center my-3 rounded-xl text-center text-3xl font-semibold text-white select-none">Porcentaje de reprobación</label>
+                        <label class="w-2/12 flex justify-center items-center my-3 rounded-xl text-center text-3xl font-semibold text-white select-none">Prácticas Realizadas</label>
+                        <label class="w-2/12 flex justify-center items-center my-3 rounded-xl text-center text-3xl font-semibold text-white select-none">Promedio en Prácticas</label>
+                        <label class="w-2/12 flex justify-center items-center my-3 rounded-xl text-center text-3xl font-semibold text-white select-none">Porcentaje de Aprobación</label>
+                        <label class="w-2/12 flex justify-center items-center my-3 rounded-xl text-center text-3xl font-semibold text-white select-none">Porcentaje de Reprobación</label>
                     </div>
                 </div>
                 <div class="flex justify-between mx-20">
-                    <label class="w-1/6 flex justify-center items-center h-48 my-10 rounded-xl bg-amber-500 text-center text-6xl font-semibold text-white select-none">{{detalleConvenioTest.nroPracticasRealizadas}}</label>
-                    <label class="w-1/6 flex justify-center items-center my-10 rounded-xl bg-amber-500 text-center text-6xl font-semibold text-white select-none">{{detalleConvenioTest.promedioPracticas}}</label>
-                    <label class="w-1/6 flex justify-center items-center my-10 rounded-xl bg-amber-500 text-center text-6xl font-semibold text-white select-none">{{detalleConvenioTest.porcentajeAprobacion.toFixed(2)}}%</label>
-                    <label class="w-1/6 flex justify-center items-center my-10 rounded-xl bg-amber-500 text-center text-6xl font-semibold text-white select-none">{{detalleConvenioTest.porcentajeReprobacion.toFixed(2)}}%</label>
+                    <label class="w-1/6 flex justify-center items-center h-48 my-10 rounded-xl bg-amber-500 text-center text-5xl font-semibold text-white select-none">{{detalleConvenioTest.nroPracticasRealizadas}}</label>
+                    <label class="w-1/6 flex justify-center items-center my-10 rounded-xl bg-amber-500 text-center text-5xl font-semibold text-white select-none">{{detalleConvenioTest.promedioPracticas}}</label>
+                    <label class="w-1/6 flex justify-center items-center my-10 rounded-xl bg-amber-500 text-center text-5xl font-semibold text-white select-none">{{detalleConvenioTest.porcentajeAprobacion.toFixed(2)}}%</label>
+                    <label class="w-1/6 flex justify-center items-center my-10 rounded-xl bg-amber-500 text-center text-5xl font-semibold text-white select-none">{{detalleConvenioTest.porcentajeReprobacion.toFixed(2)}}%</label>
                 </div>
             </div>
         }
@@ -98,13 +98,13 @@
 
     <div class="bg-white border-y shadow-lg mt-20 py-4">
         <div class="bg-sky-700 w-fit px-10 rounded-r-2xl py-4 ">
-            <h2 class="text-4xl text-white text-center font-bold select-none">Documento del convenio</h2>
+            <h2 class="text-4xl text-white text-center font-bold select-none">Documento del Convenio</h2>
         </div>
     </div>
 
     <div class="w-10/12 border mx-auto mt-14 bg-white p-5 shadow-lg rounded-md">
         <div class="w-full bg-sky-700 p-4 rounded-md text-white font-bold flex justify-between">  
-            <label class="select-none">Descargar documento</label>
+            <label class="select-none">Descargar Documento</label>
             <a (click)="descargarArchivo()" class="cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -115,7 +115,7 @@
 
      <div class="w-11/12 flex justify-end my-10">
         <button (click)="verPracticas()" class="bg-amber-500 text-white py-3 px-10 rounded-lg shadow-lg text-xl font-semibold hover:bg-amber-600 transform transition hover:scale-105">
-            Ver prácticas realizadas
+            Ver Prácticas Realizadas
         </button>
     </div>
 
@@ -130,20 +130,20 @@
             <div class="bg-gray-100 border-2 border-sky-700 rounded-md shadow-lg">
                 <form [formGroup]="formularioConvenio" (ngSubmit)="editarConvenio()">
                     <div class="bg-white mt-5 py-5 shadow-lg border-y">
-                        <h1 class="p-4 rounded-r-2xl w-6/12 bg-sky-700 text-white text-4xl font-bold">Editar convenio</h1>
+                        <h1 class="p-4 rounded-r-2xl w-6/12 bg-sky-700 text-white text-4xl font-bold">Editar Convenio</h1>
                     </div>
                     <div class="border bg-white rounded-lg py-4 my-5 mx-10 shadow-xl overflow-auto max-h-[60vh]">
-                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Detalles del convenio</h2>
+                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Detalles del Convenio</h2>
                         <div class="mx-10 mb-12 flex justify-between">
                             <p-floatLabel class="w-full me-5">
                                 <input id="nombre" formControlName="nombre" type="text" class="bg-gray-100 focus:outline-none focus:border-sky-700 w-full px-3 py-2 border-2 shadow-lg rounded-2xl font-medium" pInputText/>
-                                <label for="Nombre del convenio">Nombre del convenio</label>
+                                <label for="Nombre del convenio">Nombre del Convenio</label>
                             </p-floatLabel>
                             
                             <p-floatLabel class="w-full ms-5">
                                 <input id="centro" formControlName="centro" type="text" class="bg-gray-100 focus:outline-none focus:border-sky-700 w-full px-3 py-2 border-2 shadow-lg rounded-2xl font-medium" pInputText/>
                                 <!--Verificar que el centro de practica no exista-->
-                                <label for="centro">Centro de practica</label>
+                                <label for="centro">Centro de Práctica</label>
                             </p-floatLabel>
                         </div>
                         
@@ -159,20 +159,20 @@
                                         optionLabel="nombreModalidad"
                                         optionValue="idModalidad"
                                         />
-                                    <label for="modalidad">Modalidad de practica</label>
+                                    <label for="modalidad">Modalidad de Práctica</label>
                                 </p-floatLabel>
                             }
                             @else{
                                 <p-floatLabel class="w-6/12 pe-5 me-5">
                                     <input id="modalidad" formControlName="nombreModalidad" type="text" class="bg-gray-100 focus:outline-none focus:border-sky-700 w-full px-3 py-2 border-2 shadow-lg rounded-2xl font-medium" pInputText/>
-                                    <label for="modalida">Modalidad de practica</label>
+                                    <label for="modalida">Modalidad de Práctica</label>
                                 </p-floatLabel>
 
                             }
                             <input type="checkbox" 
                                 class="h-6 w-6 !text-sky-700 !focus:ring-2 !focus:ring-sky-500 !rounded !border-gray-300 !checked:bg-sky-700 !checked:border-sky-700 !focus:outline-none !transition !duration-200" 
                                 (click)="alternarModalidad()">
-                            <h2 class="text-md p-2 font-semibold">Agregar nueva modalidad</h2>
+                            <h2 class="text-md p-2 font-semibold">Agregar Nueva Modalidad</h2>
                         </div>
                         <div class="mx-10 mb-12 flex items-center"> 
                             <p-floatLabel class="w-6/12 me-5 pe-6">
@@ -185,16 +185,16 @@
                                     [minDate]="inicioMinimo"
                                     [maxDate]="inicioMaximo"
                                     />
-                                <label for="inicio">Año de inicio</label>
+                                <label for="inicio">Año de Inicio</label>
                             </p-floatLabel>
                         </div>
 
-                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Imagen del convenio</h2>
+                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Imagen del Convenio</h2>
                         <div class="mx-10 mb-12">
                             <p-fileUpload 
                                 name="demo[]" 
                                 [multiple]="false" 
-                                chooseLabel="Seleccionar archivo"
+                                chooseLabel="Seleccionar Archivo"
                                 chooseStyleClass="bg-sky-700 border-sky-700"
                                 removeStyleClass="bg-sky-700 border-sky-700"
                                 showUploadButton="false"
@@ -205,12 +205,12 @@
                                 (onRemove)="borrarArchivo($event, 'imagen')">
                             </p-fileUpload>
                         </div>
-                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Términos, condiciones y acuerdos</h2>
+                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Documento del Convenio</h2>
                         <div class="mx-10 mb-12">
                             <p-fileUpload 
                                 name="demo[]" 
                                 [multiple]="false" 
-                                chooseLabel="Seleccionar archivo"
+                                chooseLabel="Seleccionar Archivo"
                                 chooseStyleClass="bg-sky-700 border-sky-700"
                                 removeStyleClass="bg-sky-700 border-sky-700"
                                 showUploadButton="false"

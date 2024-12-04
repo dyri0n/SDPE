@@ -1,7 +1,7 @@
 <div  class="w-full my-5 ps-10">
     <button (click)="volverFluxograma()" class="transition-transform hover:scale-105 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
         <p class="flex items-center">
-            <i class="pi pi-arrow-left text-xl me-2"></i> Volver al Fluxograma
+            <i class="pi pi-arrow-left text-xl me-2"></i> Volver
         </p>
     </button>
 </div>
@@ -21,9 +21,9 @@
     </div>
 
   } @else {
-    <div cdkDropListGroup class="flex bg-white space-x-32 w-11/12 mx-auto justify-center shadow-lg my-8 rounded-md relative">
+    <div cdkDropListGroup class="flex bg-white space-x-32 w-11/12 mx-auto px-10 justify-center shadow-lg my-8 rounded-md relative">
         <!-- lista de asignaturas disponibles -->
-        <div class="w-3/12 p-5 bg-sky-600 rounded-md my-8 flex flex-col" style="height: calc(100vh - 100px);">
+        <div class="w-4/12 p-5 bg-sky-600 rounded-md my-8 flex flex-col" style="height: calc(100vh - 100px);">
             <h2 class="text-xl text-center bg-white rounded-md p-3 font-semibold mb-6 text-sky-700 border-2 border-gray-300">Asignaturas Disponibles</h2>
             <div class="w-full mb-3 flex justify-between items-center">
                 <input type="text" class="px-3 py-1 w-full h-fit rounded-xl font-normal font-bold border border-sky-500 focus:outline-none focus:ring focus:ring-sky-500" placeholder="Buscar asignatura" [(ngModel)]="searchTermAsignaturas">
@@ -38,7 +38,7 @@
         </div>
       
         <!-- lineas de asignaturas -->
-        <div class="w-3/6 p-5 bg-sky-600 rounded-md my-8 flex flex-col" style="height: calc(100vh - 100px);">
+        <div class="w-4/6 p-5 bg-sky-600 rounded-md my-8 flex flex-col" style="height: calc(100vh - 100px);">
             <h2 class="text-xl text-center bg-white rounded-md p-3 font-semibold mb-6 text-sky-700 border-2 border-gray-300">Líneas de Asignaturas</h2>
       
             <div class="w-full mb-3 flex justify-start">

@@ -22,6 +22,7 @@ export interface PracticaEnConvenioDTO {
   fechaInicio: Date;
   fechaFin: Date;
   notaFinal: number;
+  idEstudiante: number;
 }
 
 export interface ListarPracticasPorConvenioDTO {

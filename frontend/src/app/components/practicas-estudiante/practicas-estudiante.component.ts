@@ -7,10 +7,11 @@ import { InfoPracticaDTO } from '../../models/practica';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
 import { PaginatorModule } from 'primeng/paginator';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 @Component({
   selector: 'app-practicas-estudiante',
   standalone: true,
-  imports: [CommonModule, AccordionModule, SkeletonModule, PaginatorModule],
+  imports: [CommonModule, AccordionModule, SkeletonModule, PaginatorModule, ProgressSpinnerModule],
   templateUrl: './practicas-estudiante.component.html',
   styleUrl: './practicas-estudiante.component.css',
 })
@@ -33,16 +34,18 @@ export class PracticasEstudianteComponent {
     private location: Location,
     private router: Router
   ) {
-    // Se obtienen los parametros de la ruta
-    this.obtenerParametrosDeLaRuta();
   }
 
   // Antes que se carge el componente
   ngOnInit() {
+    // Se obtienen los parametros de la ruta
+    this.obtenerParametrosDeLaRuta();
+    console.log(this.id_estudiante)
     this.alumnoService
       .getPracticasAlumno(this.id_estudiante.toString())
       .subscribe((request) => {
         this.practicas_estudiante = request;
+        console.log(this.practicas_estudiante)
       });
 
     setTimeout(() => {

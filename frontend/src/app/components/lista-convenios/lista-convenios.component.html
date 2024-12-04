@@ -1,18 +1,18 @@
 <div class="w-full my-5 ps-10">
     <button (click)="volverAlMenu()" class="transition-transform hover:scale-105 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
         <p class="flex items-center">
-            <i class="pi pi-arrow-left text-xl me-2"></i> Volver al Menú
+            <i class="pi pi-arrow-left text-xl me-2"></i> Volver
         </p>
     </button>
 </div>
 
-<div class="bg-white border-y py-5 shadow-lg">
+<div class="bg-white border-y py-3 shadow-lg">
     <div class="flex items-center justify-between w-11/12">
         <div class="bg-sky-700 w-3/12 rounded-r-2xl py-4">
             <h1 class="text-4xl text-white text-center font-bold">Convenios</h1>
         </div>
         <button class="rounded-full px-4 transform transition hover:scale-105 py-2 bg-sky-700 hover:bg-sky-800" (click)="alternarModal()">
-            <span class="text-white font-semibold">Agregar convenio</span>
+            <span class="text-white font-semibold">Agregar Convenio</span>
         </button>     
     </div>
 </div>
@@ -30,7 +30,7 @@
                 <i class="pi pi-search text-sky-700"></i>
                 <input 
                     type="text" 
-                    class="w-full ps-10 py-2 rounded-xl font-semibold text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white" 
+                    class="w-full ps-10 py-2 rounded-xl font-medium text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white" 
                     placeholder="Buscar convenio" 
                     (input)="filtrarConvenios($event)">
             </span>
@@ -68,14 +68,14 @@
                 </div>
 
                 <div class="w-2/12 flex flex-col justify-center items-center gap-4 p-4 border-l-2 border-sky-700">
-                    <button class="w-full flex items-center justify-center py-2 px-4 rounded-lg bg-amber-500 text-white font-medium shadow-md hover:bg-amber-600" (click)="verDetalle(convenio.idConvenio)">
+                    <button class="w-full flex items-center justify-center py-2 px-3 rounded-lg bg-amber-500 text-white font-medium shadow-md hover:bg-amber-600" (click)="verDetalle(convenio.idConvenio)">
                         <i class="pi pi-info-circle mr-2"></i>
-                        <span class="text-lg">Ver detalles</span>
+                        <span class="text-md">Ver detalles</span>
                     </button>
 
-                    <button class="w-full flex items-center justify-center py-2 px-4 rounded-lg bg-red-500 text-white font-medium shadow-md hover:bg-red-600" (click)="confirmarEliminacion(convenio.idConvenio)">
+                    <button class="w-full flex items-center justify-center py-2 px-3 rounded-lg bg-red-500 text-white font-medium shadow-md hover:bg-red-600" (click)="confirmarEliminacion(convenio.idConvenio)">
                         <i class="pi pi-times-circle mr-2"></i>                   
-                        <span class="text-lg">Eliminar</span>
+                        <span class="text-md">Eliminar</span>
                     </button>
                 </div>
             </div>
@@ -94,20 +94,20 @@
             <div class="bg-gray-100 border-2 border-sky-700 rounded-md shadow-lg">
                 <form [formGroup]="formularioConvenio" (ngSubmit)="agregarConvenio()">
                     <div class="bg-white mt-5 py-5 shadow-lg border-y">
-                        <h1 class="p-4 rounded-r-2xl w-6/12 bg-sky-700 text-white text-4xl font-bold">Registrar convenio</h1>
+                        <h1 class="p-4 rounded-r-2xl w-6/12 bg-sky-700 text-white text-4xl font-bold">Registrar Convenio</h1>
                     </div>
                     <div class="border bg-white rounded-lg py-4 my-5 mx-10 shadow-xl overflow-auto max-h-[60vh]">
-                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Detalles del convenio</h2>
+                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Detalles del Convenio</h2>
                         <div class="mx-10 mb-12 flex justify-between">
                             <p-floatLabel class="w-full me-5">
                                 <input id="nombre" formControlName="nombre" type="text" class="bg-gray-100 focus:outline-none focus:border-sky-700 w-full px-3 py-2 border-2 shadow-lg rounded-2xl font-medium" pInputText/>
-                                <label for="Nombre del convenio">Nombre del convenio</label>
+                                <label for="Nombre del convenio">Nombre del Convenio</label>
                             </p-floatLabel>
                             
                             <p-floatLabel class="w-full ms-5">
                                 <input id="centro" formControlName="centro" type="text" class="bg-gray-100 focus:outline-none focus:border-sky-700 w-full px-3 py-2 border-2 shadow-lg rounded-2xl font-medium" pInputText/>
                                 <!--Verificar que el centro de practica no exista-->
-                                <label for="centro">Centro de practica</label>
+                                <label for="centro">Centro de Práctica</label>
                             </p-floatLabel>
                         </div>
                         
@@ -123,13 +123,13 @@
                                         optionLabel="nombreModalidad"
                                         optionValue="idModalidad"
                                         />
-                                    <label for="modalidad">Modalidad de practica</label>
+                                    <label for="modalidad">Modalidad de Práctica</label>
                                 </p-floatLabel>
                             }
                             @else{
                                 <p-floatLabel class="w-6/12 pe-5 me-5">
                                     <input id="modalidad" formControlName="nombreModalidad" type="text" class="bg-gray-100 focus:outline-none focus:border-sky-700 w-full px-3 py-2 border-2 shadow-lg rounded-2xl font-medium" pInputText/>
-                                    <label for="modalida">Modalidad de practica</label>
+                                    <label for="modalida">Modalidad de Práctica</label>
                                 </p-floatLabel>
 
                             }
@@ -150,7 +150,7 @@
                                     [minDate]="inicioMinimo"
                                     [maxDate]="inicioMaximo"
                                     />
-                                <label for="inicio">Año de inicio</label>
+                                <label for="inicio">Año de Inicio</label>
                             </p-floatLabel>
                             <!--dejar default encendido el checkbos-->
                             <input type="checkbox" 
@@ -159,12 +159,12 @@
                             <h2 class="text-md p-2 font-semibold">Inicia este periodo</h2>
                         </div>
 
-                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Imagen del convenio</h2>
+                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Imagen del Convenio</h2>
                         <div class="mx-10 mb-12">
                             <p-fileUpload 
                                 name="demo[]" 
                                 [multiple]="false" 
-                                chooseLabel="Seleccionar archivo"
+                                chooseLabel="Seleccionar Archivo"
                                 chooseStyleClass="bg-sky-700 border-sky-700"
                                 removeStyleClass="bg-sky-700 border-sky-700"
                                 showUploadButton="false"
@@ -175,12 +175,12 @@
                                 (onRemove)="borrarArchivo($event, 'imagen')">
                             </p-fileUpload>
                         </div>
-                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Términos, condiciones y acuerdos</h2>
+                        <h2 class="mx-10 my-5 text-2xl p-2 font-bold">Documento del Convenio</h2>
                         <div class="mx-10 mb-12">
                             <p-fileUpload 
                                 name="demo[]" 
                                 [multiple]="false" 
-                                chooseLabel="Seleccionar archivo"
+                                chooseLabel="Seleccionar Archivo"
                                 chooseStyleClass="bg-sky-700 border-sky-700"
                                 removeStyleClass="bg-sky-700 border-sky-700"
                                 showUploadButton="false"
