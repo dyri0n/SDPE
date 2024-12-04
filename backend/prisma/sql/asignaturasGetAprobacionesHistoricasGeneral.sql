@@ -21,4 +21,5 @@ from "Asignatura" a
 join "Cursacion" c using ("idAsignatura")
 where a."codigo" = $1
 group by c."agnio"
+order by c."agnio"
 ;

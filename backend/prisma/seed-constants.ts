@@ -1422,14 +1422,15 @@ export const PLANES: Plan[] = [
   {
     idPlan: 1,
     codigo: 309,
-    titulo: '2019',
+    titulo: '2018 Ingreso Regular',
     agnio: 2019,
     fechaInstauracion: new Date('2019-10-20'),
   },
   {
     idPlan: 2,
     codigo: 325,
-    titulo: '2019v2',
+    titulo: '2019 Ingreso Prosecusión',
+    // TODO: VER PROGRAMA DEL PLAN COMO DATO API
     agnio: 2020,
     fechaInstauracion: new Date('2020-05-15'),
   },

@@ -14,20 +14,30 @@
 -- Modelo Nuevo
 
 select 
-     p."titulo", -- titulo plan
-     e."agnioIngreso", -- cohorte del estudiante
-     c."agnio", -- año rendicion asignatura
-     (
-          sum(
-               case when "notaFinal" >= 4.0
-               then 1 else 0 end
-          )::numeric
-          / nullif(count(1), 0) 
-          * 100
-     ) as aprobacion
+	p."codigo" as "codigoPlan",
+  p."titulo" as "tituloPlan",
+  e."agnioIngreso" as "cohorte",
+  c."agnio" as "agnioRendicion",
+	(
+			sum(
+						case when "notaFinal" >= 4.0
+						then 1 else 0 end
+			)::numeric
+			/ nullif(count(1), 0) 
+			* 100
+	) as "aprobacionAnual"
 from "Cursacion" c
 join "Asignatura" a using ("idPlan", "idAsignatura")
 join "Estudiante" e using ("idEstudiante")
 join "Plan" p using ("idPlan")
 where a."codigo" = $1
-group by c."agnio", e."agnioIngreso", p."titulo"
+group by 
+  p."codigo",
+  p."titulo",
+  e."agnioIngreso", 
+  c."agnio"
+order by 
+  p."codigo",
+  p."titulo",
+  e."agnioIngreso",
+  c."agnio"

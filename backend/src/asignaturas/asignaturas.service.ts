@@ -4,11 +4,11 @@ import { AREA, Asignatura, CARACTER, PracticaTomada } from '@prisma/client';
 import { CursosService } from '../cursos/cursos.service';
 import {
   AprobacionHistoricaGeneralDTO,
-  AprobacionHistoricaPorCohorteDTO,
+  AprobacionHistoricaPorCohorteDTO as AprobacionAnualPorCohorteDTO,
   AprobacionHistoricaPorPlanDTO as AprobacionHistoricaPorPlanDTO,
   DetalleAsignaturaDTO,
   PromedioHistoricoGeneralDTO,
-  PromedioHistoricoPorCohorteDTO,
+  PromedioHistoricoPorCohorteDTO as PromedioAnualPorCohorteDTO,
   PromedioHistoricoPorPlanDTO,
   AsignaturaListadaDTO,
 } from './dto';
@@ -223,9 +223,10 @@ export class AsignaturasService {
 
     return result.map((value) => {
       return {
-        codigoPlan: codigoPlan,
-        agnio: value.agnio,
-        promedio: value.promedio.toNumber(),
+        codigoPlan: value.codigoPlan,
+        tituloPlan: value.tituloPlan,
+        agnioRendicion: value.agnioRendicion,
+        promedioHistorico: value.promedioHistorico.toNumber(),
       };
     }) as PromedioHistoricoPorPlanDTO[];
   }
@@ -244,23 +245,24 @@ export class AsignaturasService {
    *       ...
    *     ]
    * @param codigoAsignatura Código de la asignatura
-   * @returns {PromedioHistoricoPorCohorteDTO[]}
+   * @returns {PromedioAnualPorCohorteDTO[]}
    */
   async getPromediosHistoricosPorCohorte(
     codigoAsignatura: string,
-  ): Promise<PromedioHistoricoPorCohorteDTO[]> {
+  ): Promise<PromedioAnualPorCohorteDTO[]> {
     const result = await this.prisma.$queryRawTyped(
       asignaturasGetPromediosHistoricosPorCohorte(codigoAsignatura),
     );
 
     return result.map((value) => {
       return {
-        agnio: value.agnio,
-        cohorte: value.agnioIngreso,
-        plan: value.titulo,
-        promedio: value.promedio.toNumber(),
+        codigoPlan: value.codigoPlan,
+        tituloPlan: value.tituloPlan,
+        agnioRendicion: value.agnioRendicion,
+        cohorte: value.cohorte,
+        promedioAnual: value.promedioAnual.toNumber(),
       };
-    }) as PromedioHistoricoPorCohorteDTO[];
+    }) as PromedioAnualPorCohorteDTO[];
   }
 
   /**
@@ -304,9 +306,10 @@ export class AsignaturasService {
 
     return result.map((value) => {
       return {
-        codigoPlan: codigoPlan,
-        agnio: value.agnio,
-        aprobacion: value.aprobacion.toNumber(),
+        codigoPlan: value.codigoPlan,
+        tituloPlan: value.tituloPlan,
+        agnioRendicion: value.agnioRendicion,
+        aprobacionHistorica: value.aprobacionHistorica.toNumber(),
       };
     }) as AprobacionHistoricaPorPlanDTO[];
   }
@@ -334,19 +337,20 @@ export class AsignaturasService {
    */
   async getAprobacionHistoricaPorCohorte(
     codigoAsignatura: string,
-  ): Promise<AprobacionHistoricaPorCohorteDTO[]> {
+  ): Promise<AprobacionAnualPorCohorteDTO[]> {
     const result = await this.prisma.$queryRawTyped(
       asignaturasGetAprobacionesHistoricasPorCohorte(codigoAsignatura),
     );
 
     return result.map((value) => {
       return {
-        agnio: value.agnio,
-        cohorte: value.agnioIngreso,
-        plan: value.titulo,
-        aprobacion: value.aprobacion.toNumber(),
+        codigoPlan: value.codigoPlan,
+        tituloPlan: value.tituloPlan,
+        cohorte: value.cohorte,
+        agnioRendicion: value.agnioRendicion,
+        aprobacionAnual: value.aprobacionAnual.toNumber(),
       };
-    }) as AprobacionHistoricaPorCohorteDTO[];
+    }) as AprobacionAnualPorCohorteDTO[];
   }
 
   /**

@@ -16,16 +16,26 @@
 -- MODELO NUEVO
 
 select 
-     c."agnio", -- año rendicion asignatura
-     p."titulo", -- titulo plan
-     e."agnioIngreso", -- cohorte del estudiante
-     round(
-          avg("notaFinal")::numeric, 
-          2
-     ) as promedio
+  p."codigo" as "codigoPlan",
+  p."titulo" as "tituloPlan",
+  e."agnioIngreso" as "cohorte",
+  c."agnio" as "agnioRendicion",
+  round(
+      avg("notaFinal")::numeric, 
+      2
+  ) as "promedioAnual"
 from "Cursacion" c
 join "Asignatura" a using ("idPlan", "idAsignatura")
 join "Estudiante" e using ("idEstudiante")
 join "Plan" p using ("idPlan")
 where a."codigo" = $1
-group by c."agnio", e."agnioIngreso", p."titulo"
+group by 
+  p."codigo",
+  p."titulo",
+  e."agnioIngreso", 
+  c."agnio"
+order by 
+  p."codigo",
+  p."titulo",
+  e."agnioIngreso",
+  c."agnio"

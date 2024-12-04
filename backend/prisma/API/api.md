@@ -10,6 +10,7 @@ Response: type `Planes`
 type Plan = {
   codigo: number;
   titulo: string;
+  programa: string; // referencia al programa regular/prosecución
   agnio: number;
   fechaInstauracion: Date;
 

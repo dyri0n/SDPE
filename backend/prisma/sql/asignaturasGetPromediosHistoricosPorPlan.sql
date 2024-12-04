@@ -9,10 +9,22 @@
 
 -- MODELO NUEVO
 
-SELECT c."agnio", round(cast(avg("notaFinal") as numeric),2) AS promedio
+SELECT 
+  p."codigo" as "codigoPlan",
+  p."titulo" as "tituloPlan",
+  c."agnio" as "agnioRendicion",
+  round(cast(avg("notaFinal") as numeric),2) AS "promedioHistorico"
 from "Cursacion" c
 join "Asignatura" a using ("idPlan","idAsignatura")
 join "Plan" p using ("idPlan")
 where a."codigo" = $1
   and p."codigo" = $2
-group by c."agnio";
+group by 
+  p."codigo",
+  p."titulo",
+  c."agnio"
+order by
+  p."codigo",
+  p."titulo",
+  c."agnio"
+;

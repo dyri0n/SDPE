@@ -135,7 +135,11 @@ async function main() {
 
           cursacionesQueries.push({
             idCursacion: cursacionId,
-            agnio: estudiante.agnioIngreso + Math.floor(cursacionId / 12),
+            agnio:
+              estudiante.agnioIngreso +
+              Math.floor(cursacionId / 12) +
+              intentoActual -
+              1,
             notaFinal: nota,
             grupo: Math.random() > 0.5 ? 'A' : 'B',
             numIntento: intentoActual,
