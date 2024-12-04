@@ -48,4 +48,4 @@ from (
   where con."idConvenio" = $1
   group by 
     con."idConvenio"
-)
+) as "vistaAprobacion"
