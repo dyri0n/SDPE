@@ -229,8 +229,12 @@ export class LineaAsignaturaService {
   }
 
   /**
-   * Permite actualizar las líneas de asignaturas del plan especificado
-   * Las asignaturas se
+   * Permite actualizar las líneas de asignaturas del plan especificado en lotes.
+   *
+   * Se debe especificar la línea a la cual agregar las asignaturas y luego los códigos
+   * en un arreglo.
+   *
+   * Se puede especificar tanto un nombre nuevo como un color para modificar la línea.
    * */
   async updateDatosLineaPorPlan(idPlan: number, data: ActualizarDatosLineaDTO) {
     const lineasExistentes: string[] = await this.prisma.lineaAsignatura
@@ -242,19 +246,20 @@ export class LineaAsignaturaService {
 
     const lineasDatosNuevos = data.lineasNuevas.map((l) => {
       return {
-        titulo: l.tituloLineaRelacionada,
+        titulo: l.tituloLineaRelacionada ?? '',
+        tituloNuevo: l.tituloNuevo,
         color: l.colorNuevo,
         idPlan,
-      } as LineaAsignatura;
+      };
     });
 
     const lineasNuevas = lineasDatosNuevos.filter((l) => {
-      if (!lineasExistentes.includes(l.titulo)) return l;
+      if (!lineasExistentes.includes(l.titulo) || l.tituloNuevo) return l;
     });
 
     const lineasNuevasInsertadas = await this.prisma.lineaAsignatura.createMany(
       {
-        data: lineasNuevas,
+        data: lineasNuevas.filter((l) => l.titulo),
       },
     );
 

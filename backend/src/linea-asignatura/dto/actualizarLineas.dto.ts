@@ -9,6 +9,7 @@ import {
   IsString,
   Length,
   Matches,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 
@@ -28,10 +29,12 @@ export class LineasActualizadas {
 
   @IsOptional()
   @IsString()
+  @ValidateIf((obj) => obj.tituloLineaRelacionada)
   tituloNuevo?: LineaAsignatura['titulo'];
 
   @IsOptional()
   @IsHexColor()
+  @ValidateIf((obj) => obj.tituloLineaRelacionada)
   colorNuevo?: LineaAsignatura['color'];
 
   @IsNotEmpty()

@@ -456,8 +456,6 @@ export class AsignaturasService {
       ],
     }); //BUSCA ASIGNATURAS DE CORTE PRACTICO
 
-    console.log(idsAsignaturasCortePractico);
-
     //AGREGA CADA UNO DE LOS DetalleAsignaturaDTO[] correspondientes a asignaturas de corte práctico
     const responseAsignaturas: Promise<DetalleAsignaturaDTO>[] = [];
 
