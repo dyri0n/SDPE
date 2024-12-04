@@ -29,7 +29,7 @@ select
 from "Cursacion" c
 join "Asignatura" a using ("idPlan", "idAsignatura")
 join "Estudiante" e using ("idEstudiante")
-join "Plan" p using ("idPlan")
+join "Plan" p on (c."idPlan" = p."idPlan")
 where a."codigo" = $1
 group by 
   p."codigo",

@@ -35,10 +35,23 @@ select
     array_agg(mod."nombreModalidad") as "modalidades"
 from "Cursacion" cur
 join "Estudiante" est using ("idEstudiante")
-join "Asignatura" asi using ("idAsignatura", "idPlan")
-join "Plan" pla using ("idPlan")
-join "PracticaTomada" pto using ("idPlan", "idAsignatura", "idEstudiante", "idCursacion")
-join "PTConvenio" ptc using ("idPlan", "idAsignatura", "idEstudiante", "idCursacion")
+join "Asignatura" asi on (
+    cur."idAsignatura" = asi."idAsignatura"
+and cur."idPlan" = asi."idPlan"
+)
+join "Plan" pla on (cur."idPlan" = pla."idPlan")
+join "PracticaTomada" pto on (
+    cur."idPlan" = pto."idPlan" 
+and cur."idAsignatura" = pto."idAsignatura" 
+and cur."idEstudiante" = pto."idEstudiante"
+and cur."idCursacion" = pto."idCursacion"
+)
+join "PTConvenio" ptc on (
+    pto."idPlan" = ptc."idPlan"
+and pto."idAsignatura" = ptc."idAsignatura"
+and pto."idEstudiante"= ptc."idEstudiante"
+and pto."idCursacion"= ptc."idCursacion"
+)
 join "Convenio" con using ("idConvenio")
 join "Modalidad" mod using ("idModalidad")
 where est."idEstudiante" = $1

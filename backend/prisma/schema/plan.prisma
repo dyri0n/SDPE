@@ -10,4 +10,5 @@ model Plan {
 
   AsignaturasDefinidas Asignatura[]      @relation(name: "es contemplada por")
   LineasDefinidas      LineaAsignatura[] @relation(name: "es definido por")
+  EstudiantesPorPlan   Estudiante[] @relation(name: "sigue el plan")
 }

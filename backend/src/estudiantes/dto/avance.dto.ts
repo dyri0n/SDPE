@@ -8,7 +8,7 @@ export interface InfoEstudianteDTO {
   nombreCompleto: string;
   rut: string;
   agnioIngreso: number;
-  plan: number;
+  plan: string;
   promedio: number;
 }
 export interface CursoEstudianteDTO {

@@ -119,8 +119,12 @@ const apellidos = [
 const años = Array.from({ length: 4 }, (_, index) => 2018 + index);
 
 // Función para generar estudiantes aleatorios con dos nombres y dos apellidos
-export function generarEstudiantes(cantidad): Estudiante[] {
+export function generarEstudiantes(
+  cantidad,
+  planes: Plan['idPlan'][],
+): Estudiante[] {
   const estudiantes = [];
+  const nroPlanes = planes.length;
 
   for (let i = 1; i <= cantidad; i++) {
     const nombre1 = nombres[Math.floor(Math.random() * nombres.length)];
@@ -147,6 +151,7 @@ export function generarEstudiantes(cantidad): Estudiante[] {
       nombreCompleto: nombreCompleto,
       nombreSocial: nombreCompleto,
       agnioIngreso: añoIngreso,
+      idPlan: planes[i % nroPlanes],
     } as Estudiante;
 
     estudiantes.push(estudiante);

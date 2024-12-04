@@ -2,11 +2,12 @@ SELECT distinct
     e."nombreCompleto",
     e."rut",
     e."agnioIngreso",
-    (select max("agnio") from "Plan" where "agnio" <= e."agnioIngreso") as "plan",
-    avg("notaFinal") over (partition by "rut") as promedio
+    p."titulo" as "plan",
+    avg("notaFinal") over (partition by e."rut") as promedio
 FROM "Estudiante" e
-         JOIN "Cursacion" c using ("idEstudiante")
-WHERE e."idEstudiante" = $1
+JOIN "Cursacion" c ON e."idEstudiante" = c."idEstudiante"
+JOIN "Plan" p ON e."idPlan" = p."idPlan"
+WHERE e."idEstudiante" = $1;
 
 --MIGRADO A NUEVO MODELO
 

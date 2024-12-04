@@ -19,15 +19,6 @@ import * as argon from 'argon2';
 const prisma = new PrismaClient();
 
 async function main() {
-  // ESTUDIANTES
-
-  const estudiantesInsertados: Estudiante[] =
-    await prisma.estudiante.createManyAndReturn({
-      data: constants.generarEstudiantes(400),
-    });
-
-  moreLog(estudiantesInsertados);
-
   // PLANES
 
   const planesInsertados: Plan[] = await prisma.plan.createManyAndReturn({
@@ -35,6 +26,18 @@ async function main() {
   });
 
   moreLog(planesInsertados);
+
+  // ESTUDIANTES
+
+  const estudiantesInsertados: Estudiante[] =
+    await prisma.estudiante.createManyAndReturn({
+      data: constants.generarEstudiantes(
+        400,
+        planesInsertados.map((p) => p.idPlan),
+      ),
+    });
+
+  moreLog(estudiantesInsertados);
 
   // LINEAS ASIGNATURAS
 
@@ -93,24 +96,21 @@ async function main() {
   const asignaturas = await prisma.asignatura.findMany();
   const estudiantes = await prisma.estudiante.findMany();
 
-  for (const [i, plan] of planes.entries()) {
-    // Calcular el rango para los estudiantes
-    const inicio = Math.floor((i / planes.length) * estudiantes.length);
-    const fin = Math.floor(((i + 1) / planes.length) * estudiantes.length);
-    const estudiantesPorPlan = estudiantes.slice(inicio, fin);
-
+  for (const plan of planes) {
     const asignaturasPorPlan = asignaturas.filter((asignatura) => {
       if (asignatura.idPlan == plan.idPlan) return asignatura;
     });
 
-    for (const estudiante of estudiantesPorPlan) {
+    for (const estudiante of estudiantesInsertados.filter(
+      (e) => e.idPlan == plan.idPlan,
+    )) {
       // Porcentaje de asignaturas del plan cursadas
-      // const nroAsignaturasCursadas: number = Math.floor(
-      //   Math.random() * asignaturasPorPlan.length,
-      // );
+      const nroAsignaturasCursadas: number = Math.floor(
+        Math.random() * asignaturasPorPlan.length,
+      );
 
       // Total de asignaturas de los planes cursadas
-      const nroAsignaturasCursadas: number = asignaturasPorPlan.length;
+      // const nroAsignaturasCursadas: number = asignaturasPorPlan.length;
 
       let cursacionId = 0;
       for (const asignaturaCursada of asignaturasPorPlan.slice(

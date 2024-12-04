@@ -16,25 +16,26 @@
 
 -- modelo nuevo
 
-select distinct
-    est."nombreCompleto",
-    asi."nombre" as "tituloPractica",
-    asi."caracter",
-    (
-        rank() over (order by asi."posicion")
-    )::numeric as "numeroPractica",
-    pto."fechaInicio",
-    pto."fechaTermino" as "fechaFin",
-    cur."notaFinal",
-    est."idEstudiante",
-    mod."idModalidad",
-    mod."nombreModalidad"
-from "Convenio" con
-join "Modalidad" mod using ("idModalidad")
-join "PTConvenio" ptc using ("idConvenio")
-join "PracticaTomada" pto using ("idPlan", "idAsignatura", "idEstudiante", "idCursacion")
-join "Cursacion" cur using ("idPlan", "idAsignatura", "idEstudiante", "idCursacion")
-join "Estudiante" est using ("idEstudiante")
-join "Asignatura" asi using ("idPlan", "idAsignatura")
-where con."idConvenio" = $1;
+SELECT DISTINCT
+  est."nombreCompleto",
+  asi."nombre" AS "tituloPractica",
+  asi."caracter",
+  (RANK() OVER (ORDER BY asi."posicion"))::numeric AS "numeroPractica",
+  pto."fechaInicio",
+  pto."fechaTermino" AS "fechaFin",
+  cur."notaFinal",
+  est."idEstudiante",
+  mod."idModalidad",
+  mod."nombreModalidad"
+FROM "Convenio" con
+JOIN "Modalidad" mod ON con."idModalidad" = mod."idModalidad"
+JOIN "PTConvenio" ptc ON con."idConvenio" = ptc."idConvenio"
+JOIN "PracticaTomada" pto ON ptc."idPlan" = pto."idPlan" AND ptc."idAsignatura" = pto."idAsignatura" AND ptc."idEstudiante" = pto."idEstudiante" AND ptc."idCursacion" = pto."idCursacion"
+JOIN "Cursacion" cur ON pto."idPlan" = cur."idPlan" AND pto."idAsignatura" = cur."idAsignatura" AND pto."idEstudiante" = cur."idEstudiante" AND pto."idCursacion" = cur."idCursacion"
+JOIN "Estudiante" est ON pto."idEstudiante" = est."idEstudiante"
+JOIN "Asignatura" asi ON cur."idPlan" = asi."idPlan" AND cur."idAsignatura" = asi."idAsignatura"
+WHERE con."idConvenio" = $1
+order by 
+  "fechaInicio", 
+  "nombreCompleto";
 

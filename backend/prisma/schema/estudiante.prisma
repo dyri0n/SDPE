@@ -6,6 +6,11 @@ model Estudiante {
   nombreSocial   String
   agnioIngreso   Int
 
+  // referencia a
+
+  idPlan Int
+  Plan   Plan @relation(name: "sigue el plan", fields: [idPlan], references: [idPlan])
+
   // es referenciado por
 
   Cursaciones  Cursacion[]   @relation(name: "curso las asignaturas")
