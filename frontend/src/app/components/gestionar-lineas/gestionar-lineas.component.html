@@ -1,4 +1,4 @@
-<div  class="w-full my-5 ms-10">
+<div  class="w-full my-5 ps-10">
     <button (click)="volverFluxograma()" class="transition-transform hover:scale-105 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
         <p class="flex items-center">
             <i class="pi pi-arrow-left text-xl me-2"></i> Volver al Fluxograma
@@ -28,7 +28,7 @@
             <div class="w-full mb-3 flex justify-between items-center">
                 <input type="text" class="px-3 py-1 w-full h-fit rounded-xl font-normal font-bold border border-sky-500 focus:outline-none focus:ring focus:ring-sky-500" placeholder="Buscar asignatura" [(ngModel)]="searchTermAsignaturas">
             </div>
-            <div cdkDropList [cdkDropListData]="asignaturasFiltradas" class="border border-gray-300 min-h-[60px] bg-white rounded-md p-3 space-y-3 overflow-y-auto" (cdkDropListDropped)="soltar($event)" cdkDropListSortingDisabled style="flex-grow: 1;">
+            <div id="listadoGeneral" cdkDropList [cdkDropListData]="asignaturasFiltradas" class="border border-gray-300 min-h-[60px] bg-white rounded-md p-3 space-y-3 overflow-y-auto" (cdkDropListDropped)="soltar($event)" cdkDropListSortingDisabled style="flex-grow: 1;">
                 @for (asignatura of asignaturasFiltradas; track asignatura; let i = $index) {
                     <div class="bg-white border border-gray-300 py-4 text-center text-base font-medium rounded cursor-pointer hover:bg-sky-200 hover:border-sky-200" cdkDrag>
                         {{ asignatura.nombre }}
@@ -63,7 +63,7 @@
                             <div class="flex space-x-4">
                                 <!-- Icono para editar -->
                                 <button 
-                                    class="text-orange-500 hover:text-orange-700 bg-white rounded-full p-2"
+                                    class="text-orange-500 hover:text-orange-700 border bg-white shadow-xl rounded-full p-2"
                                     (click)="mostrarModalParaEditar(linea)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -72,7 +72,7 @@
                                 </button>
                                 <!-- Icono para eliminar -->
                                 <button 
-                                    class="text-red-500 hover:text-red-700 bg-white rounded-full p-2"
+                                    class="text-red-500 hover:text-red-700 bg-white border shadow-xl rounded-full p-2"
                                     (click)="confirmarEliminacion(linea.id!)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="" viewBox="0 0 16 16">
                                         <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
