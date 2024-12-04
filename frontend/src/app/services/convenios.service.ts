@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActualizarConvenio, Convenio, Convenios, CreateConvenioDTO, DetalleConvenio} from '../models/convenios.dto';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment'
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Observable } from 'rxjs';
 export class ConveniosService {
   constructor(private http: HttpClient) { }
 
-  private apiUrl= 'http://localhost:3000/convenios';
+  private apiUrl= environment.apiUrl + 'convenios';
 
   public obtenerConvenios(): Observable<Convenios>{
     return this.http.get<Convenios>(this.apiUrl + "/")

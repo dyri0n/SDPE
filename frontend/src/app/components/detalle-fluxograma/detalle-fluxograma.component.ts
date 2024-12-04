@@ -126,7 +126,6 @@ export class DetalleFluxogramaComponent implements OnInit {
     this.servicioFluxograma.obtenerDetalleFluxograma(this.idFluxograma).subscribe((detalleFluxograma) => {
         let semestres = 0
         this.detalleFluxograma = detalleFluxograma
-        console.log(this.detalleFluxograma)
         //aqui recorremos las asignaturas buscando el semestre mas alto para guardarlo
         detalleFluxograma.forEach((asignatura) => {
           if (asignatura.semestre > semestres) {
@@ -151,7 +150,6 @@ export class DetalleFluxogramaComponent implements OnInit {
     // this.asignaturaService.obtenerLineasPlan(this.idFluxograma).subscribe((result: LineaPlan) => {
 
     this.asignaturaService.obtenerLineasPlan(this.idFluxograma).subscribe((result: LineaPlan) => {
-      console.log(result)
       const lineas = result.lineasAsignatura.map((linea: any) => ({
         label: "Línea de " + linea.titulo,
         icon: 'pi pi-plus',
@@ -166,7 +164,6 @@ export class DetalleFluxogramaComponent implements OnInit {
           styleClass: 'text-sm'
         },
       ];
-      console.log(this.lineaMenu);
     });
   }
   
@@ -185,7 +182,6 @@ export class DetalleFluxogramaComponent implements OnInit {
         lineasNuevas: asignatura
       }
 
-      console.log(asignaturaNueva)
 
       this.asignaturaService.agregarAsignaturaLinea(this.idFluxograma, asignaturaNueva).subscribe({
           next: (response: any) => {

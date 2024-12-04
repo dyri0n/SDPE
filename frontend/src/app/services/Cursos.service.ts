@@ -2,12 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { AprobacionCursoDTO, CursoDTO } from '../models/Curso.dto';
+import { environment } from '../../environments/environment'
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class CursosService {
-  private apiUrl = 'http://localhost:3000/asignaturas/aprobacion-curso'
+  private apiUrl = environment.apiUrl + 'asignaturas/aprobacion-curso'
 
   constructor(private http: HttpClient) {}
 

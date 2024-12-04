@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { FluxogramasComponent } from './components/fluxogramas/fluxogramas.component';
-import { SemestresComponent } from './components/semestres/semestres.component';
 import { AprobacionCursoComponent } from './components/aprobacion-curso/aprobacion-curso.component';
 import { DetalleFluxogramaComponent } from './components/detalle-fluxograma/detalle-fluxograma.component';
 import { EstadisticaDiagnosticoComponent } from './components/estadistica-diagnostico/estadistica-diagnostico.component';
@@ -70,11 +69,6 @@ export const routes: Routes = [
     data: {
       roles: [Roles.ADMINISTRADOR, Roles.JEFA_CARRERA, Roles.SECRETARIO],
     },
-  },
-  {
-    path: 'semestres',
-    component: SemestresComponent,
-    canActivate: [authGuard],
   },
   {
     path: 'aprobacion/:idFluxograma/:codigoAsignatura',

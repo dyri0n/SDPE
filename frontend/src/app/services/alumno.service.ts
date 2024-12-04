@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { Estudiante, EstudiantePracticas } from '../models/estudiante';
 import { DetallesPracticaDTO } from '../models/practica';
 import { CohorteEstudiantes } from '../models/listar-estudiantes';
+import { environment } from '../../environments/environment'
 
 @Injectable({
   providedIn: 'root',
@@ -20,10 +21,9 @@ export class AlumnoService {
    */
 
   // FIXME: crear una archivo .env para meter las urls
-  private api_url_avance = 'http://localhost:3000/estudiantes/';
-  private api_url_practicas = 'http://localhost:3000/practicas/estudiante/';
-  private api_url_listar_estudiantes =
-    'http://localhost:3000/estudiantes/cohorte';
+  private api_url_avance = environment.apiUrl + 'estudiantes/';
+  private api_url_practicas = environment.apiUrl + 'practicas/estudiante/';
+  private api_url_listar_estudiantes = environment.apiUrl + 'estudiantes/cohorte';
 
   constructor(private httpclient: HttpClient) {}
 

@@ -3,12 +3,13 @@ import { Observable } from 'rxjs';
 import { Fluxograma } from '../models/Fluxograma.model';
 import { HttpClient } from '@angular/common/http';
 import { AsignaturaFluxograma } from '../models/asignatura.dto';
+import { environment } from '../../environments/environment'
 
 @Injectable({
   providedIn: 'root',
 })
 export class FluxogramaService {
-  private apiUrl = 'http://localhost:3000/planes-de-estudio';
+  private apiUrl = environment.apiUrl + 'planes-de-estudio';
 
   constructor(private http: HttpClient) {}
 

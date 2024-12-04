@@ -3,14 +3,15 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AsignaturaDetalleDTO, ReporteAsignaturaDTO } from '../models/asignatura.dto';
 import { Linea, LineaPlan, Lineas, LineasAsignaturas, LineaCambios } from '../models/lineaAsignatura.dto';
+import { environment } from '../../environments/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class AsignaturaService {
 
-  private apiAsignaturas= 'http://localhost:3000/asignaturas'
-  private apiLinea= 'http://localhost:3000/lineas-asignaturas'
+  private apiAsignaturas=  environment.apiUrl + 'asignaturas'
+  private apiLinea= environment.apiUrl + 'lineas-asignaturas'
 
   constructor(private http: HttpClient) { }
 
@@ -169,7 +170,6 @@ export class AsignaturaService {
   }
 
   public guardarCambios(idPlan:number, lineas: LineaCambios){
-    console.log(lineas)
     return this.http.post<Linea>(`${this.apiLinea}/planes/${idPlan}/asignaturas`, lineas);
   }
 
@@ -182,7 +182,6 @@ export class AsignaturaService {
   }
 
   public eliminarLinea(idPlan: number, idLinea: number){
-    console.log('sisi')
     return this.http.delete(`${this.apiLinea}/planes/${idPlan}/lineas/${idLinea}`)
   }
 

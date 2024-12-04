@@ -4,13 +4,15 @@ import { LoginUsuario, RespuestaLogin } from '../models/login.dto';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { environment } from '../../environments/environment'
+
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
   constructor(private http: HttpClient, private router: Router) {}
 
-  private url = 'http://localhost:3000/auth';
+  private url = environment.apiUrl + 'auth';
 
   public iniciarSesion(usuario: LoginUsuario): Observable<RespuestaLogin> {
     console.log(usuario);

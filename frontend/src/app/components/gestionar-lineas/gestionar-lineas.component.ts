@@ -140,17 +140,12 @@ export class GestionarLineasComponent implements OnInit {
       // buscar la linea por ID y actualizar sus datos
       const index = this.lineas.findIndex(linea => linea.id === this.idLineaSeleccioanda);
       if (index !== -1) {
-        console.log(lineaEditada.color)
-        console.log(this.lineas[index].color)
-        console.log(lineaEditada.nombre)
-        console.log(this.lineas[index].nombre)
         if(lineaEditada.color != this.lineas[index].color || lineaEditada.nombre != this.lineas[index].nombre) {
           this.lineas[index] = {
             ...this.lineas[index], // mantener otros datos
             color: lineaEditada.color,
             tituloNuevo: lineaEditada.nombre, // nuevo campo
           };
-          console.log('linea actualizada:', this.lineas[index]);
           this.esconderModal();
           this.hayCambios = true
         } else {
@@ -174,7 +169,6 @@ export class GestionarLineasComponent implements OnInit {
       this.lineas.push(nuevaLinea);
       this.esconderModal();
       this.detectarCambios();
-      console.log(this.lineas)
     }
   }
 
@@ -191,7 +185,6 @@ export class GestionarLineasComponent implements OnInit {
   public cargarDatos(): void {
     this.servicioAsignatura.obtenerLineasPlan(this.idPlan).subscribe((lineas:LineaPlan) => {
       // guardar las lineas obtenidas
-      console.log(lineas)
       this.lineas = lineas.lineasAsignatura.map((linea:any) => ({
         id: linea.idLinea,
         nombre: linea.titulo,
@@ -233,8 +226,6 @@ export class GestionarLineasComponent implements OnInit {
         this.lineasBackup = JSON.parse(JSON.stringify(this.lineas));
         this.asignaturasBackup = JSON.parse(JSON.stringify(this.asignaturas));
     
-        console.log("Asignaturas SIN LINEA:", this.asignaturas);
-        console.log("Líneas con asignaturas:", this.lineas);
         this.cargando = false;
       });
     });
@@ -293,7 +284,6 @@ export class GestionarLineasComponent implements OnInit {
     });
     const lineasNuevasOEliminadas = this.lineas.length !== this.lineasBackup.length;
     this.hayCambios = !(asignaturasIguales && lineasIguales && !lineasNuevasOEliminadas);
-    console.log('Cambios detectados', this.hayCambios);
   }
 
   public cancelarCambios(): void {
@@ -308,7 +298,6 @@ export class GestionarLineasComponent implements OnInit {
     const asignaturas: LineaActualizar[] = [
       ...this.lineas.map(linea => {
         if (linea.id) {
-          console.log(linea)
           if (linea.tituloNuevo) { 
             return {
               codigosAsignaturas: linea.asignaturas.map(asignatura => asignatura.codigo!),
@@ -353,7 +342,6 @@ export class GestionarLineasComponent implements OnInit {
         summary: 'Guardado',
         detail: 'Cambios guardados con éxito',
       });
-      console.log("RESPUESTA BACK",response);
       this.cargarDatos();
     },
     error: (error: any) => {

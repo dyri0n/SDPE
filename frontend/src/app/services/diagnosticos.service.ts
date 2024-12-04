@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Asignatura } from '../models/asignaturas.dto';
 import { AsignaturaSola } from '../models/asignaturaSola.dto';
 import { AsignaturaDetalleDTO } from '../models/asignatura.dto';
+import { environment } from '../../environments/environment'
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ import { AsignaturaDetalleDTO } from '../models/asignatura.dto';
 export class DiagnosticosService {
   constructor(private http: HttpClient) {}
 
-  public apiUrl = 'http://localhost:3000/asignaturas'
+  public apiUrl = environment.apiUrl + 'asignaturas'
 
   //Esta funcion obtiene todos los fluxogramas guardados en la base de datos con el formato "Fluxograma"
   /*

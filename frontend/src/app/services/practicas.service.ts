@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { InfoPracticaDTO, ListarPracticasPorConvenioDTO } from '../models/practica';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment'
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ export class PracticasService {
   practicas: InfoPracticaDTO[] = [];
   constructor(private http: HttpClient) {}
 
-  private apiUrl = 'http://localhost:3000/practicas'
+  private apiUrl = environment.apiUrl + 'practicas'
 
   public obtenerPracticas(): InfoPracticaDTO[] {
     return this.practicas;
