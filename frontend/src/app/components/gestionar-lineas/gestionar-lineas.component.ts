@@ -42,7 +42,7 @@ export class GestionarLineasComponent implements OnInit {
 
   cargando: boolean = true;
 
-  mostrarModalParaEditar(linea: any) {
+  public mostrarModalParaEditar(linea: any) {
     this.editando = true;
     this.display = true;
     this.idLineaSeleccioanda = linea.id
@@ -54,7 +54,7 @@ export class GestionarLineasComponent implements OnInit {
     });
   }
 
-  mostrarModalParaAgregar() {
+  public mostrarModalParaAgregar() {
     this.editando = false;
     this.display = true;
 
@@ -63,28 +63,50 @@ export class GestionarLineasComponent implements OnInit {
   }
 
   
-  public eliminarLinea(idLinea: number){
-    //esta hecho para funcionar con el delete al backend, no pienso cambiarlo 🤬
-    this.servicioAsignatura.eliminarLinea(this.idPlan, idLinea).subscribe({
-      next: respuesta =>{
-        if(respuesta){
-          Swal.fire(
-            '¡Eliminado!',
-            'La línea ha sido eliminada.',
-            'success'
-          )
-          this.cargando = true
-          this.cargarDatos()
+  public eliminarLinea(idLinea: number) {
+    // Verificar si la línea tiene id
+    const linea = this.lineas.find(l => l.id === idLinea);
+  
+    if (linea) {
+      if (!linea.id) { // Si la línea no tiene id (es nueva)
+        // Eliminar solo del arreglo local
+        this.lineas = this.lineas.filter(l => l.id !== idLinea);
+        Swal.fire(
+          '¡Eliminado!',
+          'La línea ha sido eliminada.',
+          'success'
+        );
+        this.cargarDatos(); // Actualiza los datos después de la eliminación
+      } else {
+        // Si tiene id, llamar al backend para eliminar
+        this.servicioAsignatura.eliminarLinea(this.idPlan, idLinea).subscribe({
+          next: respuesta => {
+            if (respuesta) {
+              Swal.fire(
+                '¡Eliminado!',
+                'La línea ha sido eliminada.',
+                'success'
+              );
+              this.cargando = true;
+              this.cargarDatos(); // Actualiza los datos después de la eliminación
+            }
+          },
+          error: error => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: `Error al eliminar la línea: ${error.message}`,
+            });
           }
-      },
-      error: error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: `Error al guardar los cambios: ${error.message}`,
         });
       }
-    })
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Línea no encontrada.',
+      });
+    }
   }
 
   public confirmarEliminacion(idLinea: number){
@@ -293,8 +315,7 @@ export class GestionarLineasComponent implements OnInit {
     this.detectarCambios();
   }
 
-  public confirmarCambios(): void {
-
+  public confirmarCambios(): void {    
     const asignaturas: LineaActualizar[] = [
       ...this.lineas.map(linea => {
         if (linea.id) {
@@ -326,6 +347,20 @@ export class GestionarLineasComponent implements OnInit {
         }] : []),
     ];
 
+    // Verificamos si alguna línea nueva (sin id) tiene 0 asignaturas
+    const lineasNuevasConCeroAsignaturas = this.lineas.filter(linea => !linea.id && linea.asignaturas.length === 0);
+
+    if (lineasNuevasConCeroAsignaturas.length > 0) {
+      // Si alguna línea nueva tiene 0 asignaturas, mostramos un mensaje de advertencia
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Precaución',
+        detail: 'Agregue una asignatura a la nueva línea antes de confirmar',
+      });
+      return; // Detenemos el proceso sin guardar los cambios
+    }
+
+
     const lineaNueva: LineaCambios ={
       lineasNuevas: asignaturas
     }
@@ -348,7 +383,7 @@ export class GestionarLineasComponent implements OnInit {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: `Error al eliminar la línea: ${error.message}`,
+        detail: `Error al guardar los cambios: ${error.message}`,
       });
     },
   });

@@ -8,7 +8,8 @@ import { AsignaturaService } from '../../services/asignatura.service';
 import { MenuItem, MessageService } from 'primeng/api';
 import { ContextMenu, ContextMenuModule } from 'primeng/contextmenu';
 import { ToastModule } from 'primeng/toast';
-import { LineaActualizar, LineaPlan, Lineas } from '../../models/lineaAsignatura.dto';
+import { LineaActualizar, LineaCambios, LineaPlan, Lineas } from '../../models/lineaAsignatura.dto';
+import { style } from '@angular/animations';
 
 
 @Component({
@@ -43,7 +44,10 @@ export class DetalleFluxogramaComponent implements OnInit {
   private ultimoContextMenu!: ContextMenu |null;
   menuVisible = false;
   lineaMenu!: MenuItem[]; 
-  public selectedAsignaturaId!: string;
+  public selectedAsignaturaCodigo!: string;
+  
+  public lineasAsignatura: any[] = [];
+
 
   //variable para guardar el detalle de un fluxograma
   public detalleFluxograma: AsignaturaFluxograma[]=[]
@@ -146,35 +150,88 @@ export class DetalleFluxogramaComponent implements OnInit {
     this.router.navigateByUrl('/fluxogramas')
   }
 
+  // metodo para obtener las lineas de asignaturas desde el backend (una vez, luego modifica los botones para lineas)
   public obtenerLineas() {
-    // this.asignaturaService.obtenerLineasPlan(this.idFluxograma).subscribe((result: LineaPlan) => {
-
-    this.asignaturaService.obtenerLineasPlan(this.idFluxograma).subscribe((result: LineaPlan) => {
-      const lineas = result.lineasAsignatura.map((linea: any) => ({
-        label: "Línea de " + linea.titulo,
-        icon: 'pi pi-plus',
-        command: () => this.agregarALinea(linea.titulo)
-      }));
-  
-      this.lineaMenu = [
-        {
-          label: 'Agregar a línea de asignaturas',
-          icon: 'pi pi-list',
-          items: lineas,
-          styleClass: 'text-sm'
-        },
-      ];
-    });
+    if (this.lineasAsignatura.length === 0) {
+      this.asignaturaService.obtenerLineasPlan(this.idFluxograma).subscribe((result: LineaPlan) => {
+        console.log(result);
+        this.lineasAsignatura = result.lineasAsignatura;
+        this.actualizarMenuLineas();
+      });
+    } else {
+      this.actualizarMenuLineas(); // Si ya se cargaron las lineas, solo actualizar el menu
+    }
   }
-  
+
+  //metodo para actualizar el menu con los estados correctos
+  public actualizarMenuLineas() {
+    
+    const asignatura= this.detalleFluxograma.find(asignatura => asignatura.codigo === this.selectedAsignaturaCodigo);
+
+    this.lineaMenu = [
+      {
+        label: 'Agregar a línea de asignaturas',
+        icon: 'pi pi-list',
+        items: [
+          ...this.lineasAsignatura.map((linea: any) => ({
+            label: "Línea de " + linea.titulo,
+            icon: 'pi pi-plus',
+            command: () => this.agregarALinea(linea.titulo),
+            disabled: asignatura?.idLinea === linea.idLinea
+          })),
+          ...(asignatura?.idLinea ? [{
+            label: 'Eliminar de Línea',
+            icon: 'pi pi-minus',
+            command: () => this.eliminarDeLinea(asignatura?.codigo),
+          }] : [])
+        ],
+        styleClass: 'text-sm'
+      }
+    ];
+    console.log(this.lineaMenu);
+  }
+
+  public eliminarDeLinea(codigoAsignatura: string){
+    const linea: LineaActualizar[] = [{
+      codigosAsignaturas: [codigoAsignatura]
+    }];
+
+    const lineaNueva: LineaCambios ={
+      lineasNuevas: linea
+    }
+
+    this.asignaturaService.guardarCambios(this.idFluxograma,lineaNueva).subscribe({
+      next: (response) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Guardado',
+          detail: 'Cambios guardados con éxito',
+        });
+        console.log("RESPUESTA BACK",response);
+      },
+      error: (error: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: `Error al eliminar de la línea: ${error.message}`,
+        });
+      },
+    });    
+
+  }
+
+  public verificarAsignaturaEnLinea(idLinea: number): boolean {
+    return this.selectedAsignaturaCodigo ? this.detalleFluxograma.some(asignatura => asignatura.codigo === this.selectedAsignaturaCodigo && asignatura.idLinea === idLinea) : false;
+  }
+
   public agregarALinea(tituloLinea: string) {
-    if (this.selectedAsignaturaId) {
+    if (this.selectedAsignaturaCodigo) {
       console.log(
-        `Asignatura ID ${this.selectedAsignaturaId} agregada a la línea ID ${tituloLinea}`
+        `Asignatura ID ${this.selectedAsignaturaCodigo} agregada a la línea ID ${tituloLinea}`
       );
 
       const asignatura: LineaActualizar[] = [{
-        codigosAsignaturas: [this.selectedAsignaturaId],
+        codigosAsignaturas: [this.selectedAsignaturaCodigo],
         tituloLineaRelacionada: tituloLinea
       }];
   
@@ -191,6 +248,8 @@ export class DetalleFluxogramaComponent implements OnInit {
               detail: `Asignatura agregada correctamente`
             });
             console.log(':', response);
+            this.semestres = []
+            this.obtenerDetalleFluxograma()
           },
           error: (error: any) => {
             this.messageService.add({
@@ -202,29 +261,26 @@ export class DetalleFluxogramaComponent implements OnInit {
         });
     }
   }
-
-  
-
-  // Método para abrir el contextMenu
-public abrirContextMenu(event: MouseEvent, contextMenu: ContextMenu, codigo: string) {
-  if (this.ultimoContextMenu && this.ultimoContextMenu !== contextMenu) {
-    this.ultimoContextMenu.hide(); // Cierra el menu anterior si es diferente
+    // Método para abrir el contextMenu
+  public abrirContextMenu(event: MouseEvent, contextMenu: ContextMenu, codigo: string) {
+    if (this.ultimoContextMenu && this.ultimoContextMenu !== contextMenu) {
+      this.ultimoContextMenu.hide(); // Cierra el menu anterior si es diferente
+    }
+    this.selectedAsignaturaCodigo = codigo;
+    contextMenu.show(event);  // Mostrar el nuevo menú
+    this.ultimoContextMenu = contextMenu;  // Actualiza la referencia
+    this.actualizarMenuLineas();
   }
-  this.selectedAsignaturaId = codigo;
-  contextMenu.show(event);  // Mostrar el nuevo menú
-  this.ultimoContextMenu = contextMenu;  // Actualiza la referencia
-}
 
-// Método para cerrar el contextMenu
-public cerrarContextMenu() {
-  if (this.ultimoContextMenu && !this.menuVisible) {
-    this.menuVisible = true; // Marcar que estamos cerrando
-    this.ultimoContextMenu.hide(); // Solo ocultar si hay un menú visible
-    this.ultimoContextMenu = null;  // Resetea la referencia
-    this.menuVisible = false; // Resetear la bandera después de cerrar
+  // Método para cerrar el contextMenu
+  public cerrarContextMenu() {
+    if (this.ultimoContextMenu && !this.menuVisible) {
+      this.menuVisible = true; // Marcar que estamos cerrando
+      this.ultimoContextMenu.hide(); // Solo ocultar si hay un menú visible
+      this.ultimoContextMenu = null;  // Resetea la referencia
+      this.menuVisible = false; // Resetear la bandera después de cerrar
+    }
   }
-}
-
 
   public gestionarLinea(){
     this.router.navigateByUrl(`gestionar-lineas/${this.idFluxograma}`)
