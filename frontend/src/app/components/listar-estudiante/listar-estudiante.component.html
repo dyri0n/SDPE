@@ -107,7 +107,7 @@
       [rows]="estudiantesPorPagina"
       [totalRecords]="obtenerCantidadTotalEstudiantes()"
       [pageLinkSize]="5"
-      [first]="paginaActual - 1 * estudiantesPorPagina"
+      [first]="(paginaActual - 1) * estudiantesPorPagina"
       (onPageChange)="onCambioDePagina($event)"
     >
     </p-paginator>

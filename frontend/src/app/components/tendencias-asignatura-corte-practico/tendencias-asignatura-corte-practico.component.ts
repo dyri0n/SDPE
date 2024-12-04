@@ -36,29 +36,48 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
       setTimeout(() => {
         this.cargando = false
       }, 1000)
+      const planesUnicos = new Map()
+      this.asignaturasCortePractico.flatMap(asignatura => asignatura.promedios.cohortes).forEach(plan => {
+          if (!planesUnicos.has(plan.codigoPlan)) {
+            planesUnicos.set(plan.codigoPlan, plan)
+          }
+        })
+
+      const planes = Array.from(planesUnicos.values()).sort((a, b) => a.tituloPlan.localeCompare(b.tituloPlan))
+
+      this.planes = planes.map(plan => ({
+        label: plan.tituloPlan,
+        value: plan.codigoPlan
+      }))
+      this.planesSeleccionados= [...this.planes]
       //guardamos de forma unica y ordenada los cohortes para el filtro de grafico barras y el resumen de asignatura
       this.cohortes = Array.from(new Set(this.asignaturasCortePractico.flatMap(asignatura=>asignatura.promedios.cohortes).map(cohorte=>cohorte.cohorte))).sort()
       //guardamos de forma unica y ordenada los semestres para el filtro de barras
       this.semestres = Array.from(new Set(this.asignaturasCortePractico.flatMap(asignatura=>asignatura.asignaturas).map(a => a.semestreRealizacion))).sort((a, b) => Number(a) - Number(b))
       //guardamos de forma unica y ordenada los cohortes para el filtrador multiple del grafico de lineas con el formato {label: string, value: number} 
       this.cohortesGraficoLineas = this.cohortes.sort().map(cohorte => ({ label: cohorte.toString(), value: cohorte }))
+      this.cohortesGraficoBarras = this.cohortes.sort().map(cohorte => ({ label: cohorte.toString(), value: cohorte }))
       //guardamos los cohortes seleccionados para el grafico de lineas
       this.cohortesSeleccionadoGraficoLineas = [...this.cohortesGraficoLineas]
       //guardamos el cohorte seleccionado para el grafico de barras
-      this.cohorteSeleccionadoGraficoBarras= Math.max(...this.cohortes)
+      this.cohortesSeleccionadoGraficoBarras= [...this.cohortesGraficoBarras]
       //llamamos a la funcion para obtener los detalles de las asignaturas de corte practico
       this.obtenerDetallesDeAsignaturasDeCortePractico()
     })
   }
 
+  public planes: {label: string; value: number}[]=[]
+  public planesSeleccionados: {label: string; value: number}[]=[]
   //variable para guardar las asignaturas de corte practico
   public asignaturasCortePractico: ReporteAsignaturaDTO[]=[]
   //variable para guardar los cohortes para los filtros de grafico de barras y el resumen de asignatura
   public cohortes: number[]=[]
   //variable para guardar los cohortes para el filtro multiple grafico de lineas
   public cohortesGraficoLineas: {label: string; value: number}[] = []
+  public cohortesGraficoBarras: {label: string; value: number}[] = []
   //variable para guardar los cohortes seleccionados en el filtro multiple del grafico de lineas
   public cohortesSeleccionadoGraficoLineas: {label: string; value: number}[] = []
+  public cohortesSeleccionadoGraficoBarras: {label: string; value: number}[] = []
   //variable para guardar los datos para el grafico de lineas
   public datosGraficoDeLineas: any
   //variable para guardar los semestres para el filtrador del grafico de barras
@@ -73,7 +92,8 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
   public datosAgrupados: {
     nombreAsignatura: string;
     posicion: number;
-    cohorte: string;
+    cohorte: number;
+    codigoPlan: number;
     promedio: number;
     porcentajeAprobacion: number
   }[]=[]
@@ -95,6 +115,7 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
   public cortePromedios: number=4
   //variable para inicializar el tiempo de carga
   public cargando: boolean=true
+  public labelsFiltrados: string[]=[]
   //variable para guardar las opciones del grafico de lineas
   public opcionesGraficoDeLineas = {
     responsive: true,
@@ -145,7 +166,10 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
         ticks: {
           font: {
             size: 16
-          }
+          },
+          padding: 10,
+          maxRotation: 90,
+          minRotation: 45
         },
         title: {
           display: true,
@@ -220,7 +244,10 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
         ticks: {
           font: {
             size: 16
-          }
+          },
+          padding: 10,
+          maxRotation: 90,
+          minRotation: 45
         },
         title: {
           display: true,
@@ -286,7 +313,7 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
     //comprobamos si se selecciono un cohorte
     if (this.cohorteSeleccionado) {
       //si se selecciono un cohorte se hace un filtro y guardamos los datos que correspondan al cohorte seleccionado
-      this.datosAgrupadosFiltrados = this.datosAgrupados.filter(item => item.cohorte === this.cohorteSeleccionado)
+      this.datosAgrupadosFiltrados = this.datosAgrupados.filter(item => item.cohorte === +this.cohorteSeleccionado)
     } else {
       //si no se selecciono un cohorte se mantienen los mismos datos
       this.datosAgrupadosFiltrados = [...this.datosAgrupados]
@@ -320,46 +347,62 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
   }
 
   //esta funcion obtiene los datos para el resumen de asignaturas y haciendo los calculos para los promedios y aprobaciones por cada cohorte
-  public obtenerResumenAsignaturas(){
-    //por cada asignatura calculamos los promedios y aprobaciones por cohorte
+  public obtenerResumenAsignaturas() {
+    this.datosAgrupados = []
+    const planesFiltrados = this.planesSeleccionados.map(plan => plan.value)
+  
+    // Usamos un Set para evitar duplicados
+    const keysUnicas = new Set<string>()
+  
     this.asignaturasCortePractico.forEach(asignatura => {
-      //estas constantes guardan los promedios y aprobaciones por cohorte
-      const cohortePromedios: { [cohorte: string]: number[] } = {}
-      const cohorteAprobaciones: { [cohorte: string]: number[] } = {}
-      //por cada cohorte vemos si esta en el los arregles y si no esta lo metemos
+      const cohortePromedios: { [key: string]: number[] } = {}
+      const cohorteAprobaciones: { [key: string]: number[] } = {}
+  
       asignatura.promedios.cohortes.forEach(cohorte => {
-        if (!cohortePromedios[cohorte.cohorte]) {
-          cohortePromedios[cohorte.cohorte] = []
+        if (planesFiltrados.length === 0 || planesFiltrados.includes(cohorte.codigoPlan)) {
+          const key = `${cohorte.cohorte}-${cohorte.codigoPlan}`
+          if (!cohortePromedios[key]) {
+            cohortePromedios[key] = []
+          }
+          cohortePromedios[key].push(cohorte.promedioAnual)
         }
-        cohortePromedios[cohorte.cohorte].push(cohorte.promedio)
       })
-      asignatura.aprobaciones.cohortes.forEach(cohorte=>{
-        if(!cohorteAprobaciones[cohorte.cohorte]){
-          cohorteAprobaciones[cohorte.cohorte]=[]
+  
+      asignatura.aprobaciones.cohortes.forEach(cohorte => {
+        const key = `${cohorte.cohorte}-${cohorte.codigoPlan}`
+        if (planesFiltrados.length === 0 || planesFiltrados.includes(cohorte.codigoPlan)) {
+          if (!cohorteAprobaciones[key]) {
+            cohorteAprobaciones[key] = []
+          }
+          cohorteAprobaciones[key].push(cohorte.aprobacionAnual)
         }
-        cohorteAprobaciones[cohorte.cohorte].push(cohorte.aprobacion)
       })
-      //recorremos los promedios por cohorte para calcular el promedio que tuvo ese cohorte
-      Object.keys(cohortePromedios).forEach(cohorte => {
-        //guardamos los promedios
-        const promedios = cohortePromedios[cohorte]
-        //hacemos el calculo y guardmaos los promedios por cohorte
-        const promedioCohorte = parseFloat((promedios.reduce((acc, promedio) => acc + promedio, 0) / promedios.length).toFixed(2))
-        //llamamos a la funcion para calcular los porcentajes de aprobacion por cohorte y lo guardamos
-        const porcentajeAprobacion = this.calcularPorcentajeAprobacion(cohorteAprobaciones, cohorte)
-        //creamos los datos por cada cohorte
-        const datoCohorte = {
-          nombreAsignatura: asignatura.asignaturas.nombreAsignatura,
-          posicion: asignatura.asignaturas.semestreRealizacion,
-          cohorte: cohorte,
-          promedio: promedioCohorte,
-          porcentajeAprobacion: porcentajeAprobacion
+  
+      Object.keys(cohortePromedios).forEach(key => {
+        const [cohorte, codigoPlan] = key.split('-').map(Number)
+        const promedios = cohortePromedios[key]
+        const promedioCohorte = parseFloat(
+          (promedios.reduce((acc, promedio) => acc + promedio, 0) / promedios.length).toFixed(2)
+        )
+        const porcentajeAprobacion = this.calcularPorcentajeAprobacion(cohorteAprobaciones, key)
+  
+        // Evitar duplicados
+        const uniqueKey = `${asignatura.asignaturas.idAsignatura}-${cohorte}-${codigoPlan}`
+        if (!keysUnicas.has(uniqueKey)) {
+          keysUnicas.add(uniqueKey)
+          const datoCohorte = {
+            nombreAsignatura: asignatura.asignaturas.nombreAsignatura,
+            posicion: asignatura.asignaturas.semestreRealizacion,
+            cohorte: cohorte,
+            codigoPlan: codigoPlan,
+            promedio: promedioCohorte,
+            porcentajeAprobacion: porcentajeAprobacion,
+          }
+          this.datosAgrupados.push(datoCohorte)
         }
-        //guardamos los datos de cada cohorte
-        this.datosAgrupados.push(datoCohorte)
       })
     })
-    //llamamos a la funcion para filtar por cohorte y paginar los datos
+  
     this.aplicarFiltroCohorte()
     this.actualizarDatosPaginados()
   }
@@ -376,63 +419,69 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
 
   //esta funcion obtiene los datos para el grafico de barras
   public obtenerDatosGraficoDeBarras() {
-    //filtramos las asignaturas por semestre y cohorte
+    const planesFiltrados = this.planesSeleccionados.map(plan => plan.value);
+    const cohortesFiltrados = this.cohortesSeleccionadoGraficoBarras.map(c => c.value);
+    const coloresPorCohorte: { [key: number]: string } = {};
+    cohortesFiltrados.forEach(cohorte => {
+      coloresPorCohorte[cohorte] = this.colorRandom();
+    });
+  
+    // Filtrar asignaturas por semestre, sin filtrar por cohorte aquí
     const asignaturasFiltradas = this.asignaturasCortePractico.filter(asignatura => {
       return (
-        (!this.semestreSeleccionadoTest || asignatura.asignaturas.semestreRealizacion === Number(this.semestreSeleccionadoTest)) && asignatura.aprobaciones.cohortes.some(a => a.cohorte === Number(this.cohorteSeleccionadoGraficoBarras))
-      )
-    })
-    //guardamos los nombres de las asignaturas
-    const separarAsignaturas = Array.from(new Set(this.asignaturasCortePractico.flatMap(asignatura=>asignatura.asignaturas).map(a => a.nombreAsignatura)))
-    //guardamos la informacion para el grafico de barra filtrando solo los que no sean null
-    const datosGraficoDeBarra = separarAsignaturas.map(asignatura => {
-      //guardamos las aprobaciones de las asignaturas filtradas
-      const aprobaciones = asignaturasFiltradas.filter(a => a.asignaturas.nombreAsignatura === asignatura).flatMap(a=>a.aprobaciones.cohortes.filter(cohortes=>cohortes.cohorte===Number(this.cohorteSeleccionadoGraficoBarras))).map(a=>a.aprobacion)
-      //calculamos la suma de las aprobaciones filtradas por la cantidad de aprobaciones
-      const aprobacionPromedio = aprobaciones.length > 0 ? aprobaciones.reduce((sum, aprobacion) => sum + aprobacion, 0) / aprobaciones.length: 0
-      //comprobamos si hay una aprobacion promedio
-      if (aprobacionPromedio > 0) {
-        //si hay una aprobacion promedio devuelve el nombre de la asignatura y la aprobacion promedio
-        return {
-          label: asignatura,
-          data: parseFloat(aprobacionPromedio.toFixed(1)),
-        }
-      } else {
-        //si no hay una aprobacion promedio devuelve null
-        return null
-      }
-    }).filter(item => item !== null)
-    //guardamos los nombres de la asignatura para el grafico
-    const labels = datosGraficoDeBarra.map(item => item.label)
-    //guardamos la aprobacion promedio por asignatura y comprobamos si los datos estan en el rango criticos
-    //en caso de estar en el rango critico se le asigna un colo especifico para el fondo y el borde
-    const datasets = [{
-      label: `Aprobación Promedio (Cohorte ${this.cohorteSeleccionadoGraficoBarras})`,
-      backgroundColor: datosGraficoDeBarra.map(item => {
-        if(item.data>this.corteAprobacion){
-          return this.colorRandom()
-        }else{
-          return 'rgba(255, 99, 132, 0.3)'  
-        }
-      }),
-      borderWidth: datosGraficoDeBarra.map(item => {
-        if(item.data>this.corteAprobacion){
-          return 0
-        }else{
-          return 2
-        }
-      }), 
-      borderColor: datosGraficoDeBarra.map(item => {
-        if(item.data>this.corteAprobacion){
-          return 'black'
-        }else{
-          return 'rgba(255, 99, 132, 1)' 
-        }
-      }),
-      data: datosGraficoDeBarra.map(item => item.data)
-    }]
-    //guardamos la informacion para el grafico de barras
-    this.datosGraficoDeBarras={labels,datasets}
+        !this.semestreSeleccionadoTest ||
+        asignatura.asignaturas.semestreRealizacion === Number(this.semestreSeleccionadoTest)
+      );
+    });
+  
+    // Obtener nombres únicos de las asignaturas
+    const separarAsignaturas = Array.from(
+      new Set(this.asignaturasCortePractico.flatMap(asignatura => asignatura.asignaturas.nombreAsignatura))
+    );
+  
+    // Crear datasets para cada cohorte seleccionado
+    const datasets = cohortesFiltrados.map(cohorte => {
+      const datosPorAsignatura = separarAsignaturas.map(asignatura => {
+        const aprobaciones = asignaturasFiltradas
+          .filter(a => a.asignaturas.nombreAsignatura === asignatura)
+          .flatMap(a =>
+            a.aprobaciones.cohortes.filter(
+              c =>
+                c.cohorte === cohorte &&
+                (planesFiltrados.length === 0 || planesFiltrados.includes(c.codigoPlan))
+            )
+          )
+          .map(c => c.aprobacionAnual);
+  
+        const aprobacionPromedio =
+          aprobaciones.length > 0
+            ? aprobaciones.reduce((sum, aprobacion) => sum + aprobacion, 0) / aprobaciones.length
+            : 0;
+  
+        return parseFloat(aprobacionPromedio.toFixed(1));
+      });
+  
+      // Filtrar datos con valor mayor que 0 (no mostrar barras vacías)
+      const datosFiltrados = datosPorAsignatura.filter(valor => valor > 0);
+      this.labelsFiltrados = separarAsignaturas.filter((_, index) => datosPorAsignatura[index] > 0);
+  
+      return {
+        label: `Cohorte ${cohorte}`,
+        backgroundColor: datosFiltrados.map(data => 
+          data > this.corteAprobacion ? coloresPorCohorte[cohorte] : 'rgba(255, 99, 132, 0.3)'
+        ),
+        borderColor: datosFiltrados.map(data => 
+          data > this.corteAprobacion ? 'black' : 'rgba(255, 99, 132, 1)'
+        ),
+        borderWidth: datosFiltrados.map(data => 
+          data > this.corteAprobacion ? 0 : 2
+        ),
+        data: datosFiltrados,
+      };
+    });
+  
+    // Actualizar los datos para el gráfico de barras solo con los labels y datasets filtrados
+    this.datosGraficoDeBarras = { labels: this.labelsFiltrados, datasets };
   }
 
   //funcion para obtener los datos para el grafico de lineas
@@ -454,19 +503,22 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
 
   //esta funcion filtra los datos para el grafico de lineas
   public filtrarDatosGraficoDeLineas() {
+    const planesFiltrados = this.planesSeleccionados.map(plan => plan.value)
     //gaurdamos los cohortes seleccionados
     const cohortesFiltrados = this.cohortesSeleccionadoGraficoLineas.map(c => c.value)
     //guardamos los id de las asignaturas de forma unica
     const separarAsignaturas = Array.from(new Set(this.asignaturasCortePractico.flatMap(asignatura => asignatura.asignaturas).map(a => a.idAsignatura)))
     //filtramos las asignaturas por los cohortes seleccionados, calculamos el promedio y le damos el formato para el grafico de lineas
     return cohortesFiltrados.map(cohorte => {
-      //guardamos los promedios por cohorte
-      const dataPorCohorte = separarAsignaturas.map(asignatura => {
-        //comprobamos que el promedio de las asignaturas sean del cohorte
-        const asignaturasCohorte = this.asignaturasCortePractico .filter(a => a.promedios.cohortes.some(aa => aa.cohorte === cohorte) && a.asignaturas.idAsignatura === asignatura)
-        //sumamos los promedios que correspondan al cohorte y lo dividimos por la cantidad de asignaturas
-        const promedio = asignaturasCohorte.length > 0 ? asignaturasCohorte.map(a => a.promedios.cohortes.find(cohorteItem => cohorteItem.cohorte === cohorte)?.promedio).filter(prom => prom !== undefined)[0]: null
-        //devolvemos el promedio
+      const dataPorCohorte = separarAsignaturas.map(asignaturaId => {
+        // Filtramos ReporteAsignaturaDTO para la asignatura y cohorte específico
+        const promediosFiltrados = this.asignaturasCortePractico.filter(a =>
+              a.asignaturas.idAsignatura === asignaturaId &&
+              a.promedios.cohortes.some(coh =>coh.cohorte === cohorte && (planesFiltrados.length === 0 || planesFiltrados.includes(coh.codigoPlan)))
+          ).flatMap(a => a.promedios.cohortes.filter(coh => coh.cohorte === cohorte && (planesFiltrados.length === 0 || planesFiltrados.includes(coh.codigoPlan))))
+  
+        const promedio = promediosFiltrados.length > 0 ? promediosFiltrados.reduce((sum, coh) => sum + coh.promedioAnual, 0) / promediosFiltrados.length: null
+  
         return promedio !== null ? parseFloat(promedio.toFixed(1)) : null
       })
       //devolvemos con forma para el grafico de lineas
@@ -481,6 +533,5 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
         pointRadius: 8
       }
     })
-
   }
 }

@@ -188,26 +188,26 @@ export class DetalleAsignaturaComponent implements OnInit {
         this.aprobacionGeneral = parseFloat(aprobacionAnio[0].aprobacion.toFixed(2))
       }
       //guardamos los promedios por plan a los promediosPorPlan que esten en el año seleccionado
-      this.promediosPorPlan = this.detalleAsignatura.promedios.promediosPorPlan.filter((plan) => plan.agnio === Number(this.anioSeleccionado)).map((plan) => ({
+      this.promediosPorPlan = this.detalleAsignatura.promedios.promediosPorPlan.filter((plan) => plan.agnioRendicion === Number(this.anioSeleccionado)).map((plan) => ({
         //guardamos el codigo del plan
           codigoPlan: plan.codigoPlan,
           //guardamos el promedio del plan tomando todos los promedios que esten en el plan y dividiendo por la cantidad de promedios que haya en el plan
           promedio: parseFloat(
             (
-              this.detalleAsignatura.promedios.promediosPorPlan.filter((p) => p.codigoPlan === plan.codigoPlan && p.agnio === Number(this.anioSeleccionado)).reduce((acc, p) => acc + p.promedio, 0) /
-              this.detalleAsignatura.promedios.promediosPorPlan.filter((p) => p.codigoPlan === plan.codigoPlan && p.agnio === Number(this.anioSeleccionado)).length
+              this.detalleAsignatura.promedios.promediosPorPlan.filter((p) => p.codigoPlan === plan.codigoPlan && p.agnioRendicion === Number(this.anioSeleccionado)).reduce((acc, p) => acc + p.promedioHistorico, 0) /
+              this.detalleAsignatura.promedios.promediosPorPlan.filter((p) => p.codigoPlan === plan.codigoPlan && p.agnioRendicion === Number(this.anioSeleccionado)).length
             ).toFixed(2)
           ),
         }))
       //guardamos las aprobaciones por plan a las aprobacionesPorPlan que esten en el año seleccionado
-      this.aprobacionesPorPlan = this.detalleAsignatura.aprobaciones.aprobacionesPorPlan.filter((plan) => plan.agnio === Number(this.anioSeleccionado)).map((plan) => ({
+      this.aprobacionesPorPlan = this.detalleAsignatura.aprobaciones.aprobacionesPorPlan.filter((plan) => plan.agnioRendicion === Number(this.anioSeleccionado)).map((plan) => ({
           //guardamos el codigo del plan
           codigoPlan: plan.codigoPlan,
           //guardamos la aprobacion del plan tomando todos las aprobaciones que esten en el plan y dividiendo por la cantidad de aprobaciones que haya en el plan
           aprobacion: parseFloat(
             (
-              this.detalleAsignatura.aprobaciones.aprobacionesPorPlan.filter((a) => a.codigoPlan === plan.codigoPlan && a.agnio === Number(this.anioSeleccionado)).reduce((acc, a) => acc + a.aprobacion, 0) /
-              this.detalleAsignatura.aprobaciones.aprobacionesPorPlan.filter((a) => a.codigoPlan === plan.codigoPlan && a.agnio === Number(this.anioSeleccionado)).length
+              this.detalleAsignatura.aprobaciones.aprobacionesPorPlan.filter((a) => a.codigoPlan === plan.codigoPlan && a.agnioRendicion === Number(this.anioSeleccionado)).reduce((acc, a) => acc + a.aprobacionHistorica, 0) /
+              this.detalleAsignatura.aprobaciones.aprobacionesPorPlan.filter((a) => a.codigoPlan === plan.codigoPlan && a.agnioRendicion === Number(this.anioSeleccionado)).length
             ).toFixed(2)
           ),
         }))
@@ -236,7 +236,7 @@ export class DetalleAsignaturaComponent implements OnInit {
         //calculamos el promedio sumando los promedios y dividiendolos en la cantidad de promedios que hay por plan
         promedio: parseFloat(
           (
-            this.detalleAsignatura.promedios.promediosPorPlan.filter(plan => plan.codigoPlan === codigoPlan).reduce((acc, plan) => acc + plan.promedio, 0) /
+            this.detalleAsignatura.promedios.promediosPorPlan.filter(plan => plan.codigoPlan === codigoPlan).reduce((acc, plan) => acc + plan.promedioHistorico, 0) /
             this.detalleAsignatura.promedios.promediosPorPlan.filter(plan => plan.codigoPlan === codigoPlan).length
           ).toFixed(2)
         )
@@ -247,7 +247,7 @@ export class DetalleAsignaturaComponent implements OnInit {
         //calculamos la aprobacion sumando las aprobaciones y dividiendolas en la cantidad de aprobaciones que hay por plan
         aprobacion: parseFloat(
           (
-            this.detalleAsignatura.aprobaciones.aprobacionesPorPlan.filter(plan => plan.codigoPlan === codigoPlan).reduce((acc, plan) => acc + plan.aprobacion, 0) /
+            this.detalleAsignatura.aprobaciones.aprobacionesPorPlan.filter(plan => plan.codigoPlan === codigoPlan).reduce((acc, plan) => acc + plan.aprobacionHistorica, 0) /
             this.detalleAsignatura.aprobaciones.aprobacionesPorPlan.filter(plan => plan.codigoPlan === codigoPlan).length
           ).toFixed(2)
         )
@@ -260,7 +260,7 @@ export class DetalleAsignaturaComponent implements OnInit {
     //guardamos los cohortes seleccionados en el filtro
     const cohortesFiltrados = this.cohortesSeleccionadosGraficoBarras.map(c => c.value)
     //guardamos los tipos de ingreso de forma unica
-    const tipoIngresos = Array.from(new Set(this.detalleAsignatura.promedios.cohortes.map(c => c.plan)))
+    const tipoIngresos = Array.from(new Set(this.detalleAsignatura.promedios.cohortes.map(c => c.tituloPlan)))
     //guardamos los cohortes como labels para mostrarlos en el grafico
     const labels = cohortesFiltrados.map((cohorte) => this.detalleAsignatura.aprobaciones.cohortes.find((a) => a.cohorte === cohorte)?.cohorte.toString() || '')
     //guardamos los dataset para cada cohorte
@@ -273,7 +273,7 @@ export class DetalleAsignaturaComponent implements OnInit {
         //hacer un promedio (de aprobaciones) de todos los años que han dando la asignatura en este cohorte
         data: cohortesFiltrados.map(cohorte => {
           const datosCohorte = this.detalleAsignatura.aprobaciones.cohortes.filter(c => c.cohorte === cohorte)
-          return parseFloat((datosCohorte.reduce((acc, c) => acc + c.aprobacion, 0) / datosCohorte.length || 0).toFixed(2))
+          return parseFloat((datosCohorte.reduce((acc, c) => acc + c.aprobacionAnual, 0) / datosCohorte.length || 0).toFixed(2))
         }),
       },
     ]
@@ -283,8 +283,8 @@ export class DetalleAsignaturaComponent implements OnInit {
         label: plan,
         backgroundColor: this.colorRandom(),
         data: cohortesFiltrados.map(cohorte => {
-          const datosCohorte = this.detalleAsignatura.aprobaciones.cohortes.filter(c => c.cohorte === cohorte && c.plan === plan)
-          return parseFloat((datosCohorte.reduce((acc, c) => acc + c.aprobacion, 0) / datosCohorte.length || 0).toFixed(2))
+          const datosCohorte = this.detalleAsignatura.aprobaciones.cohortes.filter(c => c.cohorte === cohorte && c.tituloPlan === plan)
+          return parseFloat((datosCohorte.reduce((acc, c) => acc + c.aprobacionAnual, 0) / datosCohorte.length || 0).toFixed(2))
         }),
       })
     })

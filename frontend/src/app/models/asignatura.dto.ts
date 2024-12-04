@@ -48,16 +48,18 @@ export interface PromedioGeneralDTO {
 }
   
 export interface PromedioCohorteDTO {
-    agnio: number;
+    agnioRendicion: number;
     cohorte: number;
-    plan: string;
-    promedio: number;
+    codigoPlan: number;
+    tituloPlan: string;
+    promedioAnual: number;
 }
   
 export interface PromedioPorPlanDTO {
     codigoPlan: number;
-    agnio: number;
-    promedio: number;
+    tituloPlan: string;
+    agnioRendicion: number;
+    promedioHistorico: number;
 }
   
 export interface AprobacionGeneralDTO {
@@ -66,16 +68,18 @@ export interface AprobacionGeneralDTO {
 }
   
 export interface AprobacionCohorteDTO {
-    agnio: number;
+    agnioRendicion: number;
     cohorte: number;
-    plan: string;
-    aprobacion: number;
+    codigoPlan: number;
+    tituloPlan: string;
+    aprobacionAnual: number;
 }
   
 export interface AprobacionPorPlanDTO {
     codigoPlan: number;
-    agnio: number;
-    aprobacion: number;
+    tituloPlan: string;
+    agnioRendicion: number;
+    aprobacionHistorica: number;
 }
 
 export interface PromediosDTO {

@@ -68,6 +68,7 @@ export class ListarEstudianteComponent {
     this.estudianteService.getEstudiantes().subscribe((responseEstudiantes) => {
       this.estudiantes_por_cohorte =
         responseEstudiantes as CohorteEstudiantes[];
+      this.estudiantes_por_cohorte.sort((a,b)=> a.cohorte-b.cohorte)
     });
 
     // timeout para probar la animacion de carga de los componentes estudiantes
