@@ -13,6 +13,7 @@ import { MessageService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-convenio',
@@ -37,7 +38,7 @@ export class ConvenioComponent implements OnInit{
     this.obtenerModalidades()
   }
 
-  public ruta: string = 'http://localhost:3000/'
+  public ruta: string = environment.apiUrl
   public documento: string = ''
   public foto: string = ''
 

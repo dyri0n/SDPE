@@ -15,6 +15,7 @@ import { MessageService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2'
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -37,7 +38,7 @@ export class ListaConveniosComponent implements OnInit{
     this.obtenerConvenios()
   }
 
-  public ruta: string = 'http://localhost:3000/'
+  public ruta: string = environment.apiUrl
   public cargando: boolean = true
   public visible: boolean = false;
   public periodo: boolean = true;

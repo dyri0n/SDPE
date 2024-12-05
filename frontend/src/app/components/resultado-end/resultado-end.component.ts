@@ -12,6 +12,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-resultado-end',
@@ -40,7 +41,7 @@ export class ResultadoEndComponent implements OnInit {
   public end!: ResultadosEnd;
 
   public ruta!: SafeResourceUrl;
-  public rutaBase: string = 'http://localhost:3000/'
+  public rutaBase: string = environment.apiUrl
 
   public visible: boolean = false;
   public cargando: boolean = true;
