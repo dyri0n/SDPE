@@ -1,7 +1,7 @@
 export interface ResultadosEnd {
   idDato: number;
-  agnoRendicion: Date;
-  cohorteAsociado: Date;
+  agnoRendicion: number;
+  cohorteAsociado: number;
   rutaDocumento: string;
   fechaSubida: Date;
 }

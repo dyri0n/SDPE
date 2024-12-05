@@ -69,47 +69,70 @@ export class ListaEndComponent implements OnInit {
     });
   }
 
-  public agregarConvenio(){
-    if(this.formularioEND.valid){
-
-      //CAMBIAR ANY
-      const nuevoEND: NuevoEND= {
+  public agregarEND() {
+    if (this.formularioEND.valid) {
+      // Crear el nuevo objeto END
+      const nuevoEND: NuevoEND = {
         agnoRendicion: this.formularioEND.value.agnio.getFullYear(),
         cohorteAsociado: this.formularioEND.value.cohorte.getFullYear(),
+      };
+  
+      // Verificar si ya existe un END con el mismo año o cohorte
+      const existeEND = this.listaResultados.some(
+        (resultado) =>
+          resultado.agnoRendicion == +nuevoEND.agnoRendicion ||
+          resultado.cohorteAsociado == +nuevoEND.cohorteAsociado
+      );
+  
+      console.log(this.listaResultados)
+      console.log(nuevoEND)
+
+      if (existeEND) {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Advertencia',
+          detail: 'Ya existe un END con el mismo año o cohorte.',
+        });
+        return; // Salir si ya existe
       }
-      
+  
+      // Crear FormData para el nuevo END
       const formData = new FormData();
-
-      // Agregar los campos del formulario
-      formData.append('agnoRendicion', nuevoEND.agnoRendicion);
-      formData.append('cohorteAsociado', nuevoEND.cohorteAsociado);
+      formData.append('agnoRendicion', nuevoEND.agnoRendicion.toString());
+      formData.append('cohorteAsociado', nuevoEND.cohorteAsociado.toString());
       formData.append('files', this.formularioEND.value.documento);
-
+  
+      // Llamar al servicio para guardar el nuevo END
       this.servicioEnd.nuevoEND(formData).subscribe(
-        respuesta=>{
-          if(respuesta){
-            this.alternarModal()
-            this.messageService.add({severity: 'success', summary: 'Guardado', detail: 'El convenio se guardó correctamente'});
+        (respuesta) => {
+          if (respuesta) {
+            this.alternarModal();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Guardado',
+              detail: 'El convenio se guardó correctamente.',
+            });
           }
-          this.obtenerListado()
+          this.obtenerListado();
         },
-        error => {
-          const mensaje = error.error.message
+        (error) => {
+          const mensaje = error.error.message;
           this.messageService.add({
             severity: 'error',
             summary: 'Error al guardar',
             detail: mensaje,
           });
         }
-      )
+      );
     } else {
       this.messageService.add({
-        severity: 'error', 
-        summary: 'Error', 
-        detail: 'Formulario incompleto. Por favor llene todos los campos requeridos.'
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Formulario incompleto. Por favor llene todos los campos requeridos.',
       });
     }
   }
+  
 
   public onPageChange(event: PaginatorState) {
     this.first = event.first ?? 0
@@ -182,18 +205,6 @@ export class ListaEndComponent implements OnInit {
     if(!this.visible){
       this.formularioEND.reset()
     }
-  }
-
-  public escogerAgnio(event: Date): void {
-    const agnio = event.getFullYear();
-    const cohorte = new Date(agnio - 4, 0, 1); // Crea un objeto Date para el 1 de enero del año correspondiente
-    this.formularioEND.get('cohorte')?.setValue(cohorte);
-  }
-  
-  public escogerCohorte(event: Date): void {
-    const cohorte = event.getFullYear();
-    const agnio = new Date(cohorte + 4, 0, 1); // Crea un objeto Date para el 1 de enero del año correspondiente
-    this.formularioEND.get('agnio')?.setValue(agnio);
   }
 
   public volverAlMenu(){

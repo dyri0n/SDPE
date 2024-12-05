@@ -62,7 +62,7 @@
         
         <ng-template pTemplate="headless">
             <div class="bg-gray-100 border-2 border-sky-700 rounded-md shadow-lg">
-                <form [formGroup]="formularioEND" (ngSubmit)="agregarConvenio()">
+                <form [formGroup]="formularioEND" (ngSubmit)="agregarEND()">
                     <div class="bg-white mt-5 py-3 shadow-lg border-y">
                         <h1 class="p-4 rounded-r-2xl w-6/12 bg-sky-700 text-white text-4xl font-bold">Registrar Resultados END</h1>
                     </div>
@@ -78,7 +78,6 @@
                                     id="inicio"
                                     [minDate]="inicioMinimoAgnio"
                                     [maxDate]="inicioMaximoAgnio"
-                                    (onSelect)="escogerAgnio($event)"
                                     />
                                 <label for="inicio">Año</label>
                             </p-floatLabel>
@@ -92,7 +91,6 @@
                                     id="inicio"
                                     [minDate]="inicioMinimoCohorte"
                                     [maxDate]="inicioMaximoCohorte"
-                                    (onSelect)="escogerCohorte($event)"
                                     />
                                 <label for="inicio">Cohorte</label>
                             </p-floatLabel>
