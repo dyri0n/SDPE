@@ -234,6 +234,7 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
         padding: 6,
         borderColor: 'white',
         borderWidth: 2,
+        clip: true
       }
     },
     scales: {
