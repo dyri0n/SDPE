@@ -17,23 +17,23 @@
                 <i class="pi pi-arrow-left text-xl me-2"></i> Volver
             </p>
           </button>
-          <div class="rounded-md text-xl py-4 my-4 text-center">
-            Datos del estudiante
+          <div class="rounded-md text-2xl py-4 my-4 text-center">
+            Datos del Estudiante
           </div>
-          <div class="rounded-md text-lg py-4 my-4 bg-[#DC911A]">
-            <p class="text-xs mx-5">Nombre estudiante</p>
+          <div class="rounded-md text-xl py-4 my-4 bg-[#DC911A]">
+            <p class="text-xs mx-5">Nombre Estudiante</p>
             <p class="px-5 text-sm">
               {{ avanceEstudiante.estudiante.nombreCompleto || "" }}
             </p>
           </div>
-          <div class="rounded-md text-lg py-4 my-4 bg-[#DC911A]">
+          <div class="rounded-md text-xl py-4 my-4 bg-[#DC911A]">
             <p class="text-xs mx-5">Rut</p>
             <p class="px-5 text-sm">
               {{ avanceEstudiante.estudiante.rut || "" }}
             </p>
           </div>
           <div class="rounded-md text-lg py-4 my-4 bg-[#DC911A]">
-            <p class="text-xs mx-5">Año de ingreso</p>
+            <p class="text-xs mx-5">Año de Igreso</p>
             <p class="px-5 text-sm">
               {{ avanceEstudiante.estudiante.agnioIngreso || "" }}
             </p>
@@ -65,13 +65,13 @@
         class="text-2xl py-4 mb-4 bg-[#DC911A] w-full text-center rounded-md shadow-md"
       >
         <p class="text-cyan-50 font-semibold font-sans text-lg">
-          Cursos realizados por el estudiante
+          Cursos Realizados por el Estudiante
         </p>
       </div>
       <input
         type="text"
         [(ngModel)]="entradaBuscador"
-        placeholder="Nombre curso o codigo curso"
+        placeholder="Nombre Curso o Código Curso"
         class="w-full p-2 rounded-lg mb-4 border border-gray-300 text-sm"
       />
       <div
