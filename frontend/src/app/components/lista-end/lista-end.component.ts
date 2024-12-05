@@ -91,7 +91,7 @@ export class ListaEndComponent implements OnInit {
         this.messageService.add({
           severity: 'warn',
           summary: 'Advertencia',
-          detail: 'Ya existe un END con el mismo año o cohorte.',
+          detail: 'Ya existe un resultado END con el mismo año o cohorte.',
         });
         return; // Salir si ya existe
       }
