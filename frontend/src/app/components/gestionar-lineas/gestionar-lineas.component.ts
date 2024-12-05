@@ -66,15 +66,18 @@ export class GestionarLineasComponent implements OnInit {
   public eliminarLinea(idLinea: number) {
     // verificar si la líiea tiene id
     const linea = this.lineas.find(l => l.id === idLinea);
-  
     if (linea) {
       if (!linea.id) { // si la linea no tiene id (es nueva)
         // eliminar solo del arreglo local
+        this.lineas = this.lineas.filter(l => l.id !== idLinea);
         Swal.fire(
           '¡Eliminado!',
           'La línea ha sido eliminada.',
           'success'
         );
+        this.hayCambios = false
+        this.cargarDatos();
+
       } else {
         // si tiene id, llamar al backend para eliminar
         this.servicioAsignatura.eliminarLinea(this.idPlan, idLinea).subscribe({
