@@ -165,7 +165,7 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
         },
         ticks: {
           font: {
-            size: 16
+            size: 24
           },
           padding: 10,
           maxRotation: 90,
@@ -243,7 +243,7 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
         },
         ticks: {
           font: {
-            size: 16
+            size: 24
           },
           padding: 10,
           maxRotation: 90,
@@ -419,11 +419,11 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
 
   //esta funcion obtiene los datos para el grafico de barras
   public obtenerDatosGraficoDeBarras() {
-    const planesFiltrados = this.planesSeleccionados.map(plan => plan.value);
-    const cohortesFiltrados = this.cohortesSeleccionadoGraficoBarras.map(c => c.value);
-    const coloresPorCohorte: { [key: number]: string } = {};
+    const planesFiltrados = this.planesSeleccionados.map(plan => plan.value)
+    const cohortesFiltrados = this.cohortesSeleccionadoGraficoBarras.map(c => c.value)
+    const coloresPorCohorte: { [key: number]: string } = {}
     cohortesFiltrados.forEach(cohorte => {
-      coloresPorCohorte[cohorte] = this.colorRandom();
+      coloresPorCohorte[cohorte] = this.colorRandom()
     });
   
     // Filtrar asignaturas por semestre, sin filtrar por cohorte aquí
@@ -431,14 +431,16 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
       return (
         !this.semestreSeleccionadoTest ||
         asignatura.asignaturas.semestreRealizacion === Number(this.semestreSeleccionadoTest)
-      );
-    });
+      )
+    })
   
     // Obtener nombres únicos de las asignaturas
     const separarAsignaturas = Array.from(
       new Set(this.asignaturasCortePractico.flatMap(asignatura => asignatura.asignaturas.nombreAsignatura))
-    );
+    )
   
+    const asignaturasVisibles = new Set<string>() 
+
     // Crear datasets para cada cohorte seleccionado
     const datasets = cohortesFiltrados.map(cohorte => {
       const datosPorAsignatura = separarAsignaturas.map(asignatura => {
@@ -451,37 +453,37 @@ export class TendenciasAsignaturaCortePracticoComponent implements OnInit {
                 (planesFiltrados.length === 0 || planesFiltrados.includes(c.codigoPlan))
             )
           )
-          .map(c => c.aprobacionAnual);
-  
+          .map(c => c.aprobacionAnual)
+    
         const aprobacionPromedio =
           aprobaciones.length > 0
             ? aprobaciones.reduce((sum, aprobacion) => sum + aprobacion, 0) / aprobaciones.length
             : 0;
-  
-        return parseFloat(aprobacionPromedio.toFixed(1));
-      });
-  
-      // Filtrar datos con valor mayor que 0 (no mostrar barras vacías)
-      const datosFiltrados = datosPorAsignatura.filter(valor => valor > 0);
-      this.labelsFiltrados = separarAsignaturas.filter((_, index) => datosPorAsignatura[index] > 0);
-  
+    
+        if (aprobacionPromedio > 0) {
+          asignaturasVisibles.add(asignatura)
+        }
+    
+        return parseFloat(aprobacionPromedio.toFixed(1))
+      })
+    
       return {
         label: `Cohorte ${cohorte}`,
-        backgroundColor: datosFiltrados.map(data => 
+        backgroundColor: datosPorAsignatura.map(data =>
           data > this.corteAprobacion ? coloresPorCohorte[cohorte] : 'rgba(255, 99, 132, 0.3)'
         ),
-        borderColor: datosFiltrados.map(data => 
+        borderColor: datosPorAsignatura.map(data =>
           data > this.corteAprobacion ? 'black' : 'rgba(255, 99, 132, 1)'
         ),
-        borderWidth: datosFiltrados.map(data => 
-          data > this.corteAprobacion ? 0 : 2
-        ),
-        data: datosFiltrados,
-      };
-    });
-  
-    // Actualizar los datos para el gráfico de barras solo con los labels y datasets filtrados
-    this.datosGraficoDeBarras = { labels: this.labelsFiltrados, datasets };
+        borderWidth: datosPorAsignatura.map(data => (data > this.corteAprobacion ? 0 : 2)),
+        data: datosPorAsignatura
+      }
+    })
+    
+    // Filtrar labels que realmente están visibles
+    this.labelsFiltrados = separarAsignaturas.filter(asignatura => asignaturasVisibles.has(asignatura))
+    
+    this.datosGraficoDeBarras = { labels: this.labelsFiltrados, datasets }
   }
 
   //funcion para obtener los datos para el grafico de lineas
