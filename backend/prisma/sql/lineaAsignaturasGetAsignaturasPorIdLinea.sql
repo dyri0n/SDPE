@@ -16,11 +16,13 @@
 
 SELECT distinct
     la."titulo",
+    a."posicion",
     a."idAsignatura",
     a."codigo",
     a."nombre",
     a."areaFormacion"
 FROM "Asignatura" a
 LEFT JOIN "LineaAsignatura" la using ("idLinea")
-WHERE a."idPlan" = $1;
+WHERE a."idPlan" = $1
+order by a."posicion" asc;
 

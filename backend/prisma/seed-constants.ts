@@ -9,116 +9,68 @@ import {
   Usuario,
 } from '@prisma/client';
 
-const nombres = [
-  'Valentina',
-  'Andrea',
-  'Camila',
-  'Sebastián',
-  'Diego',
-  'Joaquín',
-  'Antonia',
-  'Isabella',
-  'Martín',
-  'Mateo',
-  'Emilia',
-  'Benjamín',
-  'Renata',
-  'Lucas',
-  'Tomás',
-  'Catalina',
-  'Matías',
-  'Sofía',
-  'Maximiliano',
-  'Josefa',
-  'Emilio',
-  'Florencia',
-  'Javier',
-  'Valeria',
-  'Juan Pablo',
-  'Ignacia',
-  'Francisco',
-  'María José',
-  'Agustín',
-  'Antonella',
-  'Gabriel',
-  'Daniela',
-  'Pablo',
-  'Isidora',
-  'Martín',
-  'Mía',
-  'Matías',
-  'Antonia',
-  'Bastian',
-  'Valentina',
-  'Diego',
-  'Amalia',
-  'Felipe',
-  'Catalina',
-  'Tomás',
-  'Renata',
-  'Lucas',
-  'Josefina',
-  'Maximiliano',
-  'Emilia',
+// prettier-ignore
+const nombresFemeninos = [
+  "Sofía", "Isabella", "Valentina", "Camila", "Valeria", "Mariana", "Daniela", "Victoria", "Martina", "Emma",
+  "Lucía", "Regina", "Gabriela", "Sara", "María", "Paula", "Laura", "Julia", "Clara", "Renata",
+  "Ana", "Mía", "Elena", "Luna", "Carla", "Andrea", "Olivia", "Diana", "Alba", "Aitana",
+  "Bianca", "Alejandra", "Eva", "Adriana", "Natalia", "Ángela", "Lía", "Catalina", "Julieta", "Rocío",
+  "Irene", "Amelia", "Pilar", "Teresa", "Cristina", "Carmen", "Noa", "Arlet", "Claudia", "Carolina",
+  "Marta", "Antonia", "Milagros", "Ariadna", "Esther", "Elsa", "Samantha", "Inés", "Lorena", "Marisol",
+  "Jimena", "Liliana", "Eugenia", "Paloma", "Alicia", "Manuela", "Fernanda", "Violeta", "Sabrina", "Tatiana",
+  "Priscila", "Brenda", "Fátima", "Silvia", "Blanca", "Miranda", "Lourdes", "Soledad", "Rafaela", "Margarita",
+  "Beatriz", "Norma", "Ivanna", "Valery", "Ámbar", "Victoria", "Itzel", "Lilia", "Bárbara", "Angélica",
+  "Patricia", "Esperanza", "Estefanía", "Florencia", "Celia", "Leticia", "Guadalupe", "Paulina", "Zoe", "Maite"
 ];
 
+// prettier-ignore
+const nombresMasculinos = [
+  "Sebastián", "Santiago", "Mateo", "Lucas", "Matías", "Diego", "Liam", "Benjamín", "Gabriel", "Daniel",
+  "Alejandro", "Samuel", "Martín", "David", "Joaquín", "Adrián", "Nicolás", "Leo", "Emiliano", "Dylan",
+  "Javier", "Ángel", "Antonio", "Maximiliano", "Iván", "Thiago", "Juan", "Isaac", "Pablo", "Cristian",
+  "Óscar", "Leonardo", "Hugo", "Tomás", "Simón", "Carlos", "Raúl", "Mario", "Bruno", "Miguel",
+  "Andrés", "Álvaro", "Ignacio", "Luis", "Esteban", "Ramón", "Darío", "Víctor", "Alan", "Felipe",
+  "Julián", "Eduardo", "Manuel", "Héctor", "Roberto", "César", "Rafael", "Pedro", "Ernesto", "Marco",
+  "Guillermo", "Adolfo", "Alfredo", "Arturo", "Jorge", "Rodolfo", "Enrique", "Sergio", "Ismael", "Fernando",
+  "Francisco", "Anselmo", "Germán", "Salvador", "Óliver", "Marcos", "Diego", "Rúben", "Ezequiel", "Facundo",
+  "Gaspar", "Ricardo", "Lucas", "Mauricio", "Gustavo", "Clemente", "Néstor", "Teodoro", "Bautista", "Esteban",
+  "Vicente", "Jacobo", "Isidro", "Bernardo", "Emilio", "Rodrigo", "Eduardo", "Cristóbal", "Leandro", "Fabián"
+];
+
+// prettier-ignore
 const apellidos = [
-  'Rojas',
-  'Morales',
-  'Soto',
-  'Pérez',
-  'González',
-  'Muñoz',
-  'Silva',
-  'Torres',
-  'López',
-  'Díaz',
-  'Castro',
-  'Ramírez',
-  'Bravo',
-  'Herrera',
-  'Gómez',
-  'Álvarez',
-  'Flores',
-  'Vargas',
-  'Espinoza',
-  'Araya',
-  'Ruiz',
-  'Sepúlveda',
-  'Fernández',
-  'Riquelme',
-  'Orellana',
-  'Pérez',
-  'González',
-  'Muñoz',
-  'Martínez',
-  'Castro',
-  'Morales',
-  'Rodríguez',
-  'López',
-  'Navarro',
-  'Suárez',
-  'González',
-  'Martínez',
-  'Pérez',
-  'Torres',
-  'Aravena',
-  'Soto',
-  'Mendoza',
-  'Bravo',
-  'Gómez',
-  'Araya',
-  'González',
-  'Ramírez',
-  'Herrera',
-  'Silva',
-  'Torres',
+  "González", "Rodríguez", "Martínez", "Hernández", "López", "Pérez", "Sánchez", "Ramírez", "Cruz", "Torres",
+  "Gómez", "Flores", "Vázquez", "Jiménez", "Díaz", "Mendoza", "Morales", "Álvarez", "Ortiz", "Gutiérrez",
+  "Silva", "Castillo", "Romero", "Santos", "Ramos", "Ruiz", "Chávez", "Acosta", "Delgado", "Molina",
+  "Castro", "Fernández", "Salazar", "Cabrera", "Rivas", "Montes", "Espinoza", "Cortés", "Vega", "Pineda",
+  "Reyes", "Carrillo", "Ibarra", "Peña", "Aguilar", "Navarro", "Herrera", "Campos", "León", "Hidalgo",
+  "Muñoz", "Rosales", "Valdez", "Esquivel", "Serrano", "Tapia", "Solís", "Villanueva", "Mejía", "Quintana",
+  "Núñez", "Rojas", "Pacheco", "Padilla", "Rivera", "Orozco", "Castañeda", "Valencia", "Medina", "Vargas",
+  "Soto", "Domínguez", "Palacios", "Escobar", "Bravo", "Guzmán", "Moreno", "Arévalo", "Márquez", "Cárdenas",
+  "Beltrán", "Carvajal", "Bustamante", "Carranza", "Montoya", "Villalobos", "Cuevas", "Ávila", "Robles", "Zavala",
+  "Peralta", "Cisneros", "Cordero", "Huerta", "Urrutia", "Luna", "Pinedo", "Velázquez", "Villegas", "Paredes",
+  "Coronado", "Escalante", "Miranda", "Cano", "Bravo", "Olivares", "Figueroa", "Salinas", "Macías", "Quiroz",
+  "Trujillo", "Maldonado", "Galindo", "Zúñiga", "Arriaga", "Calderón", "Cervantes", "Osorio", "Granados", "Barajas",
+  "Trejo", "Camacho", "Sandoval", "Salcedo", "Alvarado", "Villaseñor", "Durán", "Estrada", "Aguirre", "Lara",
+  "Benítez", "Aranda", "Sepúlveda", "Liceaga", "Cedillo", "Lozano", "Manrique", "Tirado", "Villagrán", "Carpio",
+  "Meléndez", "Reynoso", "Piña", "Santana", "Ponce", "Arellano", "Tovar", "Garibay", "Alonso", "Soria",
+  "Ibáñez", "Medrano", "Barrios", "Landa", "Franco", "Espinosa", "Quijano", "Cuéllar", "Zarate", "Barragán",
+  "Villafuerte", "Aguilera", "Barrón", "Cardozo", "Rentería", "Montalvo", "Varela", "Montemayor", "Tapia", "Liceaga",
+  "Garrido", "Arenas", "Baeza", "Pérez-Rojas", "Leiva", "Saavedra", "Zamudio", "Bustillos", "Obregón", "Batista",
+  "Plascencia", "Hinojosa", "Tamez", "Carranza", "Treviño", "Suárez", "Valero", "Pizarro", "Larios", "Bello",
+  "Casillas", "Castañeda", "Macías", "Hurtado", "Amador", "Olmedo", "Galarza", "Lumbreras", "Ávila", "Briones",
+  "Chapa", "Ugalde", "Villaseca", "Villagómez", "Echeverría", "Zamarripa", "Barrientos", "Villalpando", "Reséndiz", "Alarcón"
 ];
 
 // Arreglo de años desde 2012 hasta 2024
-const años = Array.from({ length: 4 }, (_, index) => 2018 + index);
+const años = Array.from({ length: 7 }, (_, index) => 2015 + index);
 
 // Función para generar estudiantes aleatorios con dos nombres y dos apellidos
+enum SEXO {
+  M,
+  F,
+}
+
 export function generarEstudiantes(
   cantidad,
   planes: Plan['idPlan'][],
@@ -127,8 +79,22 @@ export function generarEstudiantes(
   const nroPlanes = planes.length;
 
   for (let i = 1; i <= cantidad; i++) {
-    const nombre1 = nombres[Math.floor(Math.random() * nombres.length)];
-    const nombre2 = nombres[Math.floor(Math.random() * nombres.length)];
+    const sexo = Math.random() > 0.5 ? SEXO.F : SEXO.M;
+
+    let nombre1;
+    let nombre2;
+
+    if (sexo === SEXO.M) {
+      nombre1 =
+        nombresMasculinos[Math.floor(Math.random() * nombresMasculinos.length)];
+      nombre2 =
+        nombresMasculinos[Math.floor(Math.random() * nombresMasculinos.length)];
+    } else {
+      nombre1 =
+        nombresFemeninos[Math.floor(Math.random() * nombresFemeninos.length)];
+      nombre2 =
+        nombresFemeninos[Math.floor(Math.random() * nombresFemeninos.length)];
+    }
 
     const apellido1 = apellidos[Math.floor(Math.random() * apellidos.length)];
     const apellido2 = apellidos[Math.floor(Math.random() * apellidos.length)];
@@ -329,7 +295,7 @@ export const ASIGNATURAS: Asignatura[] = [
     creditos: 4,
     tributaciones: [13],
     prerrequisitos: [1],
-    posicion: 1,
+    posicion: 7,
     semestre: 2,
     competencias: [
       'Desarrollar habilidades avanzadas de expresión oral y escrita',
@@ -351,7 +317,7 @@ export const ASIGNATURAS: Asignatura[] = [
     creditos: 6,
     tributaciones: [],
     prerrequisitos: [2],
-    posicion: 2,
+    posicion: 8,
     semestre: 2,
     competencias: [
       'Aplicar enfoques sistémicos en contextos psicopedagógicos',
@@ -373,7 +339,7 @@ export const ASIGNATURAS: Asignatura[] = [
     creditos: 4,
     tributaciones: [14],
     prerrequisitos: [3],
-    posicion: 3,
+    posicion: 9,
     semestre: 2,
     competencias: [
       'Analizar el impacto del entorno social en el desarrollo educativo',
@@ -418,7 +384,7 @@ export const ASIGNATURAS: Asignatura[] = [
     creditos: 6,
     tributaciones: [26],
     prerrequisitos: [6],
-    posicion: 6,
+    posicion: 11,
     semestre: 2,
     competencias: [
       'Analizar políticas educativas y su marco jurídico',
@@ -441,7 +407,7 @@ export const ASIGNATURAS: Asignatura[] = [
     creditos: 6,
     tributaciones: [16],
     prerrequisitos: [4],
-    posicion: 4,
+    posicion: 12,
     semestre: 2,
     competencias: [
       'Comprender teorías fundamentales del aprendizaje',
@@ -1819,8 +1785,8 @@ export const CONVENIOS: Convenio[] = [
   },
   {
     idConvenio: 4,
-    titulo: 'Convenio con Integración Social del Limitado Visual Crisolvi.',
-    centroPractica: 'Integración Social del Limitado Visual Crisolvi.',
+    titulo: 'Convenio con Integración Social del Limitado Visual Crisolvi',
+    centroPractica: 'Integración Social del Limitado Visual Crisolvi',
     fechaInicioConvenio: new Date('2021-01-01'),
     fechaFinConvenio: undefined,
     validez: true,
@@ -1898,8 +1864,8 @@ export const CONVENIOS: Convenio[] = [
   },
   {
     idConvenio: 11,
-    titulo: 'Convenio con Escuela de Lenguaje Lucerito Musikal.',
-    centroPractica: 'Escuela de Lenguaje Lucerito Musikal.',
+    titulo: 'Convenio con Escuela de Lenguaje Lucerito Musikal',
+    centroPractica: 'Escuela de Lenguaje Lucerito Musikal',
     fechaInicioConvenio: new Date('2023-01-01'),
     fechaFinConvenio: undefined,
     validez: true,
@@ -1909,8 +1875,8 @@ export const CONVENIOS: Convenio[] = [
   },
   {
     idConvenio: 12,
-    titulo: 'Convenio con Colegio Mosaicos Corporación Educacional.',
-    centroPractica: 'Colegio Mosaicos Corporación Educacional.',
+    titulo: 'Convenio con Colegio Mosaicos Corporación Educacional',
+    centroPractica: 'Colegio Mosaicos Corporación Educacional',
     fechaInicioConvenio: new Date('2022-01-01'),
     fechaFinConvenio: undefined,
     validez: true,
@@ -1920,8 +1886,8 @@ export const CONVENIOS: Convenio[] = [
   },
   {
     idConvenio: 13,
-    titulo: 'Convenio con Aulas Hospitalarias San Sebastián E.I.E',
-    centroPractica: 'Aulas Hospitalarias San Sebastián E.I.E',
+    titulo: 'Convenio con Aulas Hospitalarias San Sebastián E.I.E.',
+    centroPractica: 'Aulas Hospitalarias San Sebastián E.I.E.',
     fechaInicioConvenio: new Date('2023-01-01'),
     fechaFinConvenio: undefined,
     validez: true,

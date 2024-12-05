@@ -87,15 +87,18 @@ export class LineaAsignaturaService {
       lineaAsignaturasGetAsignaturasPorIdLinea(idPlan),
     );
 
-    return asignaturasDeLinea.map((value) => {
-      return {
-        titulo: value.titulo ?? this.SIN_LINEA,
-        codigo: value.codigo,
-        nombre: value.nombre,
-        areaFormacion: value.areaFormacion,
-        idAsignatura: value.idAsignatura,
-      } as AsignaturaDeLinea;
-    });
+    return asignaturasDeLinea
+      .map((value) => {
+        return {
+          titulo: value.titulo ?? this.SIN_LINEA,
+          posicion: value.posicion,
+          codigo: value.codigo,
+          nombre: value.nombre,
+          areaFormacion: value.areaFormacion,
+          idAsignatura: value.idAsignatura,
+        };
+      })
+      .sort((a, b) => a.posicion - b.posicion);
   }
 
   /*
@@ -259,7 +262,15 @@ export class LineaAsignaturaService {
 
     const lineasNuevasInsertadas = await this.prisma.lineaAsignatura.createMany(
       {
-        data: lineasNuevas.filter((l) => l.titulo),
+        data: lineasNuevas
+          .filter((l) => l.titulo)
+          .map((l) => {
+            return {
+              titulo: l.titulo,
+              color: l.color,
+              idPlan: l.idPlan,
+            } as LineaAsignatura;
+          }),
       },
     );
 

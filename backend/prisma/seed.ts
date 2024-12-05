@@ -105,10 +105,10 @@ async function main() {
       (e) => e.idPlan == plan.idPlan,
     )) {
       // Porcentaje de asignaturas del plan cursadas
-      const nroAsignaturasCursadas: number = Math.floor(
-        Math.random() * asignaturasPorPlan.length,
+      const nroAsignaturasCursadas: number = calcularNroAsignaturasCursadas(
+        estudiante.agnioIngreso,
+        asignaturasPorPlan.length,
       );
-
       // Total de asignaturas de los planes cursadas
       // const nroAsignaturasCursadas: number = asignaturasPorPlan.length;
 
@@ -389,6 +389,24 @@ class UniqueStack<T> implements Iterable<T> {
       }.bind(this),
     };
   }
+}
+
+function calcularNroAsignaturasCursadas(
+  agnioIngreso: number,
+  asignaturasPorPlan: number,
+  agnioActual: number = 2024,
+): number {
+  const agniosEnCarrera = agnioActual - agnioIngreso;
+
+  if (agniosEnCarrera >= 5) {
+    // 100% de las asignaturas cursadas
+    return asignaturasPorPlan;
+  }
+
+  // Proporción cursada en función del tramo
+  const porcentajeCursado = (agniosEnCarrera - 1) / 5 + (1 / 5) * Math.random();
+
+  return Math.ceil(porcentajeCursado * asignaturasPorPlan);
 }
 
 main()
