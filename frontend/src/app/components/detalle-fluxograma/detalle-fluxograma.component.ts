@@ -35,12 +35,11 @@ export class DetalleFluxogramaComponent implements OnInit {
     //llamamos a la funcion para obtener el detalle del fluxograma
     this.obtenerDetalleFluxograma()
     this.obtenerLineas()
-    window.addEventListener('scroll', this.cerrarContextMenu.bind(this));
 
   }
 
   // referencia al ContextMenu
-  @ViewChild(ContextMenu) contextMenu!: ContextMenu;  
+  @ViewChild('menu') contextMenu!: ContextMenu; // referencia al menu
   private ultimoContextMenu!: ContextMenu |null;
   menuVisible = false;
   lineaMenu!: MenuItem[]; 
@@ -271,23 +270,18 @@ export class DetalleFluxogramaComponent implements OnInit {
     }
   }
     // Método para abrir el contextMenu
-  public abrirContextMenu(event: MouseEvent, contextMenu: ContextMenu, codigo: string) {
+  public abrirContextMenu(contextMenu: ContextMenu, codigo: string) {
     if (this.ultimoContextMenu && this.ultimoContextMenu !== contextMenu) {
       this.ultimoContextMenu.hide(); // Cierra el menu anterior si es diferente
     }
     this.selectedAsignaturaCodigo = codigo;
-    contextMenu.show(event);  // Mostrar el nuevo menú
     this.ultimoContextMenu = contextMenu;  // Actualiza la referencia
     this.actualizarMenuLineas();
   }
 
-  // Método para cerrar el contextMenu
-  public cerrarContextMenu() {
-    if (this.ultimoContextMenu && !this.menuVisible) {
-      this.menuVisible = true; // Marcar que estamos cerrando
-      this.ultimoContextMenu.hide(); // Solo ocultar si hay un menú visible
-      this.ultimoContextMenu = null;  // Resetea la referencia
-      this.menuVisible = false; // Resetear la bandera después de cerrar
+  onScroll() {
+    if (this.ultimoContextMenu?.container) {
+      this.ultimoContextMenu.hide();
     }
   }
 

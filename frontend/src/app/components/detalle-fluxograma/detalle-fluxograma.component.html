@@ -1,12 +1,13 @@
+<div  class="w-full my-5 ps-10">
+  <button (click)="devolverAListarFluxogramas()" class="transition-transform hover:scale-105 m-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
+    <p class="flex items-center">
+        <i class="pi pi-arrow-left text-xl me-2"></i> Volver
+    </p>
+  </button>
+</div>
 
-<div class="min-h-screen bg-gray-100 py-10">
-  <div class="container mx-auto rounded-lg overflow-hidden">
-    <button (click)="devolverAListarFluxogramas()" class="transition-transform hover:scale-105 mb-5 m-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 hover:text-white rounded-full shadow-md">
-      <p class="flex items-center">
-          <i class="pi pi-arrow-left text-xl me-2"></i> Volver
-      </p>
-    </button>
-    
+<div class="min-h-screen bg-gray-100 mb-10">
+  <div class="container mx-auto rounded-lg overflow-hidden">    
     @if(cargando){
       <div class="w-full flex justify-center items-center" style="height: calc(100vh - 100px);">
         <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="none" animationDuration=".5s"/>
@@ -28,7 +29,7 @@
         </div>
 
         <div class=" bg-white px-5">
-          <div class="overflow-x-auto py-5">
+          <div class="overflow-x-auto py-5" (scroll)="onScroll()">
             <div class="flex space-x-8">          
               <div *ngFor="let semestre of semestres; let i = index" class="min-w-[400px]">
                 <div class="p-6 bg-gray-100 rounded-lg shadow-md">
@@ -37,7 +38,7 @@
                     <ng-container *ngFor="let asignatura of detalleFluxograma; let j = index">
                       <div *ngIf="asignatura.semestre === i + 1">
                         <ng-container *ngIf="!asignatura.LineaContemplaAsignatura; else conLinea">
-                          <div class="p-4 rounded-xl cursor-pointer transition-transform hover:scale-105 hover:shadow-lg"
+                          <div #card class="p-4 rounded-xl cursor-pointer transition-transform hover:scale-105 hover:shadow-lg"
                             [ngClass]="{
                               'bg-green-500 text-white': esTributada(asignatura.idAsignatura),
                               'bg-red-500 text-white': esPrevia(asignatura.idAsignatura) && !esTributada(asignatura.idAsignatura),
@@ -45,15 +46,15 @@
                             }"
                             (click)="detalleAsignatura(asignatura.idAsignatura, asignatura.codigo)"
                             (mouseenter)="resaltarAsignaturas(asignatura.prerrequisitos, asignatura.tributaciones)"
-                            (mouseleave)="quitarResaltado()"
-                            (contextmenu)="abrirContextMenu($event, contextMenu, asignatura.codigo)">
+                            (mouseleave)="quitarResaltado()">
                             <div class="text-sm font-semibold mb-1">{{asignatura.codigo}}</div>
                             <div class="text-lg font-bold">{{asignatura.nombre}}</div>
                           </div>
+                          <p-contextMenu #menu [target]="card" [model]="lineaMenu" (onShow)="abrirContextMenu(menu, asignatura.codigo)" [styleClass]="'w-[300px] bg-white shadow-lg border border-gray-300 rounded-md p-2'"></p-contextMenu>
                         </ng-container>
 
                         <ng-template #conLinea>
-                          <div class="p-4 rounded-xl cursor-pointer transition-transform hover:scale-105 hover:shadow-lg"
+                          <div #card class="p-4 rounded-xl cursor-pointer transition-transform hover:scale-105 hover:shadow-lg"
                             [ngStyle]="{ 'background-color': asignatura.LineaContemplaAsignatura.color || '#CCCCCC' }"
                             [ngClass]="{
                               'bg-green-500 text-white': esTributada(asignatura.idAsignatura),
@@ -61,14 +62,13 @@
                             }"
                             (click)="detalleAsignatura(asignatura.idAsignatura, asignatura.codigo)"
                             (mouseenter)="resaltarAsignaturas(asignatura.prerrequisitos, asignatura.tributaciones)"
-                            (mouseleave)="quitarResaltado()"
-                            (contextmenu)="abrirContextMenu($event, contextMenu, asignatura.codigo)">
+                            (mouseleave)="quitarResaltado()">
                             <div class="text-sm font-semibold mb-1">{{asignatura.codigo}}</div>
                             <div class="text-lg font-bold">{{asignatura.nombre}}</div>
                           </div>
+                          <p-contextMenu #menu [target]="card" [model]="lineaMenu" (onShow)="abrirContextMenu(menu, asignatura.codigo)" [styleClass]="'w-[300px] bg-white shadow-lg border border-gray-300 rounded-md p-2'"></p-contextMenu>
                         </ng-template>
 
-                        <p-contextMenu #contextMenu [model]="lineaMenu" (onHide)="cerrarContextMenu()" [styleClass]="'w-[300px] bg-white shadow-lg border border-gray-300 rounded-md p-2'"></p-contextMenu>
                       </div>
                     </ng-container>
                   </div>

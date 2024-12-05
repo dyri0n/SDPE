@@ -1,9 +1,9 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenubarModule } from 'primeng/menubar';
 import { SidebarModule } from 'primeng/sidebar';
-import { MenuModule } from 'primeng/menu';
+import { Menu, MenuModule } from 'primeng/menu';
 import { TreeModule } from 'primeng/tree';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
@@ -24,104 +24,17 @@ export class NavbarComponent {
     private servicioLogin: LoginService
   ){}
   
+  @ViewChild('menu') menu!: Menu;
+  @HostListener('window:scroll', ['$event'])
+  onScroll(): void {
+    if (this.menu && this.menu.overlayVisible) {
+      this.menu.hide();
+    }
+  }
   public menuDesplegable: MenuItem[] = [
     // { label: 'Perfil', icon: 'pi pi-user', command: () => { this.perfil(); } },
     { label: 'Cerrar sesión', icon: 'pi pi-sign-out', command: () => { this.logout(); } }
   ];
-
-
-  // {
-  //   label: 'Fluxogramas',
-  //   data: 'Fluxogramas',
-  //   routerLink: '/fluxogramas',
-  //   children: [
-  //     {
-  //       label: 'Fluxograma 1',
-  //       data: 'Fluxograma 1',
-  //       routerLink: '/fluxograma/1', 
-  //       children: [
-  //         {
-  //           label: 'semestres',
-  //           data: 'semestres',
-  //           routerLink: '/semestres', 
-  //         },
-  //       ]
-  //     },
-  //     {
-  //       label: 'Fluxograma 1',
-  //       data: 'Fluxograma 1',
-  //       routerLink: '/fluxograma/2',
-  //     },
-  //   ],
-  // },
-  // {
-  //   label: 'Asignaturas',
-  //   data: 'Asignaturas',
-  //   routerLink: '/asignaturas',
-  //   children: [
-  //     {
-  //       label: 'Asignatura 1',
-  //       data: 'Asignatura 1',
-  //       routerLink: '/detalle-asignatura/1', 
-  //     },
-  //   ],
-  // },
-  // {
-  //   label: 'Prácticas',
-  //   data: 'Prácticas',
-  //   routerLink: '/practicas', 
-  //   children: [
-  //     {
-  //       label: 'Asignatura-corte-practico',
-  //       data: 'Asignatura-corte-practico',
-  //       routerLink: '/asignatura-corte-practico', 
-  //     },
-  //     {
-  //       label: 'Estadisticas asignatura corte practico 1',
-  //       data: 'Estadisticas asignatura corte practico 1',
-  //       routerLink: '/estadisticas/1', 
-  //     },
-  //     {
-  //       label: 'Practicas estudiante 1',
-  //       data: 'Practicas estudiante 1',
-  //       routerLink: '/practicas-estudiante', 
-  //     },
-  //   ],
-  // },
-  // {
-  //   label: 'Convenios',
-  //   data: 'Convenios',
-  //   routerLink: '/convenios', 
-  //   children: [
-  //     {
-  //       label: 'Convenio 1',
-  //       data: 'Convenio 1',
-  //       routerLink: '/convenio/1',
-  //     },
-  //   ],
-  // },
-  // {
-  //   label: 'Avance individual',
-  //   data: 'Avance individual',
-  //   routerLink: '/avance-estudiante', 
-  //   children: [
-  //     {
-  //       label: 'Curso 1',
-  //       data: 'Curso 1',
-  //       routerLink: '/cursos/1',
-  //     },
-  //     {
-  //       label: 'Aprobacion curso 1',
-  //       data: 'Aprobacion curso 1',
-  //       routerLink: '/aprobacion/1',
-  //     },
-  //   ],
-  // },
-  // {
-  //   label: 'END',
-  //   data: 'END',
-  //   routerLink: '/end',
-  // },
 
   public opciones = [
     {
@@ -164,7 +77,7 @@ export class NavbarComponent {
     this.servicioLogin.logout();
   }
 
-  public menu(){
+  public irAMenu(){
     this.router.navigateByUrl('/menu')
   }
 

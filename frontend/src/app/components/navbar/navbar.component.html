@@ -4,7 +4,7 @@
       <i class="pi pi-bars text-2xl"></i>
     </button>
 
-    <div class="flex items-center cursor-pointer ms-5" (click)="menu()">
+    <div class="flex items-center cursor-pointer ms-5" (click)="irAMenu()">
       <img
         src="logo.png"
         alt="Logo"
@@ -23,7 +23,7 @@
         <button class="text-white" (click)="menu.toggle($event)">
           <i class="pi pi-cog text-xl"></i>
         </button>
-        <p-menu #menu [popup]="true" [model]="menuDesplegable" [appendTo]="'body'"></p-menu>
+        <p-menu baseZIndex="1049" #menu [popup]="true" [model]="menuDesplegable" [appendTo]="'body'"></p-menu>
       </div>
     </div>
   }
