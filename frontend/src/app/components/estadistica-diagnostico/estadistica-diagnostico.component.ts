@@ -103,7 +103,7 @@ export class EstadisticaDiagnosticoComponent implements OnInit {
     plugins: {
       title: {
         display: true,
-        text: 'Promedio general por año',
+        text: 'Promedio General por Año',
         font: {
           size: 24
         }

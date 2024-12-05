@@ -35,13 +35,13 @@
                       </p>
                   
                       <div *ngIf="asignatura.planes && asignatura.planes.length > 0">
-                        <p class="text-gray-600 font-bold">Planes donde se imparte:</p>
+                        <p class="text-gray-600 font-bold">Planes Donde se Imparte:</p>
                         <div *ngFor="let plan of asignatura.planes">
                           <p class="text-gray-600">
-                            - Plan: {{ plan.titulo }} (Código: {{ plan.codigo }})
+                            • Plan: {{ plan.titulo }} (Código: {{ plan.codigo }})
                           </p>
                           <p class="text-gray-600 ml-4">
-                            Semestre de realización: {{ asignatura.semestreRealizacion }}
+                            Semestre de Realización: {{ asignatura.semestreRealizacion }}
                           </p>
                         </div>
                       </div>

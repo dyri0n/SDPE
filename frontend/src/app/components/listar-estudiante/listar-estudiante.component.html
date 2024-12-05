@@ -8,14 +8,14 @@
 
 <div class="h-full w-full flex flex-col">
   <div class="bg-[#DC911A] p-6 text-white text-xl font-semibold">
-    <p class="font-sans text-3xl">Estudiantes de la carrera</p>
+    <p class="font-sans text-3xl">Estudiantes de la Carrera</p>
   </div>
   <div class="bg-[#0369A1] px-20 my-5 py-6 flex-1 container mx-auto rounded-md">
-    <p class="px-1 text-white">Buscar estudiante</p>
+    <p class="px-1 text-white">Buscar Estudiante</p>
     <input
       type="text"
       [(ngModel)]="input_estudiante"
-      placeholder="Nombre del estudiante o rut"
+      placeholder="Nombre del Estudiante o Rut"
       class="w-full p-2 rounded-lg"
     />
 
@@ -35,7 +35,7 @@
           class="bg-[#DC911A] text-white py-2 px-6 rounded-md font-semibold"
           (click)="mostrarTodosLosEstudiantes()"
         >
-          Todos los estudiantes
+          Todos los Estudiantes
         </button>
       </div>
     </div>
@@ -92,7 +92,7 @@
         >
           <div class="p-4">
             <div class="text-gray-600 text-sm">
-              Nombre completo del estudiante
+              Nombre Completo del Estudiante
             </div>
             <div class="text-lg font-semibold">
               {{ estudiante.nombreCompleto }}

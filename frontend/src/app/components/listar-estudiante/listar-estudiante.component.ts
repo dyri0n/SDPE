@@ -79,7 +79,7 @@ export class ListarEstudianteComponent {
 
     // se inicializa las opciones del menu contextual
     this.opcionMenuContextual = [
-      { label: 'Practicas', command: () => this.irAPracticasDelEstudiante() },
+      { label: 'Prácticas', command: () => this.irAPracticasDelEstudiante() },
       { label: 'Avance individual', command: () => this.irAvanceEstudiante() },
     ];
   }

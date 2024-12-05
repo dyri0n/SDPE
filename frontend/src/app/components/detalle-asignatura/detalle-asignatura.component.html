@@ -8,11 +8,11 @@
     <h2 class="text-center text-3xl font-bold text-white bg-[#DC911A] py-4 rounded-lg shadow-md">{{detalleAsignatura.asignaturas.nombreAsignatura}}</h2>
   </div>
   <div class="bg-[#0369A1] mt-5 p-6 shadow-lg rounded-lg">
-    <h2 class="text-center mb-6 text-3xl font-bold text-white bg-[#21A4DC] py-4 rounded-lg shadow-md">Estadísticas anuales</h2>
+    <h2 class="text-center mb-6 text-3xl font-bold text-white bg-[#21A4DC] py-4 rounded-lg shadow-md">Estadísticas Anuales</h2>
     <label>
-      <span class="text-lg text-white font-medium">Seleccionar años:</span>
+      <span class="text-lg text-white font-medium">Seleccionar Años:</span>
         <select class="form-select mt-1 block w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-blue-50 focus:ring focus:ring-blue-300 focus:outline-none" [(ngModel)]="anioSeleccionado" (change)="filtrarDatosAnuales()">  
-          <option value="">Todos los años</option>
+          <option value="">Todos los Años</option>
           <option *ngFor="let anio of anios" [value]="anio">{{anio}}</option>
         </select>
     </label>
@@ -48,7 +48,7 @@
   </div>
   <div class="bg-[#0369A1] mt-10 p-6 shadow-lg rounded-lg">
     <h2 class="text-center mb-6 text-3xl font-bold text-white bg-[#21A4DC] py-4 rounded-lg shadow-md">
-      Estadísticas por cohorte
+      Estadísticas por Cohorte
     </h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <label>
