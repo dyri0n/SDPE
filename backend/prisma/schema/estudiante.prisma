@@ -1,0 +1,46 @@
+model Estudiante {
+  idEstudiante Int    @id @default(autoincrement())
+  rut          String @unique
+
+  nombreCompleto String
+  nombreSocial   String
+  agnioIngreso   Int
+
+  // referencia a
+
+  idPlan Int
+  Plan   Plan @relation(name: "sigue el plan", fields: [idPlan], references: [idPlan])
+
+  // es referenciado por
+
+  Cursaciones  Cursacion[]   @relation(name: "curso las asignaturas")
+  ResultadoEND ResultadoEND? @relation(name: "obtiene los resultados")
+}
+
+model Cursacion {
+  idCursacion Int @default(autoincrement())
+
+  notaFinal  Float
+  numIntento Int    @default(1)
+  grupo      String @default("A")
+
+  agnio            Int
+  semestreRelativo Int @default(1)
+
+  // referencia a
+
+  idPlan       Int
+  idAsignatura Int
+  Asignatura   Asignatura @relation(name: "asignatura referenciada", fields: [idAsignatura, idPlan], references: [idAsignatura, idPlan])
+
+  idEstudiante Int
+  Estudiante   Estudiante @relation(name: "curso las asignaturas", fields: [idEstudiante], references: [idEstudiante])
+
+  // es referenciado por
+
+  Practicas PracticaTomada[] @relation(name: "referencia la cursacion")
+
+  //
+
+  @@id([idCursacion, idEstudiante, idAsignatura, idPlan])
+}

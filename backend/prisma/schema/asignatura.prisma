@@ -1,0 +1,78 @@
+enum CARACTER {
+  NORMAL
+  ELECTIVO
+  PRACTICA
+  TITULACION
+}
+
+enum AREA {
+  FP
+  FG
+  FE
+  FB
+}
+
+model Asignatura {
+  idAsignatura Int    @default(autoincrement())
+  codigo       String
+
+  nombre      String
+  nombreCorto String
+
+  unidad        String?
+  caracter      CARACTER
+  areaFormacion AREA
+
+  creditos       Int
+  tributaciones  Int[]
+  prerrequisitos Int[]
+
+  posicion Int
+  semestre Int
+
+  competencias String[]
+
+  descripcion String?
+
+  linkSyllabus String?
+
+  // referencia a
+
+  idPlan        Int
+  PlanDeEstudio Plan @relation(name: "es contemplada por", fields: [idPlan], references: [idPlan])
+
+  idLinea                  Int?
+  LineaContemplaAsignatura LineaAsignatura? @relation(name: "referencia a la asignatura", fields: [idPlan, idLinea], references: [idPlan, idLinea])
+
+  // es referenciado por
+
+  CursacionesTomadas Cursacion[] @relation(name: "asignatura referenciada")
+
+  //
+
+  @@id([idPlan, idAsignatura])
+  @@unique(name: "codigoPorPlanUnico", [idPlan, codigo])
+  @@unique(name: "nombrePorPlanUnico", [idPlan, nombre])
+  @@unique(name: "nombreCortoPorPlanUnico", [idPlan, nombreCorto])
+}
+
+model LineaAsignatura {
+  idLinea Int @default(autoincrement())
+
+  titulo String
+  color  String?
+
+  // referencia a
+
+  idPlan Int
+  Plan   Plan @relation(name: "es definido por", fields: [idPlan], references: [idPlan])
+
+  // es referenciado por
+
+  Asignatura Asignatura[] @relation(name: "referencia a la asignatura")
+
+  //
+
+  @@id([idPlan, idLinea])
+  @@unique([idPlan, titulo], name: "tituloUnicoPorPlan")
+}
