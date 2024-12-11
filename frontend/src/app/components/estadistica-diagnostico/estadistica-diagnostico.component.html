@@ -18,7 +18,7 @@
       <h3 class="text-2xl font-semibold text-white text-center">Estadisticas Generales por Cada Año</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <label>
-          <span class="text-lg text-white font-medium">Seleccionar Cohortes:</span>
+          <span class="text-lg text-white font-medium">Seleccionar Años:</span>
           <br>
           <p-multiSelect 
             [options]="anios" 
@@ -26,7 +26,7 @@
             (onChange)="obtenerPromedios()"
             optionLabel="label"
             filter="false"
-            placeholder="Seleccionar Cohortes"
+            placeholder="Seleccionar Años"
             [showToggleAll]="true"/>
         </label>
       </div>
