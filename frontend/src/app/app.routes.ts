@@ -24,12 +24,12 @@ import { DetallePracticaComponent } from './components/detalle-practica/detalle-
 import { PracticasConvenioComponent } from './components/practicas-convenio/practicas-convenio.component';
 /**
  * RUTAS                    ROLES
- * [/fluxogramas]       -> [todos - docente]
- * [/convenios]         -> [admin, jc, secretario]
- * [/asignaturas]       -> [admin,jc,secretario]
- * [/end]               -> [admin, jc,secretario]
- * [/practicas]         -> [admin,jc,docente,secretario,coordinador]
- * [/avance-individual] -> [admin,jc,secretario]
+ * [/fluxogramas]       -> [todos]
+ * [/convenios]         -> [admin, jc, secretario, coordinador]
+ * [/asignaturas]       -> [admin,jc,secretario, docente, coordinador]
+ * [/end]               -> [admin, jc]
+ * [/avance-individual] -> [admin,jc]
+ *[/ver-tendencias]     -> [administrador,  jc, docente,  coordinador]
  */
 
 export const routes: Routes = [
@@ -45,6 +45,7 @@ export const routes: Routes = [
         Roles.ADMINISTRADOR,
         Roles.JEFA_CARRERA,
         Roles.SECRETARIO,
+        Roles.DOCENTE,
         Roles.COORDINADOR,
       ],
     },
@@ -54,7 +55,12 @@ export const routes: Routes = [
     component: ListaConveniosComponent,
     canActivate: [authGuard, hasRoleGuard],
     data: {
-      roles: [Roles.ADMINISTRADOR, Roles.JEFA_CARRERA, Roles.SECRETARIO],
+      roles: [
+        Roles.ADMINISTRADOR,
+        Roles.JEFA_CARRERA,
+        Roles.SECRETARIO,
+        Roles.COORDINADOR,
+      ],
     },
   },
   {
@@ -67,7 +73,7 @@ export const routes: Routes = [
     component: ListaEndComponent,
     canActivate: [authGuard, hasRoleGuard],
     data: {
-      roles: [Roles.ADMINISTRADOR, Roles.JEFA_CARRERA, Roles.SECRETARIO],
+      roles: [Roles.ADMINISTRADOR, Roles.JEFA_CARRERA],
     },
   },
   {
@@ -104,7 +110,13 @@ export const routes: Routes = [
     component: AsignaturasComponent,
     canActivate: [authGuard, hasRoleGuard],
     data: {
-      roles: [Roles.ADMINISTRADOR, Roles.JEFA_CARRERA, Roles.SECRETARIO],
+      roles: [
+        Roles.ADMINISTRADOR,
+        Roles.JEFA_CARRERA,
+        Roles.SECRETARIO,
+        Roles.DOCENTE,
+        Roles.COORDINADOR,
+      ],
     },
   },
   {
@@ -125,18 +137,45 @@ export const routes: Routes = [
     component: ListarEstudianteComponent,
     canActivate: [authGuard, hasRoleGuard],
     data: {
-      roles: [Roles.ADMINISTRADOR, Roles.JEFA_CARRERA, Roles.SECRETARIO],
+      roles: [Roles.ADMINISTRADOR, Roles.JEFA_CARRERA],
     },
   },
   {
     path: 'menu-estudiante/:idEstudiante/:nombreEstudiante',
     component: MenuEstudianteComponent,
   },
-  {path: 'ver-tendencias', component: TendenciasAsignaturaCortePracticoComponent, canActivate: [authGuard]},
-  {path: 'practica-detalle/:titulo', component: DetallePracticaComponent, canActivate: [authGuard]},
-  {path: 'practicas-convenio/:idConvenio', component: PracticasConvenioComponent, canActivate: [authGuard]},
-  {path: 'gestionar-lineas/:idPlan', component:GestionarLineasComponent,canActivate: [authGuard]},
-  {path: 'end/:idEND', component:ResultadoEndComponent, canActivate: [authGuard]},
+  {
+    path: 'ver-tendencias',
+    component: TendenciasAsignaturaCortePracticoComponent,
+    canActivate: [authGuard],
+    data: {
+      roles: [
+        Roles.ADMINISTRADOR,
+        Roles.JEFA_CARRERA,
+        Roles.DOCENTE,
+        Roles.COORDINADOR,
+      ],
+    },
+  },
+  {
+    path: 'practica-detalle/:titulo',
+    component: DetallePracticaComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'practicas-convenio/:idConvenio',
+    component: PracticasConvenioComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'gestionar-lineas/:idPlan',
+    component: GestionarLineasComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'end/:idEND',
+    component: ResultadoEndComponent,
+    canActivate: [authGuard],
+  },
   { path: '**', redirectTo: '/menu' },
-    
 ];
