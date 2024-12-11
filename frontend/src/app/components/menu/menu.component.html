@@ -1,4 +1,4 @@
-<div class="bg-white border-y mt-10 py-5 shadow-lg">
+<div class="bg-white border-y mt-10 py-3 shadow-lg">
   <div class="flex items-center justify-between w-11/12">
     <div class="bg-sky-700 w-3/12 rounded-r-xl py-4">
       <h1 class="text-4xl text-white text-center font-bold">Menú</h1>
@@ -10,7 +10,7 @@
   <p-card
     *tieneRol="[ADMINISTRADOR, JEFA_CARRERA, SECRETARIO, DOCENTE, COORDINADOR]"
     header=""
-    styleClass="bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]"
+    styleClass="flex flex-col justify-center items-center bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white h-64 py-4 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_3px_theme(colors.sky.500)]"
     (click)="redirigirHacia('fluxogramas')"
   >
     <!-- 
@@ -26,7 +26,7 @@
   <p-card
     *tieneRol="[ADMINISTRADOR, JEFA_CARRERA, SECRETARIO, DOCENTE, COORDINADOR]"
     header=""
-    styleClass="bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]"
+    styleClass="flex flex-col justify-center items-center bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white h-64 py-4 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_3px_theme(colors.sky.500)]"
     (click)="redirigirHacia('asignaturas')"
   >
     <!-- 
@@ -40,7 +40,7 @@
   <p-card
     *tieneRol="[ADMINISTRADOR, JEFA_CARRERA, SECRETARIO, COORDINADOR]"
     header=""
-    styleClass="bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]"
+    styleClass="flex flex-col justify-center items-center bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white h-64 py-4 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_3px_theme(colors.sky.500)]"
     (click)="redirigirHacia('convenios')"
   >
     <!-- Convenios: administrador,  jefa de carrera,  secretaria de jefa de carrera, coordinadora de práctica
@@ -55,7 +55,7 @@
   <p-card
     *tieneRol="[ADMINISTRADOR, JEFA_CARRERA, DOCENTE, COORDINADOR]"
     header=""
-    styleClass="bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]"
+    styleClass="flex flex-col justify-center items-center bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white h-64 py-4 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_3px_theme(colors.sky.500)]"
     (click)="redirigirHacia('ver-tendencias')"
   >
     <!-- 
@@ -67,7 +67,7 @@
   <p-card
     *tieneRol="[ADMINISTRADOR, JEFA_CARRERA]"
     header=""
-    styleClass="bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]"
+    styleClass="flex flex-col justify-center items-center bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white h-64 py-4 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_3px_theme(colors.sky.500)]"
     (click)="redirigirHacia('listar-estudiantes')"
   >
     <!-- 
@@ -85,7 +85,7 @@
   <p-card
     *tieneRol="[ADMINISTRADOR, JEFA_CARRERA]"
     header=""
-    styleClass="bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]"
+    styleClass="flex flex-col justify-center items-center bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white h-64 py-4 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_3px_theme(colors.sky.500)]"
     (click)="redirigirHacia('end')"
   >
     <!-- 
@@ -98,7 +98,7 @@
 
   <p-card
     header=""
-    styleClass="bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white py-16 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_4px_theme(colors.sky.500)]"
+    styleClass="flex flex-col justify-center items-center bg-sky-700 shadow-md cursor-pointer rounded-lg text-center text-white h-64 py-4 transition-transform hover:scale-105 hover:bg-sky-600 hover:shadow-[0_0_0_3px_theme(colors.sky.500)]"
   >
     <p class="text-4xl font-semibold">Actividad de titulación</p>
     <div class="py-4 font-semibold">
